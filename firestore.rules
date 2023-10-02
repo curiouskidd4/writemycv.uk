@@ -12,8 +12,49 @@ service cloud.firestore {
     // Make sure to write security rules for your app before that time, or else
     // all client requests to your Firestore database will be denied until you Update
     // your rules
-    match /{document=**} {
-      allow read, write: if request.time < timestamp.date(2023, 10, 9);
+
+    // Only user with matching uid can read or write to resume collection, uid is in the document
+    match /resumes/{resumeId} {
+      allow read, write: if request.auth.uid == resource.data.userId;
     }
+
+    match /users/{userId} {
+      allow read, write: if request.auth.uid == userId;
+    }
+
+    // Public resume can be read by anyone but only the owner can write
+
+    match /publicResume/{resumeId} {
+      allow read: if true;
+    }
+
+    match /publicResume/{resumeId} {
+      allow write: if request.auth.uid == resource.data.userId;
+    }
+
+    // Education section can be written by the owner of the resume
+
+    match /education/{userId} {
+      allow write, read: if request.auth.uid == userId;
+    }
+
+    match /experience/{userId} {
+      allow write, read: if request.auth.uid == userId;
+    }
+
+    match /skill/{userId} {
+      allow write, read: if request.auth.uid == userId;
+    }
+
+    match /personalInfo/{userId} {
+      allow write, read: if request.auth.uid == userId;
+    }
+
+    match /professionalSummary/{userId} {
+      allow write, read: if request.auth.uid == userId;
+    }
+
+
+    
   }
 }

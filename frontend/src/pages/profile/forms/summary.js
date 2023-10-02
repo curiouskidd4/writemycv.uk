@@ -295,7 +295,7 @@ const ProfessionalSummary = () => {
       {!summary.loading && (
         <ProfessionalSummaryForm
           onFinish={onFinish}
-          initialValues={summary}
+          initialValues={summary.data}
           isLoading={updateSummary.isLoading}
         />
       )}

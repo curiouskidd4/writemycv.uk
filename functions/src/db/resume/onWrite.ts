@@ -18,7 +18,7 @@ export const onWrite = functions.firestore
 
       // If new data exists
       if (newData) {
-        await populateResumeDetails(context.params.resumeId, newData.userId);
+        // await populateResumeDetails(context.params.resumeId, newData.userId);
         await exportResume(context.params.resumeId, newData.userId);
       }
     } catch (error) {}
