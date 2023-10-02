@@ -1,0 +1,118 @@
+.auth {
+    background-color: rgb(255 255 255);
+    border-bottom: 2px solid rgb(0 0 0 / 10%);
+    border-radius: 8px;
+    border-radius: 8px;
+    box-shadow: 1px 1px 5px rgb(0 0 0 / 4%);
+    margin: 120px auto 20px auto;
+    max-width: 600px;
+    padding: 25px;
+    width: 100%;
+  }
+  
+  .auth h4 {
+    border-bottom: 1px solid rgb(0 0 0 / 10%);
+    color: rgb(0 0 0 / 80%);
+    font-size: 16px;
+    font-weight: 400;
+    margin: -10px -25px 20px -25px;
+    padding: 0 25px 15px 25px;
+  }
+  
+  .auth p {
+    color: rgb(0 0 0 / 80%);
+  }
+  
+  .auth p.subtitle {
+    margin-bottom: 15px;
+  }
+  
+  .auth a {
+    text-decoration: underline;
+    cursor: pointer;
+    color: rgb(0 0 0 / 80%);
+  }
+  
+  .auth label {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+  }
+  
+  .auth label span {
+    color: rgb(0 0 0 / 80%);
+    margin-bottom: 5px;
+  }
+  
+  .auth label.checkbox {
+    align-items: center;
+    flex-direction: row;
+  }
+  
+  .auth label.checkbox p {
+    margin-left: 5px;
+  }
+  
+  .auth input {
+    border-radius: 6px;
+    border: 1px solid rgb(0 0 0 / 10%);
+    color: rgb(0 0 0 / 80%);
+    font-size: 15px;
+    height: 45px;
+    outline: none;
+    padding: 0 15px;
+    transition: .2s border ease-in-out;
+  }
+  
+  .auth input:focus {
+    border-color: rgb(92 107 192);
+  }
+  
+  .auth .actions {
+    align-items: center;
+    display: flex;
+    margin: 15px 0;
+  }
+  
+  .auth .button {
+    height: 40px;
+    margin: 0 10px 0 5px;
+  }
+  
+  .auth .button svg {
+    height: 20px;
+    margin-left: 5px;
+  }
+  
+  .auth .error-message {
+    align-items: center;
+    color: var(--danger);
+    display: flex;
+    font-size: 15px;
+    line-height: 20px;
+    margin-left: 10px;
+  }
+  
+  .auth .error-message svg {
+    height: 20px;
+    margin-right: 5px;
+  }
+  
+  .auth.reset-password .actions {
+    margin-bottom: 0;
+  }
+  
+  @media (max-width: 767px) {
+    .auth .actions {
+      flex-direction: column;
+    }
+  
+    .auth .actions .button {
+      justify-content: center;
+      width: 100%;
+    }
+  
+    .auth .error-message {
+      margin-top: 15px;
+    }
+  }

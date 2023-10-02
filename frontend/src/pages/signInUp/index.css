@@ -1,0 +1,39 @@
+.reset-password .header {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  margin: 20px 0;
+}
+.reset-password {
+    max-width: 600px;
+    margin: 0px auto;
+    padding: 0px 1.5rem;
+
+}
+.reset-password .header h1 {
+    color: var(--primary);
+    font-size: 28px;
+    font-weight: 600;
+    margin: 20px 0;
+  }
+  
+.login-signup-page {
+    max-width: 600px;
+    margin: 0px auto;
+    padding: 0px 1.5rem;
+}
+
+.login-signup-page .header {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    margin: 20px 0;
+  }
+
+.login-signup-page .header h1 {
+    color: var(--primary);
+    font-size: 28px;
+    font-weight: 600;
+    margin: 20px 0;
+  }
+  

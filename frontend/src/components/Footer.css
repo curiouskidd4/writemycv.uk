@@ -1,0 +1,35 @@
+footer {
+  /* background-color: #fcebdf; */
+  color: #256763;
+  padding: 25px 0;
+  margin-top: 40px;
+  /* border-top: 1px solid #fcebdf; */
+}
+
+footer .wrapper {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+footer .options {
+  align-items: center;
+  display: flex;
+  gap: 15px;
+}
+
+footer .options a {
+  color: #256763;
+  transition: .2s color ease-in-out;
+}
+
+footer .options a:hover {
+  color: #256763;
+}
+
+@media (max-width: 767px) {
+  footer .wrapper {
+    flex-direction: column;
+    gap: 10px;
+  }
+}
