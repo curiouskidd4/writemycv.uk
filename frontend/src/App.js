@@ -31,7 +31,6 @@ import {
 } from "react-router-dom";
 
 // import ResponseForm from "./pages/responseForm";
-import createPersistedState from "use-persisted-state";
 // import Predictions from "./predictions";
 import LoginSignupPage from "./pages/signInUp";
 import CustomHeader from "./components/header";
@@ -54,14 +53,18 @@ import Profile from "./pages/profile";
 import EditResume from "./pages/resume/editor";
 import ResumePreview from "./pages/publicResume";
 import LandingPage from "./pages/landing";
+import CoolForm from "./pages/coolForm";
+import AccountSettings from "./pages/account";
+import FAQs from "./pages/faqs";
+import Upgrade from "./pages/upgrade";
+import UpgradeSuccess from "./pages/upgrade/success";
+import UpgradeCancel from "./pages/upgrade/cancel";
 // import LabelHome from "./pages/others/label";
 // import LabelTaskPage from "./pages/labelTask";
 // import { PubmedDataItems } from "./services/dataService";
 // import PubmedDataHome from "./pages/pubmedData";
 // import PubmedDataSplit from "./pages/pubmedDataSplit";
 // import { Header } from "antd/es/layout/layout";
-const labelAppState = createPersistedState("labelAppState");
-const globalAppState = createPersistedState("globalAppState");
 
 const GenLayout = ({ children }) => {
   const { user } = useAuth();
@@ -69,12 +72,12 @@ const GenLayout = ({ children }) => {
 
   // regex match for "/resumes/XC6s4UR2RhXSO6zHKToS"
   let isResumeEdit = match.pathname.search(/\/resumes\/[a-zA-Z0-9]+/) == 0;
-  let publicResume = match.pathname.search(/\/public-resume\/[a-zA-Z0-9]+/) == 0;
-
+  let publicResume =
+    match.pathname.search(/\/public-resume\/[a-zA-Z0-9]+/) == 0;
 
   return (
     <>
-      {(isResumeEdit || publicResume) ? null:  <CustomHeader />}
+      {isResumeEdit || publicResume ? null : <CustomHeader />}
       <div id="detail">
         <Outlet />
       </div>
@@ -87,11 +90,12 @@ const GenPublicLayout = ({ children }) => {
   // debugger
   const match = useLocation();
 
-  let publicResume = match.pathname.search(/\/public-resume\/[a-zA-Z0-9]+/) == 0;
+  let publicResume =
+    match.pathname.search(/\/public-resume\/[a-zA-Z0-9]+/) == 0;
 
   return (
     <>
-      {(publicResume) ? null:  <PublicHeader />}
+      {publicResume ? null : <PublicHeader />}
       <div id="public-detail">
         <Outlet />
       </div>
@@ -107,18 +111,19 @@ const protectedRouter = createBrowserRouter([
     children: [
       {
         path: "",
-        element:  <Navigate to="/resumes" />,
+        element: <Navigate to="/resumes" />,
       },
       {
         path: "resumes",
-        element: <Resume  />,
+        element: <Resume />,
       },
       {
         path: "profile",
-        element: <Profile  />,
+        element: <Profile />,
       },
       { path: "terms-service", element: <TermsService /> },
       { path: "privacy-policy", element: <PrivacyPolicy /> },
+      { path: "cool-form", element: <CoolForm /> },
       // { path: "contact", element: <Contact /> },
       // { path: "use", element: <Help /> },
       // { path: "superadmin", element: <SuperAdmin /> },
@@ -126,15 +131,26 @@ const protectedRouter = createBrowserRouter([
       { path: "resumes/:resumeId", element: <EditResume /> },
       { path: "public-resume/:publicResumeId", element: <ResumePreview /> },
 
-
-      // {
-      //   path: "faqs",
-      //   element: null,
-      // },
-      // {
-      //   path: "subscription",
-      //   element: <Payment />,
-      // },
+      {
+        path: "faq",
+        element: <FAQs/>,
+      },
+      {
+        path: "upgrade",
+        element: <Upgrade/>,
+      },
+      {
+        path: "upgrade/success",
+        element: <UpgradeSuccess/>,
+      },
+      {
+        path: "upgrade/cancel",
+        element: <UpgradeCancel/>,
+      },
+      {
+        path: "account",
+        element: <AccountSettings />,
+      },
       {
         path: "/*",
         element: (
@@ -227,7 +243,7 @@ const baseRouter = createBrowserRouter([
         path: "*",
         element: (
           <div>
-            <Navigate to="/signin" />
+            <Navigate to="/" />
           </div>
         ),
       },
@@ -243,15 +259,19 @@ const BaseApp = () => {
   return (
     <React.StrictMode>
       {auth.loading ? (
-        <div style={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-        }}><Spin size="large"/></div>
+        <div
+          style={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+          }}
+        >
+          <Spin size="large" />
+        </div>
       ) : (
         <>
-          {auth.isAuthenticated ? (
+          {auth.isAuthenticated && auth.user ? (
             <>
               {/* <CustomHeader /> */}
               <RouterProvider router={protectedRouter} />
@@ -274,7 +294,7 @@ const App = () => {
             theme={{
               token: {
                 fontFamily: "Karla",
-                
+
                 colorPrimary: "#256763",
                 colorTextSecondary: "#6a7991",
                 colorLink: "#3B73CE",
@@ -290,7 +310,6 @@ const App = () => {
                 // colorLinkHover: "#003560",
                 // colorLinkActive: "#003560",
                 // colorText: "#003560",
-                
               },
             }}
           >

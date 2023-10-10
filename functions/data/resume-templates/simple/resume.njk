@@ -14,6 +14,30 @@
     />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{{ name }}'s Resume</title>
+    <script>
+      // Order sections based on the order in the array
+      const sectionOrder = '{{ sectionOrder | safe }}';
+      let sectionOrderList = sectionOrder.split(",")
+      function reorder(){
+          const sections = document.querySelectorAll(".section");
+                const sectionContainer = document.querySelector(".resume-container");
+
+                sectionOrderList.forEach(function (section)  {
+                  const sectionElement = document.querySelector(`.section.${section}`);
+                  sectionContainer.appendChild(sectionElement);
+                });
+      }
+     
+
+        // Run reorder function after the page is loaded
+        window.addEventListener("load", function () {
+          reorder();
+        });
+
+
+
+
+    </script>
 <style>
      html {
         height: 100%;
@@ -147,9 +171,9 @@
         </div>
     </header>
 
-    <section class="section objective">
-        <h2 class="section-title">Objective</h2>
-        <p class="section-content">{{ summary }}</p>
+    <section class="section professionalSummary">
+        <h2 class="section-title">Summary</h2>
+        <p class="section-content">{{ professionalSummary }}</p>
     </section>
 
     <section class="section education">
@@ -181,7 +205,7 @@
         {% endfor %}
     </section>
 
-    <section class="section courses">
+    {# <section class="section courses">
         <h2 class="section-title">Courses & Certifications</h2>
         {% for course in courses %}
             <div class="section-item">
@@ -193,7 +217,7 @@
                 <p class="course-description">{{ course.description }}</p>
             </div>
         {% endfor %}
-    </section>
+    </section> #}
 
     <section class="section skills">
         <h2 class="section-title">Skills</h2>
@@ -204,7 +228,7 @@
         </ul>
     </section>
 
-    <section class="section hobbies">
+    {# <section class="section hobbies">
         <h2 class="section-title">Hobbies</h2>
         <ul class="hobbies-list">
         {% for hobby in hobbies %}
@@ -221,7 +245,7 @@
                 <p class="reference-contact">{{ reference.email }} | {{ reference.phone }}</p>
             </div>
         {% endfor %}
-    </section>
+    </section> #}
     </div>
 </body>
 </html>

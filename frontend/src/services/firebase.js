@@ -1,6 +1,8 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
+import { initializeAppCheck, ReCaptchaV3Provider } from "firebase/app-check";
+
 import { connectAuthEmulator, getAuth } from "firebase/auth";
 import { connectFirestoreEmulator, getFirestore } from "firebase/firestore";
 import { connectStorageEmulator, getStorage } from "firebase/storage";
@@ -26,10 +28,19 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const storage = getStorage(app);
 
+// const appCheck = initializeAppCheck(app, {
+//   provider: new ReCaptchaV3Provider("6LdtQIkoAAAAABDOTQoJre0p1DzjIKT_8pebSYPD"),
+
+//   // Optional argument. If true, the SDK automatically refreshes App Check
+//   // tokens as needed.
+//   isTokenAutoRefreshEnabled: true,
+// });
+const appCheck = null
+
 if (window.location.hostname === "localhost") {
   // Point to the RTDB emulator running on localhost.
   connectStorageEmulator(storage, "127.0.0.1", 9199);
   connectFirestoreEmulator(db, "localhost", 8080);
 }
 
-export { auth, db, analytics, storage };
+export { auth, db, analytics, storage, appCheck };

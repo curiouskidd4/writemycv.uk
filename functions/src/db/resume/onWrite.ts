@@ -5,7 +5,12 @@ import { populateResumeDetails } from "./actions/populateResumeDetails";
 import { exportResume } from "./actions/export";
 
 // Cloud functions which depends on workout update (create/update/delete)
-export const onWrite = functions.firestore
+export const onWrite = functions.runWith(
+  {
+    timeoutSeconds: 300,
+    memory: "1GB",
+  }
+).firestore
   .document("resumes/{resumeId}")
   .onWrite(async (change, context) => {
     try {
@@ -16,6 +21,13 @@ export const onWrite = functions.firestore
         ? (change.after.data() as Resume)
         : null;
 
+
+      // Check if resume is newly created
+      if (!oldData && newData) {
+        await populateResumeDetails(context.params.resumeId, newData.userId);
+        await exportResume(context.params.resumeId, newData.userId);
+        return;
+      }  
       // If new data exists
       if (newData) {
         // await populateResumeDetails(context.params.resumeId, newData.userId);

@@ -53,7 +53,7 @@ const FormLabelWithAIActions = ({
       school,
       modules,
       existingSummary: description,
-      role: "machine learning engineer",
+      // role: "machine learning engineer",
     });
   };
 
@@ -64,7 +64,7 @@ const FormLabelWithAIActions = ({
       school,
       modules,
       existingSummary: description,
-      role: "machine learning engineer",
+      // role: "machine learning engineer",
       rewrite: {
         enabled: true,
         instructions: "",
@@ -79,7 +79,7 @@ const FormLabelWithAIActions = ({
       school,
       modules,
       existingSummary: description,
-      role: "machine learning engineer",
+      // role: "machine learning engineer",
       rewrite: {
         enabled: true,
         instructions: "",
@@ -278,7 +278,7 @@ const CourseLabelWithAIActions = ({ degree, school, onAddCourses }) => {
     openai.getEducationCoursesSuggestion({
       degree,
       school,
-      role: "machine learning engineer",
+      // role: "machine learning engineer",
     });
   };
 
@@ -621,14 +621,7 @@ const EducationForm_ = ({ form, fields, add, remove, move }) => {
                         ref={provided.innerRef}
                         {...provided.draggableProps}
                       >
-                        <HolderOutlined
-                          style={{
-                            display:
-                              state.hoverItemIdx == index ? "flex" : "none",
-                          }}
-                          className="hover-outlined-button"
-                          {...provided.dragHandleProps}
-                        />
+                        
                         <div key={index} className="education-form">
                           <Row
                             // style={{ marginBottom: 8 }}
@@ -637,48 +630,46 @@ const EducationForm_ = ({ form, fields, add, remove, move }) => {
                             <div
                               style={{ color: "grey", marginBottom: ".5rem" }}
                             >
-                              {/* <div
-                                style={{
-                                  display: "inline-block",
-                                  width: "1rem",
-                                }}
-                              >
-                                <HolderOutlined
-                                  style={{
-                                    display:
-                                      state.hoverItemIdx == index
-                                        ? "inline-block"
-                                        : "none",
-                                  }}
-                                  {...provided.dragHandleProps}
-                                />
-                              </div> */}
                               <span>Education #{index + 1}</span>
                             </div>
 
-                            <Button
-                              type="link"
-                              style={{ marginLeft: "auto" }}
-                              onClick={() => {
-                                if (state.updateItemIdx == index) {
-                                  setState((prev) => ({
-                                    ...prev,
-                                    updateItemIdx: null,
-                                  }));
-                                } else {
-                                  setState((prev) => ({
-                                    ...prev,
-                                    updateItemIdx: index,
-                                  }));
-                                }
-                              }}
+                            <div
+                              style={{ marginLeft: "auto", display: "flex" }}
                             >
-                              {index == state.updateItemIdx ? (
-                                <UpOutlined />
-                              ) : (
-                                <DownOutlined />
-                              )}
-                            </Button>
+                              <HolderOutlined
+                                style={{
+                                  display:
+                                    state.hoverItemIdx == index
+                                      ? "flex"
+                                      : "none",
+                                }}
+                                className="hover-outlined-button"
+                                {...provided.dragHandleProps}
+                              />
+                              <Button
+                                type="link"
+                                style={{ marginLeft: "auto" }}
+                                onClick={() => {
+                                  if (state.updateItemIdx == index) {
+                                    setState((prev) => ({
+                                      ...prev,
+                                      updateItemIdx: null,
+                                    }));
+                                  } else {
+                                    setState((prev) => ({
+                                      ...prev,
+                                      updateItemIdx: index,
+                                    }));
+                                  }
+                                }}
+                              >
+                                {index == state.updateItemIdx ? (
+                                  <UpOutlined />
+                                ) : (
+                                  <DownOutlined />
+                                )}
+                              </Button>
+                            </div>
                           </Row>
                           {/* <Row key={field.key} style={{ marginBottom: 8 }} align="middle"> */}
                           {index == state.updateItemIdx ? (
@@ -744,10 +735,26 @@ const EducationForm_ = ({ form, fields, add, remove, move }) => {
 
 const EducationForm = ({ onFinish, initialValues, isLoading }) => {
   const [form] = Form.useForm();
+
+  const onFinish_ = (values) => {
+    // Make sure to replace undefined as null
+    let newValues = values.educationList.map((item) => {
+      let newItem = { ...item };
+      // Check for undefined
+      newItem.location = newItem.location || null;
+      newItem.grade = newItem.grade || null;
+      newItem.modules = newItem.modules || null;
+      newItem.description = newItem.description || null;
+      return newItem;
+    }
+    );
+    onFinish({ educationList: newValues });
+  };
+
   return (
     <Form
       form={form}
-      onFinish={onFinish}
+      onFinish={onFinish_}
       initialValues={{
         educationList: initialValues,
       }}

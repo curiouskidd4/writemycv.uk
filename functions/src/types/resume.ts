@@ -18,6 +18,8 @@ interface Resume {
     educationList?: Education[];
     skillList?: Skill[];
     professionalSummary?: string;
+    sectionOrder?: string[];
+    exportHash?: string;
 }
 
 export { Resume };

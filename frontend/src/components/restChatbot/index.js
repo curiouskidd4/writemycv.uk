@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { Button, Row, message, Input, Divider } from "antd";
-import createPersistedState from "use-persisted-state";
 import { MoreOutlined, SendOutlined, LoadingOutlined } from "@ant-design/icons";
 import ReactMarkdown from "react-markdown";
 
@@ -9,7 +8,6 @@ import { useAuth } from "../../authContext";
 import "./index.css";
 import axios from "axios";
 
-const persistedState = createPersistedState("chatbotState");
 
 const educationHelper = async (currentRole, targetRole, messages, token) => {
   let apiUrl =
@@ -32,7 +30,7 @@ const educationHelper = async (currentRole, targetRole, messages, token) => {
 
 const ChatBot = (props) => {
   const { authToken } = useAuth();
-  const [state, setState] = persistedState({});
+  const [state, setState] = useState({});
   const [messages, setMessages] = useState([
     // { content: "start", role: "user" },
   ]);

@@ -202,14 +202,6 @@ const SkillForm_ = ({ form, fields, add, remove, move }) => {
                         ref={provided.innerRef}
                         {...provided.draggableProps}
                       >
-                        <HolderOutlined
-                          style={{
-                            display:
-                              state.hoverItemIdx == index ? "flex" : "none",
-                          }}
-                          className="hover-outlined-button"
-                          {...provided.dragHandleProps}
-                        />
                         <div key={index} className="education-form">
                           <Row
                             // style={{ marginBottom: 8 }}
@@ -236,30 +228,43 @@ const SkillForm_ = ({ form, fields, add, remove, move }) => {
                               </div> */}
                               <span>Skill #{index + 1}</span>
                             </div>
-
-                            <Button
-                              type="link"
-                              style={{ marginLeft: "auto" }}
-                              onClick={() => {
-                                if (state.updateItemIdx == index) {
-                                  setState((prev) => ({
-                                    ...prev,
-                                    updateItemIdx: null,
-                                  }));
-                                } else {
-                                  setState((prev) => ({
-                                    ...prev,
-                                    updateItemIdx: index,
-                                  }));
-                                }
-                              }}
+                            <div
+                              style={{ marginLeft: "auto", display: "flex" }}
                             >
-                              {index == state.updateItemIdx ? (
-                                <UpOutlined />
-                              ) : (
-                                <DownOutlined />
-                              )}
-                            </Button>
+                              <HolderOutlined
+                                style={{
+                                  display:
+                                    state.hoverItemIdx == index
+                                      ? "flex"
+                                      : "none",
+                                }}
+                                className="hover-outlined-button"
+                                {...provided.dragHandleProps}
+                              />
+                              <Button
+                                type="link"
+                                style={{ marginLeft: "auto" }}
+                                onClick={() => {
+                                  if (state.updateItemIdx == index) {
+                                    setState((prev) => ({
+                                      ...prev,
+                                      updateItemIdx: null,
+                                    }));
+                                  } else {
+                                    setState((prev) => ({
+                                      ...prev,
+                                      updateItemIdx: index,
+                                    }));
+                                  }
+                                }}
+                              >
+                                {index == state.updateItemIdx ? (
+                                  <UpOutlined />
+                                ) : (
+                                  <DownOutlined />
+                                )}
+                              </Button>
+                            </div>
                           </Row>
                           {/* <Row key={field.key} style={{ marginBottom: 8 }} align="middle"> */}
                           {index == state.updateItemIdx ? (
@@ -330,7 +335,7 @@ const SkillForm = ({ onFinish, initialValues, isLoading }) => {
 
   useEffect(() => {
     openai.getSkills({
-      role: "Machine Learning Engineer",
+      // role: "Machine Learning Engineer",
     });
   }, []);
 

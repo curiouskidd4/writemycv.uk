@@ -14,6 +14,7 @@ import {
   List,
   Skeleton,
   Popover,
+  Checkbox,
 } from "antd";
 import React, { useEffect, useState } from "react";
 import {
@@ -31,6 +32,7 @@ import {
   doc,
   onSnapshot,
   or,
+  orderBy,
   query,
   setDoc,
   where,
@@ -147,6 +149,16 @@ const NewResumeModal = ({ visible, onCancel, onConfirm, userId }) => {
             autoSize={{ minRows: 3, maxRows: 5 }}
           />
         </Form.Item>
+
+        <Form.Item
+          // label="Copy from your profile"
+          name="copyFromProfile"
+          rules={[]}
+          valuePropName="checked"
+        >
+          <Checkbox>Copy data from your profile</Checkbox>
+        </Form.Item>
+
         <Form.Item>
           <Button
             type="primary"
@@ -183,10 +195,15 @@ const ResumeItem = ({ resume }) => {
 
     setState((prev) => ({ ...prev, loading: true }));
     // The data blob contains resume in html format
-    let data = await downloadStorageContent(gsRef);
-    // Convert blob to url
-    let imgURL = URL.createObjectURL(data);
-    setState((prev) => ({ ...prev, loading: false, imgURL: imgURL }));
+    try {
+      let data = await downloadStorageContent(gsRef);
+      // Convert blob to url
+      let imgURL = URL.createObjectURL(data);
+      setState((prev) => ({ ...prev, loading: false, imgURL: imgURL }));
+    } catch (err) {
+      console.log(err);
+      setState((prev) => ({ ...prev, loading: false }));
+    }
   };
 
   const downloadResume = async (e) => {
@@ -215,11 +232,15 @@ const ResumeItem = ({ resume }) => {
                 //   <Spin></Spin>
                 <Skeleton.Image
                   active={true}
-                  style={{ width: "100%", borderRadius: "8px" }}
+                  style={{ width: "100%", borderRadius: "8px", height: "200px" }}
+                ></Skeleton.Image>
+              ) : !state.loading && !state.imgURL ? (
+                <Skeleton.Image
+                  style={{ width: "100%", borderRadius: "8px", height: "200px" }}
                 ></Skeleton.Image>
               ) : (
                 <img
-                  style={{ width: "100%", borderRadius: "8px" }}
+                  style={{ width: "100%", borderRadius: "8px", height: "200px" }}
                   src={state.imgURL}
                 ></img>
               )}
@@ -288,7 +309,8 @@ const Resume = () => {
   useEffect(() => {
     const q = query(
       collection(db, "resumes"),
-      and(where("userId", "==", auth.user.uid), where("deleted", "!=", true))
+      and(where("userId", "==", auth.user.uid), where("deleted", "==", false)), 
+      orderBy("createdAt", "desc")
     );
     const unsub = onSnapshot(q, (querySnapshot) => {
       const resumes = [];

@@ -17,7 +17,6 @@ import FormLabel from "../../../components/labelWithActions";
 import { useOpenAI } from "../../../utils";
 
 const FormLabelWithAIActions = ({ resumeId, description, onAdd }) => {
-  console.log("resumeId", description);
   // AI Actions helper
   const [state, setState] = useState({
     modalVisible: false,
@@ -56,7 +55,6 @@ const FormLabelWithAIActions = ({ resumeId, description, onAdd }) => {
     onModalClose();
   };
 
-  console.log("openai.loading", openai.loading);
   return (
     <>
       <Modal

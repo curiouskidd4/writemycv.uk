@@ -23,6 +23,7 @@ import { useDoc, useMutateDoc } from "../../../../firestoreHooks";
 import { ExperienceForm } from "../../../profile/forms/experience";
 import dayjs from "dayjs";
 import { Timestamp } from "firebase/firestore";
+import { OpenAIContext } from "../../../../customContext";
 
 const DetailForm = ({ resumeId }) => {
   const auth = useAuth();
@@ -148,57 +149,68 @@ const DetailForm = ({ resumeId }) => {
 
   return (
     <div>
-      <div style={{ height: "80vh", overflowY: "auto" }}>
-        {!state.loaded ? <Skeleton /> : null}
-        {state.loaded ? (
-          <>
-            {" "}
-            <Typography.Title level={5}>Personal Info</Typography.Title>
-            <PersonalInfoForm
-              onFinish={(data) => {
-                handleChange("personalInfo", data);
-              }}
-              initialValues={state.resumeData.personalInfo || {}}
-            />
-            <Typography.Title level={5}>Education</Typography.Title>
-            <EducationForm
-              onFinish={(data) => {
-                handleChange("educationList", data.educationList);
-              }}
-              initialValues={
-                changeEducationInitVal(state.resumeData.educationList) || []
-              }
-            />
-            <Typography.Title level={5}>Experience</Typography.Title>
-            <ExperienceForm
-              onFinish={(data) => {
-                handleChange("experienceList", data.experienceList);
-              }}
-              initialValues={
-                changeExperienceInitVal(state.resumeData.experienceList) || []
-              }
-            />
-            <Typography.Title level={5}>Skills</Typography.Title>
-            <SkillForm
-              onFinish={(data) => {
-                handleChange("skillList", data.skillList);
-              }}
-              initialValues={state.resumeData.skillList || []}
-            />
-            <Typography.Title level={5}>Professional Summary</Typography.Title>
-            <ProfessionalSummaryForm
-              onFinish={(data) => {
-                handleChange("professionalSummary", data.professionalSummary);
-              }}
-              initialValues={
-                { professionalSummary: state.resumeData.professionalSummary } ||
-                {}
-              }
-              resumeId={resumeId}
-            />
-          </>
-        ) : null}
-      </div>
+      <OpenAIContext.Provider
+        value={{
+          role: state.resumeData?.personalInfo?.currentRole,
+        }}
+      >
+        <div
+          style={{ height: "80vh", overflowY: "auto", padding: "0rem 0.5rem" }}
+        >
+          {!state.loaded ? <Skeleton /> : null}
+          {state.loaded ? (
+            <>
+              {" "}
+              <Typography.Title level={5}>Personal Info</Typography.Title>
+              <PersonalInfoForm
+                onFinish={(data) => {
+                  handleChange("personalInfo", data);
+                }}
+                initialValues={state.resumeData.personalInfo || {}}
+              />
+              <Typography.Title level={5}>Education</Typography.Title>
+              <EducationForm
+                onFinish={(data) => {
+                  handleChange("educationList", data.educationList);
+                }}
+                initialValues={
+                  changeEducationInitVal(state.resumeData.educationList) || []
+                }
+              />
+              <Typography.Title level={5}>Experience</Typography.Title>
+              <ExperienceForm
+                onFinish={(data) => {
+                  handleChange("experienceList", data.experienceList);
+                }}
+                initialValues={
+                  changeExperienceInitVal(state.resumeData.experienceList) || []
+                }
+              />
+              <Typography.Title level={5}>Skills</Typography.Title>
+              <SkillForm
+                onFinish={(data) => {
+                  handleChange("skillList", data.skillList);
+                }}
+                initialValues={state.resumeData.skillList || []}
+              />
+              <Typography.Title level={5}>
+                Professional Summary
+              </Typography.Title>
+              <ProfessionalSummaryForm
+                onFinish={(data) => {
+                  handleChange("professionalSummary", data.professionalSummary);
+                }}
+                initialValues={
+                  {
+                    professionalSummary: state.resumeData.professionalSummary,
+                  } || {}
+                }
+                resumeId={resumeId}
+              />
+            </>
+          ) : null}
+        </div>
+      </OpenAIContext.Provider>
     </div>
   );
 };

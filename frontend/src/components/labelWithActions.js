@@ -7,7 +7,7 @@ const FormLabel = ({ action, label, required }) => {
     //   {props.children}
     // </div>
 
-    <div class="ant-col ant-form-item-label css-dev-only-do-not-override-br2ai6" style={{
+    <div className="ant-col ant-form-item-label css-dev-only-do-not-override-br2ai6" style={{
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
@@ -15,7 +15,7 @@ const FormLabel = ({ action, label, required }) => {
     }}>
       {label? <label
         // for="experienceList_3_description"
-        class={required?  "ant-form-item-required": "ant-form-item"}
+        className={required?  "ant-form-item-required": "ant-form-item"}
         title={label}
       >
         {label}

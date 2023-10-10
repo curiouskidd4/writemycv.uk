@@ -52,7 +52,7 @@ const FormLabelWithAIActions = ({
     openai.getExperienceSummary({
       experienceRole: jobTitle,
       experienceOrg: employerName,
-      role: "machine learning engineer",
+      // role: "machine learning engineer",
       existingSummary: description,
     });
   };
@@ -62,7 +62,7 @@ const FormLabelWithAIActions = ({
     openai.getExperienceSummary({
       experienceRole: jobTitle,
       experienceOrg: employerName,
-      role: "machine learning engineer",
+      // role: "machine learning engineer",
       existingSummary: description,
       rewrite: {
         enabled: true,
@@ -398,17 +398,15 @@ const SingleEducationForm = ({ field, form, remove, resetEditIndex }) => {
             {...field}
             name={[field.name, "achievements"]}
             fieldKey={[field.fieldKey, "achievements"]}
-            rules={[
-            ]}
+            rules={[]}
           >
-          <Achievements jobTitle={
-            form.getFieldValue([
-              "experienceList",
-              field.name,
-              "position",
-            ])
-          }
-           />
+            <Achievements
+              jobTitle={form.getFieldValue([
+                "experienceList",
+                field.name,
+                "position",
+              ])}
+            />
           </Form.Item>
         </Col>
       </Row>
@@ -516,64 +514,49 @@ const ExperienceForm_ = ({ form, fields, add, remove, move }) => {
                         ref={provided.innerRef}
                         {...provided.draggableProps}
                       >
-                        <HolderOutlined
-                          style={{
-                            display:
-                              state.hoverItemIdx == index ? "flex" : "none",
-                          }}
-                          className="hover-outlined-button"
-                          {...provided.dragHandleProps}
-                        />
                         <div key={index} className="education-form">
-                          <Row
-                            // style={{ marginBottom: 8 }}
-                            align="middle"
-                          >
+                          <Row align="middle">
                             <div
                               style={{ color: "grey", marginBottom: ".5rem" }}
                             >
-                              {/* <div
-                                style={{
-                                  display: "inline-block",
-                                  width: "1rem",
-                                }}
-                              >
-                                <HolderOutlined
-                                  style={{
-                                    display:
-                                      state.hoverItemIdx == index
-                                        ? "inline-block"
-                                        : "none",
-                                  }}
-                                  {...provided.dragHandleProps}
-                                />
-                              </div> */}
                               <span>Experience #{index + 1}</span>
                             </div>
-
-                            <Button
-                              type="link"
-                              style={{ marginLeft: "auto" }}
-                              onClick={() => {
-                                if (state.updateItemIdx == index) {
-                                  setState((prev) => ({
-                                    ...prev,
-                                    updateItemIdx: null,
-                                  }));
-                                } else {
-                                  setState((prev) => ({
-                                    ...prev,
-                                    updateItemIdx: index,
-                                  }));
-                                }
-                              }}
+                            <div
+                              style={{ marginLeft: "auto", display: "flex" }}
                             >
-                              {index == state.updateItemIdx ? (
-                                <UpOutlined />
-                              ) : (
-                                <DownOutlined />
-                              )}
-                            </Button>
+                              <HolderOutlined
+                                style={{
+                                  display:
+                                    state.hoverItemIdx == index
+                                      ? "flex"
+                                      : "none",
+                                }}
+                                className="hover-outlined-button"
+                                {...provided.dragHandleProps}
+                              />
+                              <Button
+                                type="link"
+                                onClick={() => {
+                                  if (state.updateItemIdx == index) {
+                                    setState((prev) => ({
+                                      ...prev,
+                                      updateItemIdx: null,
+                                    }));
+                                  } else {
+                                    setState((prev) => ({
+                                      ...prev,
+                                      updateItemIdx: index,
+                                    }));
+                                  }
+                                }}
+                              >
+                                {index == state.updateItemIdx ? (
+                                  <UpOutlined />
+                                ) : (
+                                  <DownOutlined />
+                                )}
+                              </Button>
+                            </div>
                           </Row>
                           {/* <Row key={field.key} style={{ marginBottom: 8 }} align="middle"> */}
                           {index == state.updateItemIdx ? (
@@ -639,6 +622,20 @@ const ExperienceForm_ = ({ form, fields, add, remove, move }) => {
 
 const ExperienceForm = ({ onFinish, initialValues, isLoading }) => {
   const [form] = Form.useForm();
+
+  const onFinish_ = (values) => {
+    // Make sure to replace undefined with null values 
+    // so that firestore doesn't throw error
+
+    let newValues = values.experienceList.map((item) => {
+      let newItem = { ...item };
+      newItem.location = newItem.location || null;
+      return newItem;
+    }
+    );
+    onFinish({ experienceList: newValues });
+  }
+
   return (
     <Form
       form={form}

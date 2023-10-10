@@ -57,7 +57,7 @@ const useProvideAuth = () => {
     const userRef = doc(db, "users", user.uid);
     let firstName = user.displayName.split(" ")[0];
     let lastName = user.displayName.split(" ")[1];
-    const userDoc = await getDoc(userRef)
+    const userDoc = await getDoc(userRef);
     if (userDoc.exists()) {
       console.log("user exists");
       return;
@@ -139,8 +139,17 @@ const useProvideAuth = () => {
     });
   };
 
-  const logout = () => {
-    return auth.signOut();
+  const logout = async () => {
+    try {
+      await auth.signOut();
+      setIsAuthenticated(false);
+      setUser(null);
+      setIsProfileComplete(false);
+      setIsEmailVerified(false);
+      setAuthToken(null);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   // return

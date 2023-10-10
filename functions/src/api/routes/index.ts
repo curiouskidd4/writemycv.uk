@@ -1,3 +1,4 @@
 import openaiRoutes from './openai';
-
-export { openaiRoutes };
+import stripeRoutes from './stripe';
+import stripeWebhookRoutes from './stripeWebhook';
+export { openaiRoutes, stripeRoutes, stripeWebhookRoutes };

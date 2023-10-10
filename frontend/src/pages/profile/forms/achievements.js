@@ -99,7 +99,6 @@ const Achievements = ({ jobTitle, description, value, onChange }) => {
     });
   };
 
-  console.log("themeDescription.loading", themeDescription.loading);
   return (
     <>
       <Modal

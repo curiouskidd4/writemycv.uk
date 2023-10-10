@@ -43,7 +43,6 @@ const SignInForm = (props) => {
         updateLoading(false);
       })
       .catch((err) => {
-        debugger
         openNotification(
           "error",
           "Login Failed",

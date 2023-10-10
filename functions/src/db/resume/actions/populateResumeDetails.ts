@@ -9,6 +9,7 @@ import { db } from "../../../utils/firebase";
 
 const populateResumeDetails = async (resumeId: string, userId: string) => {
   try {
+    console.log("Populating resume details")
     // Get all the experiences
     const experiences = await db.collection("experience").doc(userId).get();
     const experiencesData = experiences.data() as ExperienceInput;

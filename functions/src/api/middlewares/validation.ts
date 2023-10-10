@@ -80,7 +80,9 @@ const validateFirebaseIdToken = async (
   next: NextFunction
 ) => {
 
-  const excludedRoutes: string[] = [];
+  const excludedRoutes: string[] = [
+    '/stripe/webhook',
+  ];
 
   if (excludedRoutes.includes(req.path)) {
     // Exclude the route from authentication
@@ -113,7 +115,6 @@ const validateFirebaseIdToken = async (
     functions.logger.log('Found "Authorization" header');
     // Read the ID Token from the Authorization header.
     idToken = req.headers.authorization.split("Bearer ")[1];
-    console.log("idToken", idToken);
   } else if (req.cookies) {
     functions.logger.log('Found "__session" cookie');
     // Read the ID Token from cookie.

@@ -3,11 +3,12 @@ import { db } from "../../../utils/firebase";
 import nunjucks from "nunjucks";
 import puppeteer from "puppeteer";
 import { Resume } from "../../../types/resume";
+import hash from "object-hash";
 
 let PATH_TO_TEMPLATE = "data/resume-templates";
 
-nunjucks.configure([PATH_TO_TEMPLATE], { autoescape: true });
 
+nunjucks.configure([PATH_TO_TEMPLATE], { autoescape: true });
 
 const getResume = async (resumeId: string) => {
   // Get resume details
@@ -55,8 +56,6 @@ const generatePdfnScreenShot = async (
   const pdfFile = bucket.file(pdfPath);
   const screenshotFile = bucket.file(screenshotPath);
 
-  
-  
   await pdfFile.save(pdf);
   await screenshotFile.save(screenshot);
   await browser.close();
@@ -65,8 +64,25 @@ const generatePdfnScreenShot = async (
 const exportResume = async (resumeId: string, userId: string) => {
   try {
     const resumeData = await getResume(resumeId);
-    // console.log(resumeData);
-    if (resumeData) {
+
+    // Compute hash of relevant data to check if resume needs to be exported
+
+    let relevantData = {
+      experienceList: resumeData.experienceList,
+      educationList: resumeData.educationList,
+      skillList: resumeData.skillList,
+      professionalSummary: resumeData.professionalSummary,
+      sectionOrder: resumeData.sectionOrder,
+    };
+
+    // Compute hash of relevant data
+    const relevantDataHash = hash(relevantData);
+    let resumeHash = resumeData.exportHash || "";
+    let newHash = hash(relevantDataHash);
+
+    // If hash has changed, then export resume
+    // console.log(resumeData); 
+    if (resumeData && newHash != resumeHash) {
       const resumeTemplate = "simple/resume";
       let experienceList = resumeData.experienceList?.map((experience) => {
         // Convert start date and end date to "MMM YYYY" format
@@ -111,6 +127,12 @@ const exportResume = async (resumeId: string, userId: string) => {
               : endDate,
         };
       });
+      const sectionOrder = resumeData.sectionOrder || [
+        "professionalSummary",
+        "education",
+        "experience",
+        "skills",
+      ];
 
       const resumeTemplateHtml = nunjucks.render(`${resumeTemplate}.njk`, {
         ...resumeData,
@@ -126,6 +148,13 @@ const exportResume = async (resumeId: string, userId: string) => {
       await htmlFile.save(resumeTemplateHtml);
 
       await generatePdfnScreenShot(resumeTemplateHtml, userId, resumeId);
+
+      // Update the resume export date in firestore
+
+      await db.collection("resumes").doc(resumeId).update({
+        // exportDate: new Date(),
+        exportHash: newHash,
+      });
     }
   } catch (error) {
     console.log(error);

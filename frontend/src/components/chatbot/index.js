@@ -15,7 +15,6 @@ import {
 } from "antd";
 import { useQuery, useMutation, useQueryClient } from "react-query";
 // import Search from "./containers/search";
-import createPersistedState from "use-persisted-state";
 // import DownloadSupplierTable from ".//containers/downloadTableSupplier";
 // import AssignSupplier from "./containers/assignSupplier";
 import { MoreOutlined, SendOutlined, LoadingOutlined } from "@ant-design/icons";
@@ -26,11 +25,10 @@ import getWebsocket from "./websocket";
 import { FirebaseUserContext } from "../../customContext";
 import { useAuth } from "../../authContext";
 import "./index.css";
-const persistedState = createPersistedState("chatbotState");
 
 const ChatBot = (props) => {
   const { authToken } = useAuth();
-  const [state, setState] = persistedState({});
+  const [state, setState] = useState({});
   // const SessionService = ChatbotSession;
   const [messages, setMessages] = useState([]);
   const firebaseUser = useContext(FirebaseUserContext);

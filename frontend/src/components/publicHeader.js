@@ -27,7 +27,6 @@ import {
   useNavigate,
 } from "react-router-dom";
 import { MenuOutlined } from "@ant-design/icons";
-import createPersistedState from "use-persisted-state";
 
 const { Header, Content, Footer, Sider } = Layout;
 const { useBreakpoint } = Grid;
@@ -55,7 +54,7 @@ const PublicHeader = () => {
   return (
     <Header className="public-header">
       <Row style={{ maxWidth: "1200px", margin: "0px auto" }} align="middle">
-        <Col span={4} className="logo">
+        <Col span={8} className="logo">
           {/* <img
             // src="/logo.png"
             alt="Resu.me | Logo"
@@ -63,17 +62,19 @@ const PublicHeader = () => {
           /> */}
           <Typography.Title level={3} >Resu.me</Typography.Title>
         </Col>
-        <Col span={20}>
+        <Col span={16}>
           <div style={{ float: "right" }} className="nav-menu">
             <Space>
               <Button
                 // size="large"
+                type="link"
                 onClick={() => navigate("/signin")}
               >
                 Sign In
               </Button>
               <Button
-                type="primary"
+                type="link"
+
                 // size="large"
                 onClick={() => navigate("/signup")}
               >

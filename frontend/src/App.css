@@ -459,3 +459,20 @@ select {
   height: 100%;
   width: 100%;
 }
+
+
+.form-tip-section{
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.form-error-section {
+  height: 1.5rem;
+}
+
+.ant-skeleton {
+  width: 100% !important;
+}
+.ant-skeleton-image {
+  width: 100% !important;
+}

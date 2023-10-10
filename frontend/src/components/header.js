@@ -27,20 +27,10 @@ import {
   useNavigate,
 } from "react-router-dom";
 import { MenuOutlined, UserOutlined } from "@ant-design/icons";
-import createPersistedState from "use-persisted-state";
 import { useAuth } from "../authContext";
 
 const { Header, Content, Footer, Sider } = Layout;
 const { useBreakpoint } = Grid;
-
-function getItem(label, key, icon, children) {
-  return {
-    key,
-    icon,
-    children,
-    label,
-  };
-}
 
 const CustomHeader = () => {
   const screens = useBreakpoint();
@@ -51,18 +41,21 @@ const CustomHeader = () => {
   //   console.log("location", location);
   const logout = () => {
     auth.logout();
-    navigate("/");
-    window.location.reload();
+    navigate("");
   };
   return (
-    <Header className="header" style={{ background: "#ffffff00", }}>
-      <Row style={{ maxWidth: "1200px", margin: "0px auto",  borderBottom: "1px solid #B9B4C7" }}>
-        <Col span={4} style={{ margin: "auto" }} className="logo">
-          <Typography.Title level={3} >
-            Resu.me
-          </Typography.Title>
+    <Header className="header" style={{ background: "#ffffff00" }}>
+      <Row
+        style={{
+          maxWidth: "1200px",
+          margin: "0px auto",
+          borderBottom: "1px solid #B9B4C7",
+        }}
+      >
+        <Col span={8} style={{ margin: "auto" }} className="logo">
+          <Typography.Title level={3}>Resu.me</Typography.Title>
         </Col>
-        <Col span={20}>
+        <Col span={16}>
           <div style={{ float: "right" }} className="nav-menu">
             <Button
               onClick={() => navigate("/resumes")}
@@ -72,15 +65,11 @@ const CustomHeader = () => {
             </Button>
             <Button
               onClick={() => navigate("/profile")}
-              type={
-                location.pathname.match(/\/profile/) ? "link" : "text"
-              }
+              type={location.pathname.match(/\/profile/) ? "link" : "text"}
             >
               Your Profile
             </Button>
-            
-            
-            
+
             <Popover
               content={
                 <div className="popover-content" style={{ width: "100px" }}>
@@ -91,13 +80,10 @@ const CustomHeader = () => {
                     <Button onClick={() => navigate("/account")} type="link">
                       Account Settings
                     </Button>
-                    <Button
-                      onClick={() => navigate("/subscription")}
-                      type="link"
-                    >
+                    <Button onClick={() => navigate("/faq")} type="link">
                       FAQ
                     </Button>
-                    {auth.user.is_superuser && (
+                    {auth.user?.is_superuser && (
                       <Button
                         onClick={() => navigate("/superadmin")}
                         type="link"
@@ -137,10 +123,9 @@ const CustomHeader = () => {
                     </Button>
                     <Button
                       onClick={() => navigate("/profile")}
+                      
                       type={
-                        location.pathname.match(/\/profile/)
-                          ? "link"
-                          : "text"
+                        location.pathname.match(/\/profile/) ? "link" : "text"
                       }
                     >
                       Profile
@@ -153,7 +138,7 @@ const CustomHeader = () => {
                       FAQs
                     </Button>
 
-                    <Button onClick={logout} type="text">
+                    <Button onClick={logout} type="link">
                       Logout
                     </Button>
                   </Space>

@@ -1,12 +1,14 @@
 import axios from "axios";
 import { useState } from "react";
 import { useAuth } from "../authContext";
+import { useOpenAIContext } from "../customContext";
 
 const BASE_URL =
-  process.env.BASE_URL || "http://127.0.0.1:5001/resu-me-a5cff/us-central1";
+  process.env.REACT_APP_BASE_URL || "http://127.0.0.1:5001/resu-me-a5cff/us-central1";
 
 const useOpenAI = () => {
   const auth = useAuth();
+  const openaiContext = useOpenAIContext();
   const [loading, setLoading] = useState(false);
 
   const [data, setData] = useState(null);
@@ -14,6 +16,7 @@ const useOpenAI = () => {
   const [error, setError] = useState("");
 
   const getEducationSummary = async (data) => {
+    data = {...openaiContext, ...data, };
     setLoading(true);
     try {
       const token = await auth.user.getIdToken();
@@ -35,6 +38,8 @@ const useOpenAI = () => {
   };
 
   const getEducationCoursesSuggestion = async (data) => {
+    data = {...openaiContext, ...data, };
+
     setLoading(true);
     try {
       const token = await auth.user.getIdToken();
@@ -56,6 +61,8 @@ const useOpenAI = () => {
   };
 
   const getExperienceSummary = async (data) => {
+    data = {...openaiContext, ...data, };
+
     setLoading(true);
     try {
       const token = await auth.user.getIdToken();
@@ -78,6 +85,8 @@ const useOpenAI = () => {
   };
 
   const getProfessionalSummary = async (data) => {
+    data = {...openaiContext, ...data, };
+
     setLoading(true);
     try {
       const token = await auth.user.getIdToken();
@@ -100,6 +109,9 @@ const useOpenAI = () => {
   };
 
   const getSkills = async (data) => {
+    debugger
+    data = {...openaiContext, ...data, };
+
     setLoading(true);
     try {
       const token = await auth.user.getIdToken();
@@ -122,6 +134,8 @@ const useOpenAI = () => {
   };
 
   const getEducationCourses = async (data) => {
+    data = {...openaiContext, ...data, };
+
     setLoading(true);
     try {
       const token = await auth.user.getIdToken();
@@ -144,6 +158,8 @@ const useOpenAI = () => {
   };
 
   const getExperienceAchivements = async (data) => {
+    data = {...openaiContext, ...data, };
+
     setLoading(true);
     try {
       const token = await auth.user.getIdToken();
@@ -166,6 +182,8 @@ const useOpenAI = () => {
   };
 
   const getThemeSuggestions = async (data) => {
+    data = {...openaiContext, ...data, };
+
     setLoading(true);
     try {
       const token = await auth.user.getIdToken();
@@ -188,10 +206,11 @@ const useOpenAI = () => {
   };
 
   const getThemeDescription = async (data) => {
+    data = {...openaiContext, ...data, };
+
     setLoading(true);
     try {
       const token = await auth.user.getIdToken();
-      console.log("lllll1", loading);
 
       const response = await axios.post(
         `${BASE_URL}/api/openai/themeDescription`,
@@ -202,7 +221,6 @@ const useOpenAI = () => {
           },
         }
       );
-      console.log("lllll2", loading);
 
       setData(response.data?.result);
       setLoading(false);

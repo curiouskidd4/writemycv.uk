@@ -15,6 +15,7 @@ service cloud.firestore {
 
     // Only user with matching uid can read or write to resume collection, uid is in the document
     match /resumes/{resumeId} {
+      allow create: if request.auth.uid == request.resource.data.userId;
       allow read, write: if request.auth.uid == resource.data.userId;
     }
 

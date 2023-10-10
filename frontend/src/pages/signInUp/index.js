@@ -17,9 +17,6 @@ const LoginSignupPage = ({ isSignup }) => {
   const login = async (username, password) => {
     try {
       let res = await auth.loginWithEmail(username, password);
-      debugger;
-      navigate("/standards", { replace: true });
-      window.location.reload();
     } catch (error) {
       debugger;
       throw error;
@@ -68,11 +65,14 @@ const LoginSignupPage = ({ isSignup }) => {
               src="/undraw_online_cv_re_gn0a.svg"
               style={{ width: "100%", padding: "1rem" }}
             />
-            <Typography.Title level={3}  style={{
-              textAlign: "center",
-              fontWeight: 600,
-              color: "#5C5470",
-            }}>
+            <Typography.Title
+              level={3}
+              style={{
+                textAlign: "center",
+                fontWeight: 600,
+                color: "#5C5470",
+              }}
+            >
               "Crafted by AI, Tailored for Success."
             </Typography.Title>
           </Col>
