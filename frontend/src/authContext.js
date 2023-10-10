@@ -60,6 +60,24 @@ const useProvideAuth = () => {
     const userDoc = await getDoc(userRef);
     if (userDoc.exists()) {
       console.log("user exists");
+      let userData = userDoc.data();
+      if (userData.profileComplete) {
+        setIsProfileComplete(true);
+      }
+
+      let res = window.pendo.initialize({
+        visitor: {
+          id: userData.firebaseId,
+          email: userData.email,
+          full_name: userData.firstName + " " + userData.lastName,
+        },
+
+        account: {
+          id: userData.firebaseId,
+          name: userData.firstName + " " + userData.lastName,
+          is_paying: false,
+        },
+      });
       return;
     }
 
