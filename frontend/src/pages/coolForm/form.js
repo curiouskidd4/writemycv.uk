@@ -16,7 +16,7 @@ const QuestionInput = ({ questionItem, isFirst, onDone }) => {
     "enter",
     () => {
       if (state.status != "error" && (state.value || questionItem.isOptional)) {
-        onDone();
+        onDone(state.value);
       }
     },
     {
@@ -131,7 +131,7 @@ const QuestionInput = ({ questionItem, isFirst, onDone }) => {
         <Button
           type="primary"
           size="large"
-          onClick={onDone}
+          onClick={() => onDone(state.value)}
           disabled={nextDisabled}
         >
           Next
@@ -152,13 +152,15 @@ const QuestionInput = ({ questionItem, isFirst, onDone }) => {
   );
 };
 
-const CoolForm = ({ questions, onChange, finalScreen, goToStart }) => {
+const CoolForm = ({ questions, onChange, finalScreen, goToStart, setCurrentQuestionIdx }) => {
 
   const [state, setState] = useState({
     answers: questions.map((item) => ({
       id: item.id,
       question: item.question,
       answer: null,
+      dataKey: item.dataKey,
+      type: item.type,
     })),
     isComplete: false,
   });
@@ -182,6 +184,9 @@ const CoolForm = ({ questions, onChange, finalScreen, goToStart }) => {
       }));
     } else {
       setCurrentQuestion(currentQuestion + 1);
+      if (setCurrentQuestionIdx!=undefined){
+        setCurrentQuestionIdx(currentQuestion + 1);
+      } 
     }
   };
 

@@ -117,6 +117,103 @@ const ProfileDetails = ({ user, firestoreUser }) => {
   );
 };
 
+const ChangePassword = ({ user }) => {
+  const [loading, setLoading] = useState(false);
+  const [form] = Form.useForm();
+  const auth = useAuth();
+
+  const onFinish = async (values) => {
+    // Check if new password and confirm new password match
+    if (values.newPassword != values.confirmNewPassword) {
+      message.error("Passwords do not match");
+      return;
+    }
+    setLoading(true);
+    try {
+      await auth.reautheticate(values.currentPassword);
+      await auth.resetPassword(values.newPassword);
+      form.resetFields();
+      message.success("Password updated successfully");
+    } catch (err) {
+      debugger;
+      message.error("Error updating password");
+    }
+    setLoading(false);
+  };
+
+  return (
+    <div>
+      <Form form={form} layout="vertical" onFinish={onFinish}>
+        <Row
+          wrap
+          style={{
+            width: "100%",
+          }}
+          gutter={[12, 12]}
+        >
+          <Col xs={24} sm={24} md={12}>
+            <Form.Item
+              label="Current Password"
+              name="currentPassword"
+              rules={[
+                {
+                  required: true,
+                  message: "Please enter your current password",
+                },
+              ]}
+            >
+              <Input.Password />
+            </Form.Item>
+          </Col>
+          <Col xs={24} sm={24} md={12}>
+            <Form.Item
+              label="New Password"
+              name="newPassword"
+              rules={[
+                {
+                  required: true,
+                  message: "Please enter your new password",
+                },
+              ]}
+            >
+              <Input.Password />
+            </Form.Item>
+          </Col>
+          <Col xs={24} sm={24} md={12}>
+            <Form.Item
+              label="Confirm New Password"
+              name="confirmNewPassword"
+              rules={[
+                {
+                  required: true,
+                  message: "Please confirm your new password",
+                },
+                // Match passwords
+                ({ getFieldValue }) => ({
+                  validator(_, value) {
+                    if (!value || getFieldValue("newPassword") === value) {
+                      return Promise.resolve();
+                    }
+                    return Promise.reject(new Error("Passwords do not match"));
+                  },
+                }),
+              ]}
+            >
+              <Input.Password />
+            </Form.Item>
+          </Col>
+        </Row>
+
+        <Form.Item>
+          <Button htmlType="submit" loading={loading}>
+            Save
+          </Button>
+        </Form.Item>
+      </Form>
+    </div>
+  );
+};
+
 const DeleteConfirmModal = ({ visible, onOk, onCancel, email, user }) => {
   const [state, setState] = useState({
     email: "",
@@ -342,6 +439,24 @@ const AccountSettings = () => {
             </div>
             <Card>
               <ProfileDetails user={user} firestoreUser={firestoreUser.data} />
+            </Card>
+          </div>
+          <div
+            style={{
+              marginBottom: "1.5rem",
+            }}
+          >
+            <div
+              style={{
+                marginBottom: "0.5rem",
+              }}
+            >
+              <Typography.Text type="secondary">
+                Change Password
+              </Typography.Text>
+            </div>
+            <Card>
+              <ChangePassword user={user} firestoreUser={firestoreUser.data} />
             </Card>
           </div>
           <div>

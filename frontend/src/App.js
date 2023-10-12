@@ -59,6 +59,9 @@ import FAQs from "./pages/faqs";
 import Upgrade from "./pages/upgrade";
 import UpgradeSuccess from "./pages/upgrade/success";
 import UpgradeCancel from "./pages/upgrade/cancel";
+import CustomerOnboarding from "./pages/onboarding";
+import EmailVerification from "./pages/account/emailVerification";
+import ForgotPassword from "./pages/signInUp/forgotPassword";
 // import LabelHome from "./pages/others/label";
 // import LabelTaskPage from "./pages/labelTask";
 // import { PubmedDataItems } from "./services/dataService";
@@ -133,19 +136,19 @@ const protectedRouter = createBrowserRouter([
 
       {
         path: "faq",
-        element: <FAQs/>,
+        element: <FAQs />,
       },
       {
         path: "upgrade",
-        element: <Upgrade/>,
+        element: <Upgrade />,
       },
       {
         path: "upgrade/success",
-        element: <UpgradeSuccess/>,
+        element: <UpgradeSuccess />,
       },
       {
         path: "upgrade/cancel",
-        element: <UpgradeCancel/>,
+        element: <UpgradeCancel />,
       },
       {
         path: "account",
@@ -210,6 +213,14 @@ const baseRouter = createBrowserRouter([
           </div>
         ),
       },
+      {
+        path: "forgot-password",
+        element: (
+          <div>
+            <ForgotPassword isSignup={true} />
+          </div>
+        ),
+      },
       // {
       //   path: "forgot-password",
       //   element: (
@@ -271,14 +282,25 @@ const BaseApp = () => {
         </div>
       ) : (
         <>
-          {auth.isAuthenticated && auth.user ? (
-            <>
-              {/* <CustomHeader /> */}
-              <RouterProvider router={protectedRouter} />
-            </>
-          ) : (
-            <RouterProvider router={baseRouter} />
-          )}
+          {auth.isAuthenticated &&
+            auth.user &&
+            (auth.isProfileComplete && auth.isEmailVerified ? (
+              <>
+                <RouterProvider router={protectedRouter} />
+              </>
+            ) : !auth.isEmailVerified ? (
+              <>
+                <EmailVerification />
+              </>
+            ) : !auth.isProfileComplete ? (
+              <CustomerOnboarding />
+            ) : null)
+            }
+            {
+              !auth.isAuthenticated && (
+                <RouterProvider router={baseRouter} />
+              )
+            }
         </>
       )}
     </React.StrictMode>

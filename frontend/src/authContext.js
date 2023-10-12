@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { db, auth } from "./services/firebase";
-import { User } from "firebase/auth";
+import { EmailAuthProvider, User } from "firebase/auth";
 import {
   createUserWithEmailAndPassword,
   sendPasswordResetEmail,
@@ -9,6 +9,8 @@ import {
   sendEmailVerification,
   onAuthStateChanged,
   signInWithEmailAndPassword,
+  updatePassword,
+  reauthenticateWithCredential,
 } from "firebase/auth";
 import { addDoc, collection, doc, getDoc, setDoc } from "firebase/firestore";
 const baseUrl = process.env.REACT_APP_API_URL;
@@ -37,7 +39,6 @@ const useProvideAuth = () => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         user.getIdToken().then((token) => {
-          console.log("token", token);
           setAuthToken(token);
         });
         setUser(user);
@@ -55,8 +56,9 @@ const useProvideAuth = () => {
 
   const saveUserToFirebase = async (user) => {
     const userRef = doc(db, "users", user.uid);
-    let firstName = user.displayName.split(" ")[0];
-    let lastName = user.displayName.split(" ")[1];
+    let firstName = user.displayName?.split(" ")[0];
+    let lastName = user.displayName?.split(" ")[1];
+
     const userDoc = await getDoc(userRef);
     if (userDoc.exists()) {
       console.log("user exists");
@@ -82,8 +84,8 @@ const useProvideAuth = () => {
     }
 
     await setDoc(userRef, {
-      firstName: firstName,
-      lastName: lastName,
+      firstName: firstName || null,
+      lastName: lastName || null,
       username: user.email,
       email: user.email,
       firebaseId: user.uid,
@@ -141,8 +143,16 @@ const useProvideAuth = () => {
     }
   };
 
+  const resetPassword = async (newPassword) => {
+    await updatePassword(auth.currentUser, newPassword);
+  };
+
   const sendVerificationEmail = async (email) => {
     await sendEmailVerification(auth.currentUser);
+  };
+
+  const markProfileCompleted = async () => {
+    setIsProfileComplete(true);
   };
 
   const sendResetPasswordEmail = async (email) => {
@@ -155,6 +165,12 @@ const useProvideAuth = () => {
       displayName: data.first_name + " " + data.last_name,
       photoURL: data.photoURL,
     });
+  };
+
+  const reautheticate = async  (password) => {
+    let user = auth.currentUser;
+    let credential = EmailAuthProvider.credential(user.email, password);
+    return reauthenticateWithCredential(user, credential);
   };
 
   const logout = async () => {
@@ -186,6 +202,9 @@ const useProvideAuth = () => {
     sendVerificationEmail,
     sendResetPasswordEmail,
     updateUserProfie,
+    markProfileCompleted,
+    resetPassword,
+    reautheticate
   };
 };
 
