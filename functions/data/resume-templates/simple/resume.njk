@@ -42,6 +42,9 @@
      html {
         height: 100%;
      }
+     ul {
+          padding-inline-start: 24px;
+     }
       .material-symbols-outlined {
         font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 16;
         font-size: 11px;
@@ -173,7 +176,7 @@
 
     <section class="section professionalSummary">
         <h2 class="section-title">Summary</h2>
-        <p class="section-content">{{ professionalSummary }}</p>
+        <p class="section-content">{{ professionalSummary  | safe }}</p>
     </section>
 
     <section class="section education">
@@ -186,7 +189,7 @@
                     <span class="material-symbols-outlined"> calendar_month</span>Sep
                     {{ school.startDate }} - {{ school.endDate }}
                 </p>
-                <p class="education-description">{{ school.description }}</p>
+                <p class="education-description">{{ school.description | safe  }}</p>
             </div>
         {% endfor %}
     </section>
@@ -200,7 +203,7 @@
                     <span class="material-symbols-outlined"> calendar_month</span>Mar
                     {{ job.startDate }} to {{ job.endDate }}
                 </p>
-                <p class="experience-description">{{ job.description }}</p>
+                <p class="experience-description">{{ job.description | safe  }}</p>
             </div>
         {% endfor %}
     </section>

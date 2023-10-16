@@ -7,7 +7,7 @@ export const PhoneInput = ({ value, onChange, size, ...props }) => {
   const onPhoneChange = (e) => {
     if (!onChange) return;
     onChange({
-      countryCode: value?.countryCode,
+      countryCode: value?.countryCode || "+44",
       number: e?.target?.value,
     });
   };
@@ -15,7 +15,7 @@ export const PhoneInput = ({ value, onChange, size, ...props }) => {
   const onSelectCountryCode = (e) => {
     if (!onChange) return;
     onChange({
-      countryCode: e,
+      countryCode: e || "+44",
       number: value?.number,
     });
   };
@@ -29,7 +29,8 @@ export const PhoneInput = ({ value, onChange, size, ...props }) => {
         }
         showSearch
         style={{ width: "100px" }}
-        value={value?.countryCode}
+        defaultValue={value?.countryCode || "+44"}
+        value={value?.countryCode }
         onChange={onSelectCountryCode}
         placeholder="Select Country"
         popupMatchSelectWidth={false}

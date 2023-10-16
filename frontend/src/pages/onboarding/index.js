@@ -31,7 +31,6 @@ const FinalScreen = ({ answers, userId, onProfileSave }) => {
       }
       data[item.dataKey] = answer;
     });
-    debugger
 
     await updateUser.mutate(data);
     updateLoading(false);

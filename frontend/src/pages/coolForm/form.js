@@ -5,11 +5,12 @@ import { PhoneInput } from "./inputs/phoneInput";
 import { BulbOutlined } from "@ant-design/icons";
 import { useHotkeys } from "react-hotkeys-hook";
 
-const QuestionInput = ({ questionItem, isFirst, onDone }) => {
+const QuestionInput = ({ defaultAnswer, questionItem, isFirst, onDone }) => {
   //   const [status, setStatus] = useState(null);
+  let type = questionItem.type;
   const [state, setState] = useState({
     status: null,
-    value: null,
+    value: defaultAnswer?.answer,
     errorMessage: null,
   });
   useHotkeys(
@@ -20,7 +21,7 @@ const QuestionInput = ({ questionItem, isFirst, onDone }) => {
       }
     },
     {
-      enableOnFormTags: true,
+      enableOnFormTags: type == "text" || type == "email" || type == "number",
     },
     [state.status, state.value]
   );
@@ -43,12 +44,14 @@ const QuestionInput = ({ questionItem, isFirst, onDone }) => {
   };
 
   let inputComponentProps = {
-    value: state.value,
+    key: questionItem.id,
+    value: state.value ,
     onChange: onChange,
     status: state.status,
     size: "large",
     autoFocus: true,
   };
+
 
   let nextDisabled =
     state.status == "error" || (!state.value && !questionItem.isOptional);
@@ -75,7 +78,7 @@ const QuestionInput = ({ questionItem, isFirst, onDone }) => {
       </div>
       <div>
         {questionItem.type == "text" && (
-          <Input size="large" {...inputComponentProps} />
+          <Input size="large" {...inputComponentProps}   />
         )}
 
         {questionItem.type == "date" && (
@@ -109,9 +112,8 @@ const QuestionInput = ({ questionItem, isFirst, onDone }) => {
         {questionItem.type == "phone-number" && (
           <PhoneInput {...inputComponentProps} />
         )}
-        {questionItem.type == "custom" && (
-          questionItem.inputFn(inputComponentProps)
-        )}
+        {questionItem.type == "custom" &&
+          questionItem.inputFn(inputComponentProps)}
         {questionItem.type == "options" && (
           <Radio.Group {...inputComponentProps}>
             {questionItem.options.map((item, index) => (
@@ -152,8 +154,15 @@ const QuestionInput = ({ questionItem, isFirst, onDone }) => {
   );
 };
 
-const CoolForm = ({ questions, onChange, finalScreen, goToStart, setCurrentQuestionIdx }) => {
-
+const CoolForm = ({
+  loading,
+  defaultAnswers,
+  questions,
+  onChange,
+  finalScreen,
+  goToStart,
+  setCurrentQuestionIdx,
+}) => {
   const [state, setState] = useState({
     answers: questions.map((item) => ({
       id: item.id,
@@ -184,9 +193,9 @@ const CoolForm = ({ questions, onChange, finalScreen, goToStart, setCurrentQuest
       }));
     } else {
       setCurrentQuestion(currentQuestion + 1);
-      if (setCurrentQuestionIdx!=undefined){
+      if (setCurrentQuestionIdx != undefined) {
         setCurrentQuestionIdx(currentQuestion + 1);
-      } 
+      }
     }
   };
 
@@ -206,27 +215,35 @@ const CoolForm = ({ questions, onChange, finalScreen, goToStart, setCurrentQuest
         overflowY: "auto",
       }}
     >
-      <div
-        style={{
-          margin: "auto auto",
-          width: "100%",
-          maxWidth: "500px",
-        }}
-      >
-        <AnimatePresence>
-          {currentQuestion != null ? (
-            <QuestionInput
-              questionItem={questions[currentQuestion]}
-              key={questions[currentQuestion].id}
-              onDone={saveResponse}
-              isFirst={currentQuestion == 0}
-            />
-          ) : null}
-          {state.isComplete ? (
-            finalScreen({ answers: state.answers, addNew, goToStart })
-          ) : null}
-        </AnimatePresence>
-      </div>
+      {loading ? (
+        <div style={{ margin: "auto auto", textAlign: "center" }}>
+          <Typography.Title level={3}>Loading...</Typography.Title>
+        </div>
+      ) : null}
+      {!loading ? (
+        <div
+          style={{
+            margin: "auto auto",
+            width: "100%",
+            maxWidth: "500px",
+          }}
+        >
+          <AnimatePresence>
+            {currentQuestion != null ? (
+              <QuestionInput
+                defaultAnswer={defaultAnswers? defaultAnswers[currentQuestion]: null}
+                questionItem={questions[currentQuestion]}
+                key={questions[currentQuestion].id}
+                onDone={saveResponse}
+                isFirst={currentQuestion == 0}
+              />
+            ) : null}
+            {state.isComplete
+              ? finalScreen({ answers: state.answers, addNew, goToStart })
+              : null}
+          </AnimatePresence>
+        </div>
+      ) : null}
     </div>
   );
 };

@@ -53,7 +53,7 @@ const ForgotPassword = () => {
               color: "#5C5470",
             }}
           >
-            "Crafted by AI, Tailored for Success."
+            Crafted by AI, Tailored for Success.
           </Typography.Title>
         </Col>
         <Col span={12}>

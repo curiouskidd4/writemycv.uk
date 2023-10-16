@@ -33,6 +33,8 @@ import FormLabel from "../../../components/labelWithActions";
 import { useOpenAI } from "../../../utils";
 import showdown from "showdown";
 import Achievements from "./achievements";
+import CustomDateRange from "../../../components/dateRange";
+import { MagicWandIcon } from "../../../components/faIcons";
 
 const FormLabelWithAIActions = ({
   jobTitle,
@@ -95,9 +97,9 @@ const FormLabelWithAIActions = ({
           <div className="openai-model-content">
             <div className="model-header">
               {" "}
-              <Typography.Title level={4}>Summary</Typography.Title>
+              <Typography.Title level={4}>New Summary</Typography.Title>
               <Typography.Text type="secondary">
-                Click one of following options to add
+                Here are some fresh ideas for summary! Click one of following options to add
               </Typography.Text>
             </div>
 
@@ -140,9 +142,12 @@ const FormLabelWithAIActions = ({
           <div className="openai-model-content">
             <div className="model-header">
               {" "}
-              <Typography.Title level={4}>Rewrite</Typography.Title>
+              <Typography.Title level={4}>
+                Rephrase and Optimise
+              </Typography.Title>
               <Typography.Text type="secondary">
-                Click one of following options to add
+                Let’s make sure your summary is word perfect! Click one of
+                following options to add
               </Typography.Text>
             </div>
 
@@ -221,20 +226,20 @@ const FormLabelWithAIActions = ({
                 <Space direction="vertical">
                   <Typography.Text type="secondary">AI Actions</Typography.Text>
                   <Button type="link" size="small" onClick={handleRewrite}>
-                    Rephrase
+                  Rephrase and Optimise
                   </Button>
                   {/* <Button type="link" size="small">
                     Repharse with Instructions
                   </Button> */}
                   <Button type="link" size="small" onClick={handleGenSummary}>
-                    Generate new summary
+                    Generate New Summary
                   </Button>
                 </Space>
               </div>
             }
           >
             <Button type="link" size="small">
-              AI Actions
+            <MagicWandIcon /> Write with CV Wizard
             </Button>
           </Popover>
         }
@@ -333,7 +338,13 @@ const SingleEducationForm = ({ field, form, remove, resetEditIndex }) => {
               },
             ]}
           >
-            <DatePicker.RangePicker picker="month" allowEmpty={[false, true]} />
+            {/* <DatePicker.RangePicker picker="month" allowEmpty={[false, true]} />
+             */}
+            <CustomDateRange
+              checkBoxText="Currently Working Here"
+              picker="year"
+              allowEmpty={[false, true]}
+            />
           </Form.Item>
         </Col>
         <Col {...colSpan}>
@@ -624,17 +635,16 @@ const ExperienceForm = ({ onFinish, initialValues, isLoading }) => {
   const [form] = Form.useForm();
 
   const onFinish_ = (values) => {
-    // Make sure to replace undefined with null values 
+    // Make sure to replace undefined with null values
     // so that firestore doesn't throw error
 
     let newValues = values.experienceList.map((item) => {
       let newItem = { ...item };
       newItem.location = newItem.location || null;
       return newItem;
-    }
-    );
+    });
     onFinish({ experienceList: newValues });
-  }
+  };
 
   return (
     <Form

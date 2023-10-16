@@ -11,6 +11,7 @@ import {
 } from "antd";
 import { useDoc, useMutateDoc } from "../../../firestoreHooks";
 import { useAuth } from "../../../authContext";
+import { PhoneInput } from "../../coolForm/inputs/phoneInput";
 
 const PersonalInfoForm = ({ onFinish, initialValues, isLoading }) => {
   const [form] = Form.useForm();
@@ -106,12 +107,13 @@ const PersonalInfoForm = ({ onFinish, initialValues, isLoading }) => {
               },
             ]}
           >
-            <Input
+            {/* <Input
               addonBefore="+91"
               style={{
                 width: "100%",
               }}
-            />
+            /> */}
+            <PhoneInput size="medium" />
           </Form.Item>
         </Col>
         {/* </Row>

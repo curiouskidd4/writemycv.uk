@@ -30,6 +30,7 @@ import { useDoc, useMutateDoc } from "../../../firestoreHooks";
 import dayjs from "dayjs";
 import { objectId } from "../../../helpers";
 import { useOpenAI } from "../../../utils";
+import { MagicWandIcon } from "../../../components/faIcons";
 
 const SkillPreview = ({ form, skill, field }) => {
   return (
@@ -357,7 +358,10 @@ const SkillForm = ({ onFinish, initialValues, isLoading }) => {
           {openai.loading && <Spin></Spin>}
           {!openai.loading && (
             <>
-              <Typography.Text type="secondary">Suggestions:</Typography.Text>
+              <Typography.Text type="secondary">
+                {" "}
+                <MagicWandIcon /> CV Wizard Suggestions:
+              </Typography.Text>
 
               {openai.data?.results?.map((skill) => (
                 <Button

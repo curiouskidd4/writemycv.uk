@@ -223,6 +223,7 @@ const Achievements = ({ jobTitle, description, value, onChange }) => {
         )}
       </Modal>
       <div style={{ paddingBottom: "1rem" }}>
+        <Typography.Title level={5}>Achievements</Typography.Title>
         <Typography.Text type="secondary">
           Select topic to add achievements
         </Typography.Text>
@@ -238,7 +239,7 @@ const Achievements = ({ jobTitle, description, value, onChange }) => {
               themeSuggestion.data?.map((item, index) => (
                 <Button
                   key={index}
-                  type="text"
+                  // type="text"
                   size="small"
                   onClick={() => {
                     setState({

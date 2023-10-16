@@ -9,9 +9,10 @@ import {
   setDoc,
   doc,
   addDoc,
+  getDoc,
 } from "firebase/firestore";
 
-const useDoc = (collectionName, docId) => {
+const useDoc = (collectionName, docId, subscribe) => {
   // const [data, setData] = useState(null);
   // const [loading, setLoading] = useState(true);
 
@@ -28,6 +29,30 @@ const useDoc = (collectionName, docId) => {
     //     setDoc(doc.data());
     //     setLoading(false);
     //   });
+    if (subscribe == false) {
+      const docRef = doc(db, collectionName, docId);
+      getDoc(docRef)
+        .then((doc) => {
+          if (doc.exists()) {
+            setState((prevState) => ({
+              ...prevState,
+              data: { ...doc.data(), id: doc.id },
+              loading: false,
+            }));
+          } else {
+            // doc.data() will be undefined in this case
+            console.log("No such document!");
+          }
+        })
+        .catch((error) => {
+          setState((prevState) => ({
+            ...prevState,
+            error: error,
+            loading: false,
+          }));
+        });
+      return;
+    }
     const unsubscribe = onSnapshot(doc(db, collectionName, docId), (doc) => {
       // setData({...doc.data(), id: doc.id});
       // setLoading(false);

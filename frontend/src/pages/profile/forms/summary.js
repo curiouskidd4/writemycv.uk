@@ -15,6 +15,7 @@ import { useAuth } from "../../../authContext";
 import { useDoc, useMutateDoc } from "../../../firestoreHooks";
 import FormLabel from "../../../components/labelWithActions";
 import { useOpenAI } from "../../../utils";
+import { MagicWandIcon } from "../../../components/faIcons";
 
 const FormLabelWithAIActions = ({ resumeId, description, onAdd }) => {
   // AI Actions helper
@@ -69,9 +70,9 @@ const FormLabelWithAIActions = ({ resumeId, description, onAdd }) => {
           <div className="openai-model-content">
             <div className="model-header">
               {" "}
-              <Typography.Title level={4}>Summary</Typography.Title>
+              <Typography.Title level={4}>New Summary</Typography.Title>
               <Typography.Text type="secondary">
-                Click one of following options to add
+                Here are some fresh ideas for summary! Click one of following options to add
               </Typography.Text>
             </div>
 
@@ -112,24 +113,26 @@ const FormLabelWithAIActions = ({ resumeId, description, onAdd }) => {
           <div className="openai-model-content">
             <div className="model-header">
               {" "}
-              <Typography.Title level={4}>Rewrite</Typography.Title>
+              <Typography.Title level={4}>
+                Rephrase and Optimise
+              </Typography.Title>
               <Typography.Text type="secondary">
-                Click one of following options to add
+                Let’s make sure your summary is word perfect! Click one of
+                following options to add
               </Typography.Text>
             </div>
 
             {/* {JSON.stringify(openai.data)} */}
             {openai.loading && (
-                <div
-                  style={{
-                    minHeight: "400px",
-                  }}
-                >
-                  <Skeleton />
-                </div>
-              )}
+              <div
+                style={{
+                  minHeight: "400px",
+                }}
+              >
+                <Skeleton />
+              </div>
+            )}
             <Space direction="vertical">
-              
               {!openai.loading &&
                 openai.data?.result.map((item) => (
                   <div
@@ -160,7 +163,9 @@ const FormLabelWithAIActions = ({ resumeId, description, onAdd }) => {
             content={
               <div>
                 <Space direction="vertical">
-                  <Typography.Text type="secondary">AI Actions</Typography.Text>
+                  <Typography.Text type="secondary">
+                    Write with CV Wizard
+                  </Typography.Text>
                   <Button
                     type="link"
                     size="small"
@@ -169,18 +174,18 @@ const FormLabelWithAIActions = ({ resumeId, description, onAdd }) => {
                     }
                     onClick={handleRewrite}
                   >
-                    Rephrase
+                    Rephrase and Optimise
                   </Button>
 
                   <Button type="link" size="small" onClick={handleGenSummary}>
-                    Generate new summary
+                    Generate New Summary
                   </Button>
                 </Space>
               </div>
             }
           >
             <Button type="link" size="small">
-              Write with AI
+              <MagicWandIcon /> Write with CV Wizard
             </Button>
           </Popover>
         }
@@ -199,7 +204,9 @@ const DummyInput = ({ resumeId, value, onAdd, ...rest }) => {
         onAdd={onAdd}
         resumeId={resumeId}
       />
-      <Input.TextArea rows={3} {...rest} value={value} />
+      {/* <Input.TextArea rows={3} {...rest} value={value} />
+       */}
+      <EditorJsInput value={value} {...rest} />
     </>
   );
 };
@@ -219,9 +226,7 @@ const ProfessionalSummaryForm = ({
   return (
     <Form
       name="personal_info"
-      onFinish={
-        onFinish
-      }
+      onFinish={onFinish}
       initialValues={{
         ...initialValues,
       }}
@@ -241,10 +246,7 @@ const ProfessionalSummaryForm = ({
         {/* <Input /> */}
         {/* <EditorJsInput />
          */}
-        <DummyInput
-          resumeId={resumeId}
-          onAdd={onAdd}
-        />
+        <DummyInput resumeId={resumeId} onAdd={onAdd} />
       </Form.Item>
 
       <Form.Item>

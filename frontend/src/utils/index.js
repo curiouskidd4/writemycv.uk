@@ -9,15 +9,24 @@ const BASE_URL =
 const useOpenAI = () => {
   const auth = useAuth();
   const openaiContext = useOpenAIContext();
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
 
-  const [data, setData] = useState(null);
+  // const [data, setData] = useState(null);
 
-  const [error, setError] = useState("");
+  // const [error, setError] = useState("");
+  const [state, setState] = useState({
+    loading: false,
+    data: null,
+    error: null,
+  });
 
   const getEducationSummary = async (data) => {
     data = {...openaiContext, ...data, };
-    setLoading(true);
+    setState({
+      loading: true,
+      data: null,
+      error: null,
+    });
     try {
       const token = await auth.user.getIdToken();
       const response = await axios.post(
@@ -29,18 +38,28 @@ const useOpenAI = () => {
           },
         }
       );
-      setData(response.data);
-      setLoading(false);
+      setState({
+        loading: false,
+        data: response.data,
+        error: null,
+      });
     } catch (err) {
-      setError(err.response.data.message);
-      setLoading(false);
+      setState({
+        loading: false,
+        data: null,
+        error: err.response.data.message,
+      });
     }
   };
 
   const getEducationCoursesSuggestion = async (data) => {
     data = {...openaiContext, ...data, };
 
-    setLoading(true);
+    setState({
+      loading: true,
+      data: null,
+      error: null,
+    });
     try {
       const token = await auth.user.getIdToken();
       const response = await axios.post(
@@ -52,18 +71,28 @@ const useOpenAI = () => {
           },
         }
       );
-      setData(response.data);
-      setLoading(false);
+      setState({
+        loading: false,
+        data: response.data,
+        error: null,
+      });
     } catch (err) {
-      setError(err.response.data.message);
-      setLoading(false);
+      setState({
+        loading: false,
+        data: null,
+        error: err.response.data.message,
+      });
     }
   };
 
   const getExperienceSummary = async (data) => {
     data = {...openaiContext, ...data, };
 
-    setLoading(true);
+    setState({
+      loading: true,
+      data: null,
+      error: null,
+    });
     try {
       const token = await auth.user.getIdToken();
 
@@ -76,18 +105,28 @@ const useOpenAI = () => {
           },
         }
       );
-      setData(response.data);
-      setLoading(false);
+      setState({
+        loading: false,
+        data: response.data,
+        error: null,
+      });
     } catch (err) {
-      setError(err.response.data.message);
-      setLoading(false);
+      setState({
+        loading: false,
+        data: null,
+        error: err.response.data.message,
+      });
     }
   };
 
   const getProfessionalSummary = async (data) => {
     data = {...openaiContext, ...data, };
 
-    setLoading(true);
+    setState({
+      loading: true,
+      data: null,
+      error: null,
+    });
     try {
       const token = await auth.user.getIdToken();
 
@@ -100,19 +139,28 @@ const useOpenAI = () => {
           },
         }
       );
-      setData(response.data);
-      setLoading(false);
+      setState({
+        loading: false,
+        data: response.data,
+        error: null,
+      });
     } catch (err) {
-      setError(err.response.data.message);
-      setLoading(false);
+      setState({
+        loading: false,
+        data: null,
+        error: err.response.data.message,
+      });
     }
   };
 
   const getSkills = async (data) => {
-    debugger
     data = {...openaiContext, ...data, };
 
-    setLoading(true);
+    setState({
+      loading: true,
+      data: null,
+      error: null,
+    });
     try {
       const token = await auth.user.getIdToken();
 
@@ -125,18 +173,28 @@ const useOpenAI = () => {
           },
         }
       );
-      setData(response.data);
-      setLoading(false);
+      setState({
+        loading: false,
+        data: response.data,
+        error: null,
+      });
     } catch (err) {
-      setError(err.response.data.message);
-      setLoading(false);
+      setState({
+        loading: false,
+        data: null,
+        error: err.response.data.message,
+      });
     }
   };
 
   const getEducationCourses = async (data) => {
     data = {...openaiContext, ...data, };
 
-    setLoading(true);
+    setState({
+      loading: true,
+      data: null,
+      error: null,
+    });
     try {
       const token = await auth.user.getIdToken();
 
@@ -149,18 +207,28 @@ const useOpenAI = () => {
           },
         }
       );
-      setData(response.data?.result);
-      setLoading(false);
+      setState({
+        loading: false,
+        data: response.data,
+        error: null,
+      });
     } catch (err) {
-      setError(err.response.data.message);
-      setLoading(false);
+      setState({
+        loading: false,
+        data: null,
+        error: err.response.data.message,
+      });
     }
   };
 
   const getExperienceAchivements = async (data) => {
     data = {...openaiContext, ...data, };
 
-    setLoading(true);
+    setState({
+      loading: true,
+      data: null,
+      error: null,
+    });
     try {
       const token = await auth.user.getIdToken();
 
@@ -173,18 +241,28 @@ const useOpenAI = () => {
           },
         }
       );
-      setData(response.data?.result);
-      setLoading(false);
+      setState({
+        loading: false,
+        data: response.data,
+        error: null,
+      });
     } catch (err) {
-      setError(err.response.data.message);
-      setLoading(false);
+      setState({
+        loading: false,
+        data: null,
+        error: err.response.data.message,
+      });
     }
   };
 
   const getThemeSuggestions = async (data) => {
     data = {...openaiContext, ...data, };
 
-    setLoading(true);
+    setState({
+      loading: true,
+      data: null,
+      error: null,
+    });
     try {
       const token = await auth.user.getIdToken();
 
@@ -197,18 +275,28 @@ const useOpenAI = () => {
           },
         }
       );
-      setData(response.data?.result);
-      setLoading(false);
+      setState({
+        loading: false,
+        data: response.data,
+        error: null,
+      });
     } catch (err) {
-      setError(err.response.data.message);
-      setLoading(false);
+      setState({
+        loading: false,
+        data: null,
+        error: err.response.data.message,
+      });
     }
   };
 
   const getThemeDescription = async (data) => {
     data = {...openaiContext, ...data, };
 
-    setLoading(true);
+    setState({
+      loading: true,
+      data: null,
+      error: null,
+    });
     try {
       const token = await auth.user.getIdToken();
 
@@ -222,16 +310,26 @@ const useOpenAI = () => {
         }
       );
 
-      setData(response.data?.result);
-      setLoading(false);
+      setState({
+        loading: false,
+        data: response.data,
+        error: null,
+      });
     } catch (err) {
-      setError(err.response.data.message);
-      setLoading(false);
+      setState({
+        loading: false,
+        data: null,
+        error: err.response.data.message,
+      });
     }
   };
 
   const getResumeSummary = async (data) => {
-    setLoading(true);
+    setState({
+      loading: true,
+      data: null,
+      error: null,
+    });
     try {
       const token = await auth.user.getIdToken();
 
@@ -245,18 +343,22 @@ const useOpenAI = () => {
         }
       );
 
-      setData(response.data?.result);
-      setLoading(false);
+      setState({
+        loading: false,
+        data: response.data,
+        error: null,
+      });
     } catch (err) {
-      setError(err.response.data.message);
-      setLoading(false);
+      setState({
+        loading: false,
+        data: null,
+        error: err.response.data.message,
+      });
     }
   };
 
   return {
-    loading,
-    data,
-    error,
+    ...state,
     getEducationSummary,
     getExperienceSummary,
     getProfessionalSummary,

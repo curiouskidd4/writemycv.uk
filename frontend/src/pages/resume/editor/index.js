@@ -41,6 +41,8 @@ import { getDownloadURL, ref } from "firebase/storage";
 import ChatBot from "../../../components/restChatbot";
 import UserOptionsButton from "../../../components/userOptionsButton";
 import DetailForm from "./forms/detail";
+import ResumeEditForm from "../../coolForm";
+import { ProviderResume } from "../../../resumeContext";
 
 const ResumeSectionSorter = ({ sectionOrder, onChange }) => {
   const defaultSctionOrder = [
@@ -111,7 +113,7 @@ const ResumeSectionSorter = ({ sectionOrder, onChange }) => {
   );
 };
 
-const AIHelpSelector = ({ value, onChange }) => {
+const AIHelpSelector = ({ value, onChange, resumeId }) => {
   return (
     <div
       style={{
@@ -124,24 +126,14 @@ const AIHelpSelector = ({ value, onChange }) => {
       <Space
         direction="vertical"
         style={{
-          textAlign: "center",
+          // textAlign: "center",
+          width: "100%",
         }}
       >
-        <Button type="text" onClick={() => onChange("education")}>
-          Education
-        </Button>
-        <Button type="text" onClick={() => onChange("experience")}>
-          Experience
-        </Button>
-        <Button type="text" onClick={() => onChange("professionalSummary")}>
-          Professional Summary
-        </Button>
 
-        <Typography.Text type="secondary">
-          Hi, I am your AI assistant. I can help you with your resume. Please
-          select a section you want help with. Optionally, for adding or
-          updating any section you can use the details sections
-        </Typography.Text>
+        
+
+        <ResumeEditForm  />
       </Space>
     </div>
   );
@@ -290,6 +282,7 @@ const EditResume = () => {
 
   return (
     <>
+    <ProviderResume resumeId={resumeId}>
       <Row
         style={
           {
@@ -334,6 +327,7 @@ const EditResume = () => {
                   <ChatBot helpSection={state.helpSection} />
                 ) : (
                   <AIHelpSelector
+                    resumeId={resumeId}
                     onChange={(value) =>
                       setState((prev) => ({ ...prev, helpSection: value }))
                     }
@@ -389,6 +383,7 @@ const EditResume = () => {
           </Row>
         </Col>
       </Row>
+      </ProviderResume>
     </>
   );
 };

@@ -27,29 +27,33 @@ const useAuth = () => {
 };
 
 const useProvideAuth = () => {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isProfileComplete, setIsProfileComplete] = useState(false);
-  const [isEmailVerified, setIsEmailVerified] = useState(false);
-  const [authToken, setAuthToken] = useState(null);
+  const [state, setState] = useState({
+    loading: true,
+    error: null,
+    data: null,
+    user: null,
+    isAuthenticated: false,
+    isProfileComplete: false,
+    isEmailVerified: false,
+    authToken: null,
+  });
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        user.getIdToken().then((token) => {
-          setAuthToken(token);
-        });
-        setUser(user);
         saveUserToFirebase(user);
-        setIsAuthenticated(true);
-        setIsEmailVerified(user.emailVerified);
       } else {
-        setUser(null);
-        setIsAuthenticated(false);
+        setState({
+          loading: false,
+          error: null,
+          data: null,
+          user: null,
+          isAuthenticated: false,
+          isProfileComplete: false,
+          isEmailVerified: false,
+          authToken: null,
+        });
       }
-      setLoading(false);
     });
     return () => unsubscribe();
   }, []);
@@ -61,11 +65,8 @@ const useProvideAuth = () => {
 
     const userDoc = await getDoc(userRef);
     if (userDoc.exists()) {
-      console.log("user exists");
       let userData = userDoc.data();
-      if (userData.profileComplete) {
-        setIsProfileComplete(true);
-      }
+
 
       let res = window.pendo.initialize({
         visitor: {
@@ -80,6 +81,17 @@ const useProvideAuth = () => {
           is_paying: false,
         },
       });
+
+      setState({
+        loading: false,
+        error: null,
+        data: null,
+        user: user,
+        isAuthenticated: true,
+        isProfileComplete: userData.profileComplete,
+        isEmailVerified: user.emailVerified,
+        authToken: null,
+      });
       return;
     }
 
@@ -91,6 +103,17 @@ const useProvideAuth = () => {
       firebaseId: user.uid,
       profileComplete: false,
       photoURL: user.photoURL,
+    });
+
+    setState({
+      loading: false,
+      error: null,
+      data: null,
+      user: user,
+      isAuthenticated: true,
+      isProfileComplete: false,
+      isEmailVerified: user.emailVerified,
+      authToken: null,
     });
   };
 
@@ -152,7 +175,10 @@ const useProvideAuth = () => {
   };
 
   const markProfileCompleted = async () => {
-    setIsProfileComplete(true);
+    setState((prev) => ({
+      ...prev,
+      isProfileComplete: true,
+    }));
   };
 
   const sendResetPasswordEmail = async (email) => {
@@ -176,11 +202,16 @@ const useProvideAuth = () => {
   const logout = async () => {
     try {
       await auth.signOut();
-      setIsAuthenticated(false);
-      setUser(null);
-      setIsProfileComplete(false);
-      setIsEmailVerified(false);
-      setAuthToken(null);
+      setState({
+        loading: false,
+        error: null,
+        data: null,
+        user: null,
+        isAuthenticated: false,
+        isProfileComplete: false,
+        isEmailVerified: false,
+        authToken: null,
+      });
     } catch (err) {
       console.log(err);
     }
@@ -188,13 +219,7 @@ const useProvideAuth = () => {
 
   // return
   return {
-    user,
-    loading,
-    error,
-    isAuthenticated,
-    isProfileComplete,
-    isEmailVerified,
-    authToken,
+    ...state,
     logout,
     createUserWithEmail,
     loginWithEmail,

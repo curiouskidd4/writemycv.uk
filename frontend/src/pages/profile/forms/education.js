@@ -31,6 +31,8 @@ import dayjs from "dayjs";
 import { objectId } from "../../../helpers";
 import FormLabel from "../../../components/labelWithActions";
 import { useOpenAI } from "../../../utils";
+import CustomDateRange from "../../../components/dateRange";
+import { MagicWandIcon, MagicWandLoading } from "../../../components/faIcons";
 
 const FormLabelWithAIActions = ({
   degree,
@@ -72,20 +74,7 @@ const FormLabelWithAIActions = ({
     });
   };
 
-  const handleRewriteWithInstructions = () => {
-    setState({ ...state, modalVisible: true, mode: "rewriteWithInstructions" });
-    openai.getEducationSummary({
-      degree,
-      school,
-      modules,
-      existingSummary: description,
-      // role: "machine learning engineer",
-      rewrite: {
-        enabled: true,
-        instructions: "",
-      },
-    });
-  };
+
 
   const onModalClose = () => {
     setState({ ...state, modalVisible: false, mode: null });
@@ -95,6 +84,8 @@ const FormLabelWithAIActions = ({
     onAddDescription(value);
     onModalClose();
   };
+
+  console.log("LLLL", openai.loading)
   return (
     <>
       <Modal
@@ -108,23 +99,27 @@ const FormLabelWithAIActions = ({
           <div className="openai-model-content">
             <div className="model-header">
               {" "}
-              <Typography.Title level={4}>Summary</Typography.Title>
+              <Typography.Title level={4}>New Summary</Typography.Title>
               <Typography.Text type="secondary">
-                Click one of following options to add
+                Here are some fresh ideas for summary! Click one of following options to add
               </Typography.Text>
             </div>
 
-            {/* {JSON.stringify(openai.data)} */}
-            <Space direction="vertical">
+            <Space direction="vertical" style={{
+              width: "100%"
+            }}>
               {openai.loading && (
                 <div
                   style={{
+                    width: "100%",
                     minHeight: "400px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
                   }}
                 >
-                  <Skeleton />
-                  <Skeleton />
-                  <Skeleton />
+                 
+                  <MagicWandLoading />
                 </div>
               )}
               {!openai.loading &&
@@ -144,23 +139,31 @@ const FormLabelWithAIActions = ({
           <div className="openai-model-content">
             <div className="model-header">
               {" "}
-              <Typography.Title level={4}>Rewrite</Typography.Title>
+              <Typography.Title level={4}>
+                Rephrase and Optimise
+              </Typography.Title>
               <Typography.Text type="secondary">
-                Click one of following options to add
+                Let’s make sure your summary is word perfect! Click one of
+                following options to add
               </Typography.Text>
             </div>
 
             {/* {JSON.stringify(openai.data)} */}
-            <Space direction="vertical">
-              {openai.loading && (
+            <Space direction="vertical" style={{
+              width: "100%"
+            }}>
+            {openai.loading && (
                 <div
                   style={{
+                    width: "100%",
                     minHeight: "400px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
                   }}
                 >
-                  <Skeleton />
-                  <Skeleton />
-                  <Skeleton />
+                 
+                  <MagicWandLoading />
                 </div>
               )}
               {!openai.loading &&
@@ -223,7 +226,9 @@ const FormLabelWithAIActions = ({
             content={
               <div>
                 <Space direction="vertical">
-                  <Typography.Text type="secondary">AI Actions</Typography.Text>
+                  <Typography.Text type="secondary">
+                     Write with CV Wizard
+                  </Typography.Text>
                   <Button
                     type="link"
                     size="small"
@@ -256,7 +261,7 @@ const FormLabelWithAIActions = ({
             }
           >
             <Button type="link" size="small">
-              AI Actions
+                    <MagicWandIcon /> Write with CV Wizard
             </Button>
           </Popover>
         }
@@ -323,7 +328,7 @@ const CourseLabelWithAIActions = ({ degree, school, onAddCourses }) => {
           }
         >
           <Button type="link" size="small" onClick={handleGenSuggestions}>
-            AI Suggestions
+          <MagicWandIcon /> CV Wizard
           </Button>
         </Popover>
       }
@@ -381,7 +386,7 @@ const SingleEducationForm = ({ field, form, remove, resetEditIndex }) => {
           <Form.Item
             {...field}
             name={[field.name, "school"]}
-            label="School"
+            label="School/College/University"
             fieldKey={[field.fieldKey, "school"]}
             rules={[
               {
@@ -397,13 +402,10 @@ const SingleEducationForm = ({ field, form, remove, resetEditIndex }) => {
           <Form.Item
             {...field}
             name={[field.name, "degree"]}
-            label="Degree"
+            label="Degree/Major"
             fieldKey={[field.fieldKey, "degree"]}
             rules={[
-              {
-                required: true,
-                message: "Please enter degree!",
-              },
+             
             ]}
           >
             <Input placeholder="Employer" />
@@ -423,8 +425,18 @@ const SingleEducationForm = ({ field, form, remove, resetEditIndex }) => {
                 message: "Start & End Date!",
               },
             ]}
+            // Footer for ignoring end date
           >
-            <DatePicker.RangePicker picker="year" allowEmpty={[false, true]} />
+            {/* <DatePicker.RangePicker picker="year" allowEmpty={[false, true]} renderExtraFooter={() => (
+              <Typography.Text type="secondary">
+                Leave end date empty if you are currently studying
+              </Typography.Text>
+            )}/> */}
+            <CustomDateRange
+              checkBoxText="Currently Studying"
+              picker="year"
+              allowEmpty={[false, true]}
+            />
           </Form.Item>
         </Col>
         <Col {...colSpan}>
@@ -621,7 +633,6 @@ const EducationForm_ = ({ form, fields, add, remove, move }) => {
                         ref={provided.innerRef}
                         {...provided.draggableProps}
                       >
-                        
                         <div key={index} className="education-form">
                           <Row
                             // style={{ marginBottom: 8 }}
@@ -746,8 +757,7 @@ const EducationForm = ({ onFinish, initialValues, isLoading }) => {
       newItem.modules = newItem.modules || null;
       newItem.description = newItem.description || null;
       return newItem;
-    }
-    );
+    });
     onFinish({ educationList: newValues });
   };
 

@@ -1,8 +1,9 @@
 import { Button, Space, Row } from "antd";
 import CoolForm from "./form";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Typography } from "antd";
+import { useDoc, useMutateDoc } from "../../firestoreHooks";
 let questions = [
   {
     id: "1",
@@ -19,7 +20,39 @@ let questions = [
   },
 ];
 
-const FinalScreen = ({ answers, addNew, goToStart }) => {
+const FinalScreen = ({answers, addNew, goToStart, onSave, resumeId }) => {
+  const currentSkills = useDoc("skill", resumeId, false);
+  const updateSkills = useMutateDoc("skill", resumeId, true);
+
+  useEffect(() => {
+    if (currentSkills.data) {
+      // Once we have the data, we can update the form
+      saveDetails(currentSkills.data);
+    }
+  }, [currentSkills]);
+
+  const saveDetails = async (currentSkills) => {
+    let data = {};
+
+    answers.forEach((item) => {
+      let answer = item.answer;
+      if (item.type == "date") {
+        answer = answer.toDate();
+      }
+
+      
+      data[item.dataKey] = answer;
+    });
+
+    if (currentSkills) {
+      // Update the existing education
+      await updateSkills.mutate({
+        ...currentSkills,
+        skillList: [...currentSkills.skillList, data],
+        updatedAt: new Date(),
+      });
+    }
+  };
   return (
     <motion.div
       initial={{ opacity: 0, y: "100%" }}
@@ -46,8 +79,9 @@ const FinalScreen = ({ answers, addNew, goToStart }) => {
   );
 };
 
-const SkillForm = ({ goToStart }) => {
+const SkillForm = ({ goToStart, resumeId }) => {
   const [state, setState] = useState({});
+
 
   const saveResponse = (answers) => {
     setState((prev) => ({
@@ -59,7 +93,10 @@ const SkillForm = ({ goToStart }) => {
   return (
     <CoolForm
       questions={questions}
-      finalScreen={FinalScreen}
+      // finalScreen={FinalScreen}
+      finalScreen={({ answers, addNew, goToStart }) => (
+        <FinalScreen answers={answers} addNew={addNew} goToStart={goToStart}  resumeId={resumeId}/>
+      )}
       onChange={saveResponse}
       goToStart={goToStart}
     />

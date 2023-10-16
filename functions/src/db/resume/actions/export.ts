@@ -73,6 +73,7 @@ const exportResume = async (resumeId: string, userId: string) => {
       skillList: resumeData.skillList,
       professionalSummary: resumeData.professionalSummary,
       sectionOrder: resumeData.sectionOrder,
+      personalInfo: resumeData.personalInfo,
     };
 
     // Compute hash of relevant data

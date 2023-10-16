@@ -23,6 +23,7 @@ import {
   ShareAltOutlined,
   MoreOutlined,
   EditOutlined,
+  BulbOutlined
 } from "@ant-design/icons";
 import { useAuth } from "../../authContext";
 import {
@@ -105,20 +106,18 @@ const NewResumeModal = ({ visible, onCancel, onConfirm, userId }) => {
           <Input />
         </Form.Item>
         <Form.Item
-          label="For role"
+          label="Mention roles you are targeting ( The roles you mention  are used to customize CV wizard suggestions for those specific roles. )"
           name="role"
           rules={[
-            {
-              required: true,
-              message: "Please input role!",
-            },
+            
           ]}
         >
           <Input
             style={{ width: "100%" }}
-            placeholder="Mention role you are targeting"
+            placeholder="Roles"
           ></Input>
         </Form.Item>
+        
         <Form.Item label="Sector" name="sector" rules={[]}>
           <Input
             style={{ width: "100%" }}
@@ -140,7 +139,7 @@ const NewResumeModal = ({ visible, onCancel, onConfirm, userId }) => {
         </Form.Item>
 
         <Form.Item
-          label="Job Description (optional)"
+          label="Job Description (Paste job description or link to job posting)"
           name="jobDescription"
           rules={[]}
         >
