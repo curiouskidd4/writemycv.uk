@@ -13,13 +13,15 @@ import {
   educationSummaryRewrite,
   educationSummarySuggestion,
   eductionCoursesHelper,
-  themeSuggestion,
-  themeDescriptionSuggestion,
+  // themeSuggestion,
+  // themeDescriptionSuggestion,
 } from "../controllers/openai/resumeai";
+import {themeSuggestion, themeDescriptionSuggestion, achievementRewrite} from "../controllers/openai/achievements"
 import {
   generateProfessionalSummary,
   rewriteProfessionalSummary,
 } from "../controllers/openai/professionalSummary";
+import { CustomRequest } from "../../types/requests";
 
 const { validate } = new Validator({});
 
@@ -128,7 +130,7 @@ router.post("/experienceSummary", async (req: Request, res: Response) => {
   const role = req.body.role;
   const experienceRole = req.body.experienceRole;
   const experienceOrg = req.body.experienceOrg;
-  const numberSummary = req.body.numberSummary || 1;
+  const numberSummary = req.body.numberSummary || 3;
   const existingSummary = req.body.existingSummary || "";
   const rewrite = req.body.rewrite;
   if (!role) {
@@ -244,33 +246,55 @@ router.post("/themeDescription", async (req: Request, res: Response) => {
   res.status(200).json({ result: suggestion, message: "success" });
 });
 
-router.post("/professionalSummary", async (req: Request, res: Response) => {
+
+router.post("/achievementHelper", async (req: Request, res: Response) => {
+  const role = req.body.role;
+  const theme = req.body.theme;
+  const existingAchievement = req.body.existingAchievement || "";
+  const rewrite = req.body.rewrite;
+  if ( !theme) {
+    res.status(400).json({ message: "theme is required" });
+    return;
+  }
+
+  if (rewrite) {
+    let suggestion = await achievementRewrite(theme, existingAchievement!, 3);
+    console.log(suggestion);
+    res.status(200).json({ result: suggestion, message: "success" });
+    return;
+  } else {
+    let suggestion = await themeDescriptionSuggestion(role, theme!);
+    console.log(suggestion);
+    res.status(200).json({ result: suggestion, message: "success" });
+    return;
+  }
+}
+);
+
+router.post("/professionalSummary", async (req: CustomRequest, res: Response) => {
   const resumeId = req.body.resumeId;
   const generateFromProfile = req.body.generateFromProfile;
   const rewrite = req.body.mode;
-
+  const existingSummary = req.body.existingSummary || "";
+  const userId = req.user?.uid;
   if (!resumeId && !generateFromProfile) {
     res.status(400).json({ message: "resumeId is required" });
     return;
   }
 
-  if (generateFromProfile) {
-    // TODO
-    res.status(400).json({ message: "generateFromProfile is not implemented" });
-    return;
-  } else {
+  
     if (rewrite) {
-      let suggestion = await rewriteProfessionalSummary(resumeId, 3);
+      let suggestion = await rewriteProfessionalSummary(resumeId, existingSummary!,  userId!, 3);
       console.log(suggestion);
       res.status(200).json({ result: suggestion, message: "success" });
       return;
     } else {
-      let suggestion = await generateProfessionalSummary(resumeId, 3);
+      let suggestion = await generateProfessionalSummary(resumeId, userId!, 3);
       console.log(suggestion);
       res.status(200).json({ result: suggestion, message: "success" });
       return;
     }
-  }
+  
 });
 
 export default router;

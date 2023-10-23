@@ -133,7 +133,7 @@ const PersonalInfoForm = ({ onFinish, initialValues, isLoading }) => {
           </Form.Item>
         </Col>
         <Col {...colSpan}>
-          <Form.Item name="country" label="Country">
+          <Form.Item name="location" label="Your Location">
             <Input
               style={{
                 width: "100%",
@@ -144,7 +144,7 @@ const PersonalInfoForm = ({ onFinish, initialValues, isLoading }) => {
         {/* </Row>
 
           <Row> */}
-        <Col {...colSpan}>
+        {/* <Col {...colSpan}>
           <Form.Item name="city" label="City">
             <Input
               style={{
@@ -152,7 +152,7 @@ const PersonalInfoForm = ({ onFinish, initialValues, isLoading }) => {
               }}
             />
           </Form.Item>
-        </Col>
+        </Col> */}
       </Row>
 
       <Form.Item>

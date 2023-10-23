@@ -34,13 +34,15 @@ import { useOpenAI } from "../../../utils";
 import showdown from "showdown";
 import Achievements from "./achievements";
 import CustomDateRange from "../../../components/dateRange";
-import { MagicWandIcon } from "../../../components/faIcons";
+import { MagicWandIcon, MagicWandLoading } from "../../../components/faIcons";
+import Markdown from "react-markdown";
 
 const FormLabelWithAIActions = ({
   jobTitle,
   employerName,
   onAddDescription,
   description,
+  label,
 }) => {
   // AI Actions helper
   const [state, setState] = useState({
@@ -99,21 +101,29 @@ const FormLabelWithAIActions = ({
               {" "}
               <Typography.Title level={4}>New Summary</Typography.Title>
               <Typography.Text type="secondary">
-                Here are some fresh ideas for summary! Click one of following options to add
+                Here are some fresh ideas for summary! Click one of following
+                options to add
               </Typography.Text>
             </div>
 
             {/* {JSON.stringify(openai.data)} */}
-            <Space direction="vertical">
+            <Space
+              direction="vertical"
+              style={{
+                width: "100%",
+              }}
+            >
               {openai.loading && (
                 <div
                   style={{
+                    width: "100%",
                     minHeight: "400px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
                   }}
                 >
-                  <Skeleton />
-                  <Skeleton />
-                  <Skeleton />
+                  <MagicWandLoading />
                 </div>
               )}
               {!openai.loading &&
@@ -124,15 +134,7 @@ const FormLabelWithAIActions = ({
                     className="openai-generated-content-item"
                     onClick={() => onSelectDescription(item.content)}
                   >
-                    {item.content.split("\n").map(
-                      (item, index) =>
-                        item && (
-                          <span key={index}>
-                            {item}
-                            <br />
-                          </span>
-                        )
-                    )}
+                    <Markdown>{item.content}</Markdown>
                   </div>
                 ))}
             </Space>
@@ -152,16 +154,23 @@ const FormLabelWithAIActions = ({
             </div>
 
             {/* {JSON.stringify(openai.data)} */}
-            <Space direction="vertical">
+            <Space
+              direction="vertical"
+              style={{
+                width: "100%",
+              }}
+            >
               {openai.loading && (
                 <div
                   style={{
+                    width: "100%",
                     minHeight: "400px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
                   }}
                 >
-                  <Skeleton />
-                  <Skeleton />
-                  <Skeleton />
+                  <MagicWandLoading />
                 </div>
               )}
               {!openai.loading &&
@@ -171,7 +180,9 @@ const FormLabelWithAIActions = ({
                     className="openai-generated-content-item"
                     onClick={() => onSelectDescription(item.content)}
                   >
-                    {item.content}
+                    {/* {item.content}
+                     */}
+                    <Markdown>{item.content}</Markdown>
                   </div>
                 ))}
             </Space>
@@ -216,6 +227,7 @@ const FormLabelWithAIActions = ({
           </div>
         )}
       </Modal>
+      {label}
       <FormLabel
         action={
           <Popover
@@ -224,9 +236,11 @@ const FormLabelWithAIActions = ({
             content={
               <div>
                 <Space direction="vertical">
-                  <Typography.Text type="secondary">AI Actions</Typography.Text>
+                  <Typography.Text type="secondary">
+                    Write with CV Wizard
+                  </Typography.Text>{" "}
                   <Button type="link" size="small" onClick={handleRewrite}>
-                  Rephrase and Optimise
+                    Rephrase and Optimise
                   </Button>
                   {/* <Button type="link" size="small">
                     Repharse with Instructions
@@ -239,11 +253,10 @@ const FormLabelWithAIActions = ({
             }
           >
             <Button type="link" size="small">
-            <MagicWandIcon /> Write with CV Wizard
+              <MagicWandIcon /> Write with CV Wizard
             </Button>
           </Popover>
         }
-        label="Description"
         required={true}
       />
     </>
@@ -379,7 +392,31 @@ const SingleEducationForm = ({ field, form, remove, resetEditIndex }) => {
               "employerName",
             ])}
             onAddDescription={onAddDescription}
+            label={
+              <>
+                <div>
+                <Typography.Title level={5}>Description</Typography.Title>
+                </div>
+                <div
+                  style={{
+                    marginBottom: "0.5rem",
+                  }}
+                >
+                  <Typography.Text type="secondary">
+                    <BulbOutlined />
+                    Tip: Write 2-3 sentences which provide the reader with a
+                    clear understanding of your role, including what you are
+                    responsible for and the overall impact you made in the role.
+                    If relevant, include how you progressed, and the size of
+                    your team and budget. Stuck for ideas describing your role?
+                    Try CV Wizard – it can refine your summary or create you a
+                    new one based on your job title.
+                  </Typography.Text>
+                </div>
+              </>
+            }
           />
+
           <Form.Item
             {...field}
             name={[field.name, "description"]}
@@ -394,17 +431,7 @@ const SingleEducationForm = ({ field, form, remove, resetEditIndex }) => {
             <EditorJsInput />
             {/* <Input.TextArea /> */}
           </Form.Item>
-          <div
-            style={{
-              marginBottom: "0.5rem",
-            }}
-          >
-            <Typography.Text type="secondary">
-              <BulbOutlined />
-              Tip: Write 2-3 sentences about your experience mentioning
-              roles/accomplishments
-            </Typography.Text>
-          </div>
+
           <Form.Item
             {...field}
             name={[field.name, "achievements"]}

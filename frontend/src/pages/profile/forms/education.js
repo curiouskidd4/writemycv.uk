@@ -33,6 +33,7 @@ import FormLabel from "../../../components/labelWithActions";
 import { useOpenAI } from "../../../utils";
 import CustomDateRange from "../../../components/dateRange";
 import { MagicWandIcon, MagicWandLoading } from "../../../components/faIcons";
+import Markdown from "react-markdown";
 
 const FormLabelWithAIActions = ({
   degree,
@@ -40,6 +41,7 @@ const FormLabelWithAIActions = ({
   modules,
   description,
   onAddDescription,
+  label,
 }) => {
   // AI Actions helper
   const [state, setState] = useState({
@@ -74,8 +76,6 @@ const FormLabelWithAIActions = ({
     });
   };
 
-
-
   const onModalClose = () => {
     setState({ ...state, modalVisible: false, mode: null });
   };
@@ -85,7 +85,6 @@ const FormLabelWithAIActions = ({
     onModalClose();
   };
 
-  console.log("LLLL", openai.loading)
   return (
     <>
       <Modal
@@ -101,13 +100,17 @@ const FormLabelWithAIActions = ({
               {" "}
               <Typography.Title level={4}>New Summary</Typography.Title>
               <Typography.Text type="secondary">
-                Here are some fresh ideas for summary! Click one of following options to add
+                Here are some fresh ideas for summary! Click one of following
+                options to add
               </Typography.Text>
             </div>
 
-            <Space direction="vertical" style={{
-              width: "100%"
-            }}>
+            <Space
+              direction="vertical"
+              style={{
+                width: "100%",
+              }}
+            >
               {openai.loading && (
                 <div
                   style={{
@@ -118,7 +121,6 @@ const FormLabelWithAIActions = ({
                     justifyContent: "center",
                   }}
                 >
-                 
                   <MagicWandLoading />
                 </div>
               )}
@@ -129,7 +131,7 @@ const FormLabelWithAIActions = ({
                     className="openai-generated-content-item"
                     onClick={() => onSelectDescription(item.content)}
                   >
-                    {item.content}
+                    <Markdown>{item.content}</Markdown>
                   </div>
                 ))}
             </Space>
@@ -149,10 +151,13 @@ const FormLabelWithAIActions = ({
             </div>
 
             {/* {JSON.stringify(openai.data)} */}
-            <Space direction="vertical" style={{
-              width: "100%"
-            }}>
-            {openai.loading && (
+            <Space
+              direction="vertical"
+              style={{
+                width: "100%",
+              }}
+            >
+              {openai.loading && (
                 <div
                   style={{
                     width: "100%",
@@ -162,7 +167,6 @@ const FormLabelWithAIActions = ({
                     justifyContent: "center",
                   }}
                 >
-                 
                   <MagicWandLoading />
                 </div>
               )}
@@ -173,7 +177,7 @@ const FormLabelWithAIActions = ({
                     className="openai-generated-content-item"
                     onClick={() => onSelectDescription(item.content)}
                   >
-                    {item.content}
+                    <Markdown>{item.content}</Markdown>
                   </div>
                 ))}
             </Space>
@@ -218,6 +222,7 @@ const FormLabelWithAIActions = ({
           </div>
         )}
       </Modal>
+      {label}
       <FormLabel
         action={
           <Popover
@@ -227,7 +232,7 @@ const FormLabelWithAIActions = ({
               <div>
                 <Space direction="vertical">
                   <Typography.Text type="secondary">
-                     Write with CV Wizard
+                    Write with CV Wizard
                   </Typography.Text>
                   <Button
                     type="link"
@@ -237,7 +242,7 @@ const FormLabelWithAIActions = ({
                     }
                     onClick={handleRewrite}
                   >
-                    Rephrase
+                    Rephrase and Optimise
                   </Button>
                   {/* <Button
                     type="link"
@@ -254,18 +259,18 @@ const FormLabelWithAIActions = ({
                     disabled={degree && school ? false : true}
                     onClick={handleGenSummary}
                   >
-                    Generate new summary
+                    Generate New Summary
                   </Button>
                 </Space>
               </div>
             }
           >
             <Button type="link" size="small">
-                    <MagicWandIcon /> Write with CV Wizard
+              <MagicWandIcon /> Write with CV Wizard
             </Button>
           </Popover>
         }
-        label="Summary of courses/achievements/dissertation"
+        // label="List further achievements here, such as scholarships, awards, the title of your dissertation and / or key projects"
         required={true}
       />
     </>
@@ -328,11 +333,11 @@ const CourseLabelWithAIActions = ({ degree, school, onAddCourses }) => {
           }
         >
           <Button type="link" size="small" onClick={handleGenSuggestions}>
-          <MagicWandIcon /> CV Wizard
+            <MagicWandIcon /> CV Wizard
           </Button>
         </Popover>
       }
-      label="Courses/Modules"
+      label="Key Modules – list the most relevant courses you undertook as part of your studies"
       required={true}
     />
   );
@@ -404,9 +409,7 @@ const SingleEducationForm = ({ field, form, remove, resetEditIndex }) => {
             name={[field.name, "degree"]}
             label="Degree/Major"
             fieldKey={[field.fieldKey, "degree"]}
-            rules={[
-             
-            ]}
+            rules={[]}
           >
             <Input placeholder="Employer" />
           </Form.Item>
@@ -497,6 +500,21 @@ const SingleEducationForm = ({ field, form, remove, resetEditIndex }) => {
               "modules",
             ])}
             onAddDescription={onAddDescription}
+            label={
+              <>
+              <div>
+              <Typography.Title level={5}>Description</Typography.Title>
+              </div>
+              <div
+                
+              >
+                <Typography.Text type="secondary">
+                  <BulbOutlined />
+                  List further achievements here, such as scholarships, awards, the title of your dissertation and / or key projects. Try CV wizard to get more ideas.
+                </Typography.Text>
+              </div>
+            </>
+            }
           />
           <Form.Item
             {...field}
@@ -505,28 +523,14 @@ const SingleEducationForm = ({ field, form, remove, resetEditIndex }) => {
             fieldKey={[field.fieldKey, "description"]}
             rules={
               [
-                //   {
-                //     required: true,
-                //     message: "Please input description!",
-                //   },
+               
               ]
             }
           >
             <EditorJsInput />
             {/* <Input.TextArea autoSize={{ minRows: 3, maxRows: 5 }} /> */}
           </Form.Item>
-          <div
-            style={{
-              marginBottom: "0.5rem",
-            }}
-          >
-            <Typography.Text type="secondary">
-              <BulbOutlined />
-              Tip: Write about your key achievements, projects, and
-              modules/courses you have taken. It's good to add more details
-              about your education if you are a recent graduate.
-            </Typography.Text>
-          </div>
+         
         </Col>
       </Row>
       <Row gutter={12}>

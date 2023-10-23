@@ -18,15 +18,7 @@ import {
 } from "antd";
 import EditorJsInput from "../../../components/editor";
 import { useAuth } from "../../../authContext";
-import {
-  MinusCircleOutlined,
-  PlusOutlined,
-  BulbOutlined,
-  DownOutlined,
-  UpOutlined,
-  HolderOutlined,
-  DeleteOutlined,
-} from "@ant-design/icons";
+import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { useDoc, useMutateDoc } from "../../../firestoreHooks";
 import dayjs from "dayjs";
 import { objectId } from "../../../helpers";
@@ -34,6 +26,232 @@ import FormLabel from "../../../components/labelWithActions";
 import { useOpenAI } from "../../../utils";
 import showdown from "showdown";
 import "./index.css";
+import Markdown from "react-markdown";
+import { MagicWandIcon, MagicWandLoading } from "../../../components/faIcons";
+
+const AchievementStep1 = ({ selectedTheme, themeDescription, onSelect }) => {
+  const [state, setState] = useState({});
+
+  return (
+    <>
+      <Typography.Title level={5}>
+        Selected Theme: {selectedTheme}
+      </Typography.Title>
+
+      {themeDescription.loading && (
+        <div className="spin-container" style={{ height: "100px" }}>
+          <Spin />
+        </div>
+      )}
+      {!themeDescription.loading && (
+        <>
+          <Typography.Text type="secondary">
+            {themeDescription.data?.result?.explanation}
+          </Typography.Text>
+          <div
+            style={{
+              marginTop: "0.5rem",
+              marginBottom: "0.5rem",
+            }}
+          >
+            <Typography.Text type="secondary">
+              Select any of the following examples and update it as per your own
+              achievement
+            </Typography.Text>
+            {themeDescription.data?.result?.examples?.map((item, index) => (
+              <div
+                key={index}
+                type="text"
+                className="openai-generated-content-item"
+                onClick={() => onSelect(item)}
+              >
+                <Markdown>{item}</Markdown>
+              </div>
+            ))}
+            <div
+              key={"custom"}
+              type="text"
+              className="openai-generated-content-item"
+              onClick={() =>
+                setState((prev) => ({
+                  ...prev,
+                  currentAchievement: "",
+                }))
+              }
+            >
+              Write your own
+            </div>
+          </div>
+        </>
+      )}
+    </>
+  );
+};
+
+const AchievementStep2 = ({ selectedTheme, achievement, onChange, onSave }) => {
+  const [state, setState] = useState({
+    wizardMode: null,
+  });
+  let openai = useOpenAI();
+  const handleGenSummary = () => {
+    setState({ ...state, wizardMode: "summary" });
+    openai.getThemeDescription({
+      theme: selectedTheme,
+      existingAchievement: achievement,
+    });
+  };
+
+  const handleRewrite = () => {
+    setState({ ...state, wizardMode: "rewrite" });
+    openai.getAchivementSuggestion({
+      theme: selectedTheme,
+      existingAchievement: achievement,
+      rewrite: {
+        enabled: true,
+        instructions: "",
+      },
+    });
+  };
+
+  const onSelectDescription = (value) => {
+    onChange(value);
+    setState({ ...state, wizardMode: null });
+  };
+
+  return (
+    <>
+      <Typography.Title level={5}>
+        Selected Theme: {selectedTheme}
+      </Typography.Title>
+
+      <Row justify="end">
+        <Col>
+          <Popover
+            zIndex={1050}
+            placement="bottomRight"
+            trigger={["click"]}
+            content={
+              <div>
+                <Space direction="vertical">
+                  <Typography.Text type="secondary">
+                    Write with CV Wizard
+                  </Typography.Text>{" "}
+                  <Button type="link" size="small" onClick={handleRewrite}>
+                    Rephrase and Optimise
+                  </Button>
+                  {/* <Button type="link" size="small">
+                    Repharse with Instructions
+                  </Button> */}
+                  <Button type="link" size="small" onClick={handleGenSummary}>
+                    Generate New Summary
+                  </Button>
+                </Space>
+              </div>
+            }
+          >
+            <Button type="link" size="small">
+              <MagicWandIcon /> Write with CV Wizard
+            </Button>
+          </Popover>
+        </Col>
+      </Row>
+
+      <Input.TextArea
+        rows={3}
+        style={{ marginTop: "0.25rem" }}
+        value={achievement}
+        onChange={(e) => onChange(e.target.value)}
+      ></Input.TextArea>
+
+      {state.wizardMode == "summary" && (
+        <div
+          style={{
+            margin: "0.5rem 0",
+          }}
+        >
+          <div
+            style={{
+              margin: "0.25rem 0",
+            }}
+          >
+            <Typography.Text type="secondary">Suggestions</Typography.Text>
+          </div>
+
+          {openai.loading && (
+            <div
+              style={{
+                width: "100%",
+                minHeight: "200px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <MagicWandLoading />
+            </div>
+          )}
+          {!openai.loading &&
+            openai.data?.result?.examples?.map((item) => (
+              <div
+                type="text"
+                className="openai-generated-content-item"
+                onClick={() => onSelectDescription(item)}
+              >
+                <Markdown>{item}</Markdown>
+              </div>
+            ))}
+        </div>
+      )}
+      {state.wizardMode == "rewrite" && (
+        <div
+          style={{
+            margin: "0.5rem 0",
+          }}
+        >
+          <div
+            style={{
+              margin: "0.25rem 0",
+            }}
+          >
+            <Typography.Text type="secondary">Suggestions</Typography.Text>
+          </div>
+          {openai.loading && (
+            <div
+              style={{
+                width: "100%",
+                minHeight: "200px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <MagicWandLoading />
+            </div>
+          )}
+          {!openai.loading &&
+            openai.data?.result?.examples?.map((item) => (
+              <div
+                type="text"
+                className="openai-generated-content-item"
+                onClick={() => onSelectDescription(item)}
+              >
+                <Markdown>{item}</Markdown>
+              </div>
+            ))}
+        </div>
+      )}
+      <Row style={{ marginTop: "1rem" }}>
+        <Button
+          onClick={() => {
+            onSave();
+          }}
+        >
+          Save
+        </Button>
+      </Row>
+    </>
+  );
+};
 
 const Achievements = ({ jobTitle, description, value, onChange }) => {
   // AI Actions helper
@@ -83,19 +301,40 @@ const Achievements = ({ jobTitle, description, value, onChange }) => {
   };
 
   const addAchievement = () => {
-    let newValue = value ? [...value] : [];
-    newValue.push({
-      theme: state.selectedTheme,
-      description: state.currentAchievement,
-    });
+    let mode = state.editIdx ? "edit" : "add";
+    if (mode == "edit") {
+      // Update the value
+      value[state.editIdx] = {
+        theme: state.selectedTheme,
+        description: state.currentAchievement,
+      };
+      onChange(value);
+    } else {
+      let newValue = value ? [...value] : [];
+      newValue.push({
+        theme: state.selectedTheme,
+        description: state.currentAchievement,
+      });
 
-    onChange(newValue);
+      onChange(newValue);
+      setState({
+        ...state,
+        modalVisible: false,
+        mode: null,
+        currentAchievement: null,
+        selectedTheme: null,
+      });
+    }
+  };
+
+  const onEditAchievement = (index) => {
     setState({
       ...state,
-      modalVisible: false,
-      mode: null,
-      currentAchievement: null,
-      selectedTheme: null,
+      modalVisible: true,
+      selectedTheme: value[index].theme,
+      currentAchievement: value[index].description,
+      isAtStep1: false,
+      editIdx: index,
     });
   };
 
@@ -109,124 +348,48 @@ const Achievements = ({ jobTitle, description, value, onChange }) => {
         onCancel={onModalClose}
         zIndex={1050}
       >
-        {/* {state.mode == "summary" && (
-          <div className="openai-model-content">
-            <div className="model-header">
-              {" "}
-              <Typography.Title level={4}>Summary</Typography.Title>
-              <Typography.Text type="secondary">
-                Click one of following options to add
-              </Typography.Text>
-            </div>
-
-            <Space direction="vertical">
-              {openai.loading && (
-                <div
-                  style={{
-                    minHeight: "400px",
-                  }}
-                >
-                  <Skeleton />
-                  <Skeleton />
-                  <Skeleton />
-                </div>
-              )}
-              {!openai.loading &&
-                openai.data?.results?.map((item, key) => (
-                  <div
-                    key={key}
-                    type="text"
-                    className="openai-generated-content-item"
-                    onClick={() => onSelectDescription(item.content)}
-                  >
-                    {item.content.split("\n").map(
-                      (item, index) =>
-                        item && (
-                          <span key={index}>
-                            {item}
-                            <br />
-                          </span>
-                        )
-                    )}
-                  </div>
-                ))}
-            </Space>
-          </div>
+        {state.isAtStep1 && (
+          <AchievementStep1
+            selectedTheme={state.selectedTheme}
+            themeDescription={themeDescription}
+            onSelect={(item) => {
+              setState({
+                ...state,
+                isAtStep1: false,
+                currentAchievement: item,
+              });
+            }}
+          />
         )}
-        {state.mode == "rewrite" && (
-          <div className="openai-model-content">
-            <div className="model-header">
-              {" "}
-              <Typography.Title level={4}>Rewrite</Typography.Title>
-              <Typography.Text type="secondary">
-                Click one of following options to add
-              </Typography.Text>
-            </div>
-
-            <Space direction="vertical">
-              {openai.loading && (
-                <div
-                  style={{
-                    minHeight: "400px",
-                  }}
-                >
-                  <Skeleton />
-                  <Skeleton />
-                  <Skeleton />
-                </div>
-              )}
-              {!openai.loading &&
-                openai.data?.results?.map((item) => (
-                  <div
-                    type="text"
-                    className="openai-generated-content-item"
-                    onClick={() => onSelectDescription(item.content)}
-                  >
-                    {item.content}
-                  </div>
-                ))}
-            </Space>
-          </div>
-        )} */}
-        <Typography.Title level={5}>
-          Selected Theme: {state.selectedTheme}
-        </Typography.Title>
-
-        {themeDescription.loading && (
-          <div className="spin-container" style={{ height: "100px" }}>
-            <Spin />
-          </div>
-        )}
-        {!themeDescription.loading && (
-          <>
-            <Typography.Text type="secondary">
-              {themeDescription.data}
-            </Typography.Text>
-            <Input.TextArea
-              rows={3}
-              style={{ marginTop: "1rem" }}
-              onChange={(e) =>
-                setState({ ...state, currentAchievement: e.target.value })
-              }
-            ></Input.TextArea>
-
-            <Row style={{ marginTop: "1rem" }}>
-              <Button
-                onClick={() => {
-                  addAchievement();
-                }}
-              >
-                Save
-              </Button>
-            </Row>
-          </>
+        {!state.isAtStep1 && (
+          <AchievementStep2
+            selectedTheme={state.selectedTheme}
+            achievement={state.currentAchievement}
+            onChange={(value) => {
+              setState({
+                ...state,
+                currentAchievement: value,
+              });
+            }}
+            onSave={() => {
+              addAchievement();
+            }}
+          />
         )}
       </Modal>
       <div style={{ paddingBottom: "1rem" }}>
         <Typography.Title level={5}>Achievements</Typography.Title>
-        <Typography.Text type="secondary">
-          Select topic to add achievements
-        </Typography.Text>
+        <div
+          style={{
+            marginBottom: "0.5rem",
+          }}
+        >
+          <Typography.Text type="secondary">
+            Fill your CV with achievements! Here are a list of themes that
+            relate to your experience – click on each one and write about your
+            successes. Don't forget to use CV Wizard to make it perfect!
+          </Typography.Text>
+        </div>
         <Row>
           {themeSuggestion.loading && (
             <div className="spin-container">
@@ -236,7 +399,7 @@ const Achievements = ({ jobTitle, description, value, onChange }) => {
           <Space wrap direction="horizontal">
             {!themeSuggestion.loading &&
               themeSuggestion.data &&
-              themeSuggestion.data?.map((item, index) => (
+              themeSuggestion.data?.result?.map((item, index) => (
                 <Button
                   key={index}
                   // type="text"
@@ -246,6 +409,7 @@ const Achievements = ({ jobTitle, description, value, onChange }) => {
                       ...state,
                       modalVisible: true,
                       selectedTheme: item,
+                      isAtStep1: true,
                     });
                   }}
                 >
@@ -267,18 +431,29 @@ const Achievements = ({ jobTitle, description, value, onChange }) => {
                   <Typography.Text type="secondary">
                     {item.theme}
                   </Typography.Text>
-                  <Button
-                    type="link"
-                    size="small"
-                    danger
-                    onClick={() => {
-                      let newValue = [...value];
-                      newValue.splice(index, 1);
-                      onChange(newValue);
-                    }}
-                  >
-                    <DeleteOutlined />
-                  </Button>
+                  <div>
+                    <Button
+                      type="link"
+                      size="small"
+                      onClick={() => {
+                        onEditAchievement(index);
+                      }}
+                    >
+                      <EditOutlined />
+                    </Button>
+                    <Button
+                      type="link"
+                      size="small"
+                      danger
+                      onClick={() => {
+                        let newValue = [...value];
+                        newValue.splice(index, 1);
+                        onChange(newValue);
+                      }}
+                    >
+                      <DeleteOutlined />
+                    </Button>
+                  </div>
                 </div>
                 <Typography.Text>{item.description}</Typography.Text>
               </div>

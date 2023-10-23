@@ -22,25 +22,86 @@ Skills:
 {{skills}}
 `;
 
-const generateProfessionalSummary = async (resumeId: string, n: number) => {
-  const resumeRef = await db.collection("resumes").doc(resumeId).get();
-  const resumeData = resumeRef.data() as Resume;
+const PROFSUMMARY_REWRITE_PROMPT = `You are a helpful AI assistant expert at generating professional summary given a resume sections. 
+Help rewrite the professional summary in about 50-60 words highlighting the key skills and achievements of the candidate. Make sure to pick the right skills and achievements based on the role they are looking for.
 
-  const targetRole = resumeData.role;
-  const targetSector = resumeData.sector || "N/A";
-  const targetGeography = resumeData.geography || "N/A";
+Here are the information: 
+Target Role: {{targetRole}}
+Target Sector: {{targetSector}}
+Target Geography: {{targetGeography}}
 
-  const education = JSON.stringify(resumeData.educationList);
-  const experience = JSON.stringify(resumeData.experienceList);
-  const skills = JSON.stringify(resumeData.skillList);
+Resume Sections:
+Education: 
+{{education}}
 
-  const prompt = PROFSUMMARY_PROMPT.replace("{{targetRole}}", targetRole)
-    .replace("{{targetSector}}", targetSector)
-    .replace("{{targetGeography}}", targetGeography)
-    .replace("{{education}}", education)
-    .replace("{{experience}}", experience)
-    .replace("{{skills}}", skills);
+Experience:
+{{experience}}
 
+Skills:
+{{skills}}
+
+Existing Summary:
+{{existingSummary}}
+
+Rewritten Summary in 50-60 words in professional way for a resume:
+`;
+
+const generateProfessionalSummary = async (resumeId: string, userId: string,  n: number) => {
+
+  let resumeData;
+  let targetRole;
+  let targetSector;
+  let targetGeography;
+  let education;
+  let experience;
+  let skills;
+
+  let prompt;
+  if (resumeId) {
+    let resumeRef = await db.collection("resumes").doc(resumeId).get();
+    resumeData = resumeRef.data() as Resume;
+
+    targetRole = resumeData.role;
+    targetSector = resumeData.sector || "N/A";
+    targetGeography = resumeData.geography || "N/A";
+
+    education = JSON.stringify(resumeData.educationList);
+    experience = JSON.stringify(resumeData.experienceList);
+    skills = JSON.stringify(resumeData.skillList);
+
+    prompt = PROFSUMMARY_PROMPT.replace("{{targetRole}}", targetRole)
+      .replace("{{targetSector}}", targetSector)
+      .replace("{{targetGeography}}", targetGeography)
+      .replace("{{education}}", education)
+      .replace("{{experience}}", experience)
+      .replace("{{skills}}", skills);
+  } else {
+    // Get data from profile
+    let educationRef = await db.collection("education").doc(userId).get();
+    let experienceRef = await db.collection("experience").doc(userId).get();
+    let skillRef = await db.collection("skill").doc(userId).get();
+    let personalInfo = await db.collection("personalInfo").doc(userId).get();
+
+    let educationData = educationRef.data();
+    let experienceData = experienceRef.data();
+    let skillData = skillRef.data();
+    let personalInfoData = personalInfo.data();
+
+    targetRole = personalInfoData?.currentRole;
+    targetSector = personalInfoData?.targetSector || "N/A";
+    targetGeography = personalInfoData?.targetGeography || "N/A";
+
+    education = JSON.stringify(educationData);
+    experience = JSON.stringify(experienceData);
+    skills = JSON.stringify(skillData);
+
+    prompt = PROFSUMMARY_PROMPT.replace("{{targetRole}}", targetRole)
+      .replace("{{targetSector}}", targetSector)
+      .replace("{{targetGeography}}", targetGeography)
+      .replace("{{education}}", education)
+      .replace("{{experience}}", experience)
+      .replace("{{skills}}", skills);
+  }
   console.log("prompt", prompt);
   const response = await openai.chat.completions.create({
     model: "gpt-3.5-turbo-0613",
@@ -64,25 +125,68 @@ const generateProfessionalSummary = async (resumeId: string, n: number) => {
   return suggestions;
 };
 
-const rewriteProfessionalSummary = async (resumeId: string, n: number) => {
-  const resumeRef = await db.collection("resumes").doc(resumeId).get();
-  const resumeData = resumeRef.data() as Resume;
+const rewriteProfessionalSummary = async (
+  resumeId: string | undefined,
+  existingSummary: string,
+  userId: string,
+  n: number
+) => {
+  let resumeData;
+  let targetRole;
+  let targetSector;
+  let targetGeography;
+  let education;
+  let experience;
+  let skills;
 
-  const targetRole = resumeData.role;
-  const targetSector = resumeData.sector || "N/A";
-  const targetGeography = resumeData.geography || "N/A";
+  let prompt;
+  if (resumeId) {
+    let resumeRef = await db.collection("resumes").doc(resumeId).get();
+    resumeData = resumeRef.data() as Resume;
 
-  const education = JSON.stringify(resumeData.educationList);
-  const experience = JSON.stringify(resumeData.experienceList);
-  const skills = JSON.stringify(resumeData.skillList);
+    targetRole = resumeData.role;
+    targetSector = resumeData.sector || "N/A";
+    targetGeography = resumeData.geography || "N/A";
 
-  let prompt = PROFSUMMARY_PROMPT.replace("{{targetRole}}", targetRole)
-    .replace("{{targetSector}}", targetSector)
-    .replace("{{targetGeography}}", targetGeography)
-    .replace("{{education}}", education)
-    .replace("{{experience}}", experience)
-    .replace("{{skills}}", skills);
+    education = JSON.stringify(resumeData.educationList);
+    experience = JSON.stringify(resumeData.experienceList);
+    skills = JSON.stringify(resumeData.skillList);
 
+    prompt = PROFSUMMARY_REWRITE_PROMPT.replace("{{targetRole}}", targetRole)
+      .replace("{{targetSector}}", targetSector)
+      .replace("{{targetGeography}}", targetGeography)
+      .replace("{{education}}", education)
+      .replace("{{experience}}", experience)
+      .replace("{{skills}}", skills)
+      .replace("{{existingSummary}}", existingSummary);
+  } else {
+    // Get data from profile
+    let educationRef = await db.collection("education").doc(userId).get();
+    let experienceRef = await db.collection("experience").doc(userId).get();
+    let skillRef = await db.collection("skill").doc(userId).get();
+    let personalInfo = await db.collection("personalInfo").doc(userId).get();
+
+    let educationData = educationRef.data();
+    let experienceData = experienceRef.data();
+    let skillData = skillRef.data();
+    let personalInfoData = personalInfo.data();
+
+    targetRole = personalInfoData?.currentRole;
+    targetSector = personalInfoData?.targetSector || "N/A";
+    targetGeography = personalInfoData?.targetGeography || "N/A";
+
+    education = JSON.stringify(educationData);
+    experience = JSON.stringify(experienceData);
+    skills = JSON.stringify(skillData);
+
+    prompt = PROFSUMMARY_PROMPT.replace("{{targetRole}}", targetRole)
+      .replace("{{targetSector}}", targetSector)
+      .replace("{{targetGeography}}", targetGeography)
+      .replace("{{education}}", education)
+      .replace("{{experience}}", experience)
+      .replace("{{skills}}", skills)
+      .replace("{{existingSummary}}", existingSummary);
+  }
   prompt =
     prompt +
     "\n\nRewrite the below summary in a more professional way and try to improve it.\n\nSummary:\n";

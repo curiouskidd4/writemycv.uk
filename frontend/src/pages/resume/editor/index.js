@@ -210,7 +210,7 @@ const ResumePreview = ({ resumeHTML }) => {
         className="resume-preview-frame"
         srcDoc={resumeHTML}
         style={{
-          // width: "500px",
+          // maxWidth: "14.5cm",
           // height: "100%",
           border: "none",
         }}

@@ -5,7 +5,13 @@ const CustomDateRange = ({ value, onChange, checkBoxText, ...rest }) => {
   const [currentlyWorking, setCurrentlyWorking] = useState(false);
   useEffect(() => {
     if (currentlyWorking) {
-      onChange([value[0], null]);
+      if (!value){
+        
+      }
+      else{
+        onChange([value[0], null]);
+
+      }
     }
   }, [currentlyWorking]);
 

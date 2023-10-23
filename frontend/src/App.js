@@ -81,7 +81,7 @@ const GenLayout = ({ children }) => {
   return (
     <>
       {isResumeEdit || publicResume ? null : <CustomHeader />}
-      <div id="detail">
+      <div id={isResumeEdit? "detail-large" : "detail"}>
         <Outlet />
       </div>
       <Footer />

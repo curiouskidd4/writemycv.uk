@@ -99,6 +99,12 @@ body {
   margin: auto;
 }
 
+#detail-large {
+  max-width: 1600px;
+  padding: 1rem;
+  margin: auto;
+}
+
 #public-detail {
   padding-top: 25px;
   max-width: 1200px;

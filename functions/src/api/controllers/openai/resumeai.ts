@@ -256,14 +256,14 @@ const educationSummaryRewrite = async (
   role: string,
   existingSummary: string,
   instructions?: string,
-  n: number = 1
+  n: number = 3
 ) => {
   console.log("Rewrite");
   let prompt;
   if (instructions) {
-    prompt = `Rewrite 3-4 single line bullets eduction sections for a resume for the role of ${role}. Make sure summary is in  past tense and british english. Make sure not to use they/he/them start sentence with past verb.\n Follow the following instructions carefully: ${instructions}  \nDegree: ${degree}\nSchool: ${school}\nSummary: ${existingSummary}`;
+    prompt = `Rewrite short summary (in 50 words) for eduction sections for a resume for the role of ${role}. Make sure summary is in  past tense and british english. Make sure not to use they/he/them start sentence with past verb.\n Follow the following instructions carefully: ${instructions}  \nDegree: ${degree}\nSchool: ${school}\nSummary: ${existingSummary}`;
   } else {
-    prompt = `Rewrite  3-4 single line bullets for eduction sections for a resume for the role of ${role}. Make sure summary is in past tense and british english. Make sure not to use they/he/them start sentence with past verb. \nDegree: ${degree}\nSchool: ${school}\nSummary: ${existingSummary}`;
+    prompt = `Rewrite  short summary (in 50 words) for eduction sections for a resume for the role of ${role}. Make sure summary is in past tense and british english. Make sure not to use they/he/them start sentence with past verb. \nDegree: ${degree}\nSchool: ${school}\nSummary: ${existingSummary}`;
   }
 
   const response = await openai.chat.completions.create({
@@ -288,9 +288,9 @@ const experienceSummarySuggestion = async (
   experienceRole: string,
   experienceOrg: string,
   role: string,
-  n: number = 1
+  n: number = 3
 ) => {
-  let prompt = `Write 3-4 single line bullets for experience section for a resume for the role of ${role}. Make sure summary is in  past tense and british english. \Experience Role: ${experienceRole}\Organization: ${experienceOrg}\nSummary:`;
+  let prompt = `Write short summary (in 50 words) for experience section for a resume for the role of ${role}. Make sure summary is in  past tense and british english. Make sure not to use they/he/them start sentence with past verb.  \Experience Role: ${experienceRole}\Organization: ${experienceOrg}\nSummary:`;
 
   const response = await openai.chat.completions.create({
     model: "gpt-3.5-turbo",
@@ -316,9 +316,9 @@ const experienceSummaryRewrite = async (
   experienceOrg: string,
   role: string,
   existingSummary: string,
-  n: number = 1
+  n: number = 3
 ) => {
-  let prompt = `Rewrite the summary (in 50 words) for experience section for a resume for the role of ${role}. Make sure summary past tense and british english.
+  let prompt = `Rewrite short summary (in 50 words) for experience section for a resume for the role of ${role}. Make sure summary past tense and british english.
   Make sure not to use they/he/them start sentence with past verb. \Experience Role: ${experienceRole}\Organization: ${experienceOrg}\nSummary: ${existingSummary}\n Suggested Summary:`;
 
   const response = await openai.chat.completions.create({
@@ -447,10 +447,7 @@ const themeSuggestion = async (role: string, alreadyAdded: string[]) => {
   return responseArray;
 };
 
-const themeDescriptionSuggestion = async (
-  role: string,
-  theme: string,
-) => {
+const themeDescriptionSuggestion = async (role: string, theme: string) => {
   //write 2-3 sentence on how one should write an achievement for "Data Visualization" theme in a resume under work experience section and suggest one possible example
 
   let prompt = `Write 2-3 sentence on how one should write an achievement for "${theme}" theme in a resume under work experience section and suggest one possible example`;
@@ -458,11 +455,10 @@ const themeDescriptionSuggestion = async (
   const response = await openai.chat.completions.create({
     messages: [{ role: "user", content: prompt }],
     model: "gpt-3.5-turbo-0613",
-
   });
   const responseString = response.choices[0].message.content;
   return responseString;
-}
+};
 export {
   educationHelper,
   experienceHelper,
@@ -475,5 +471,5 @@ export {
   professionSummaryRewrite,
   skillSuggestion,
   themeSuggestion,
-  themeDescriptionSuggestion
+  themeDescriptionSuggestion,
 };

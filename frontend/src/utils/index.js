@@ -324,6 +324,41 @@ const useOpenAI = () => {
     }
   };
 
+  const getAchivementSuggestion = async (data) => {
+    data = {...openaiContext, ...data, };
+
+    setState({
+      loading: true,
+      data: null,
+      error: null,
+    });
+    try {
+      const token = await auth.user.getIdToken();
+
+      const response = await axios.post(
+        `${BASE_URL}/api/openai/achievementHelper`,
+        data,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setState({
+        loading: false,
+        data: response.data,
+        error: null,
+      });
+    } catch (err) {
+      setState({
+        loading: false,
+        data: null,
+        error: err.response.data.message,
+      });
+    }
+  };
+
   const getResumeSummary = async (data) => {
     setState({
       loading: true,
@@ -368,7 +403,8 @@ const useOpenAI = () => {
     getEducationCoursesSuggestion,
     getThemeSuggestions,
     getThemeDescription,
-    getResumeSummary
+    getResumeSummary, 
+    getAchivementSuggestion
   };
 };
 

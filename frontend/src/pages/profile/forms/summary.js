@@ -15,7 +15,7 @@ import { useAuth } from "../../../authContext";
 import { useDoc, useMutateDoc } from "../../../firestoreHooks";
 import FormLabel from "../../../components/labelWithActions";
 import { useOpenAI } from "../../../utils";
-import { MagicWandIcon } from "../../../components/faIcons";
+import { MagicWandIcon, MagicWandLoading } from "../../../components/faIcons";
 
 const FormLabelWithAIActions = ({ resumeId, description, onAdd }) => {
   // AI Actions helper
@@ -72,20 +72,30 @@ const FormLabelWithAIActions = ({ resumeId, description, onAdd }) => {
               {" "}
               <Typography.Title level={4}>New Summary</Typography.Title>
               <Typography.Text type="secondary">
-                Here are some fresh ideas for summary! Click one of following options to add
+                Here are some fresh ideas for summary! Click one of following
+                options to add
               </Typography.Text>
             </div>
 
-            {openai.loading && (
-              <div
-                style={{
-                  minHeight: "400px",
-                }}
-              >
-                <Skeleton />
-              </div>
-            )}
-            <Space direction="vertical">
+            <Space
+              direction="vertical"
+              style={{
+                width: "100%",
+              }}
+            >
+              {openai.loading && (
+                <div
+                  style={{
+                    width: "100%",
+                    minHeight: "400px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <MagicWandLoading />
+                </div>
+              )}
               {!openai.loading &&
                 openai.data &&
                 openai.data?.result.map((item, key) => (
@@ -122,17 +132,25 @@ const FormLabelWithAIActions = ({ resumeId, description, onAdd }) => {
               </Typography.Text>
             </div>
 
-            {/* {JSON.stringify(openai.data)} */}
-            {openai.loading && (
-              <div
-                style={{
-                  minHeight: "400px",
-                }}
-              >
-                <Skeleton />
-              </div>
-            )}
-            <Space direction="vertical">
+            <Space
+              direction="vertical"
+              style={{
+                width: "100%",
+              }}
+            >
+              {openai.loading && (
+                <div
+                  style={{
+                    width: "100%",
+                    minHeight: "400px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <MagicWandLoading />
+                </div>
+              )}
               {!openai.loading &&
                 openai.data?.result.map((item) => (
                   <div
@@ -286,9 +304,12 @@ const ProfessionalSummary = () => {
         }}
       >
         <Typography.Text type="secondary">
-          Compose 2-4 concise and spirited sentences to captivate your audience!
-          Highlight your position, expertise, and most crucially - your standout
-          accomplishments, top attributes, and abilities.
+          Write 2-4 sentences that summarise your experience, skills and value
+          to an employer. Begin your profile with a clear and concise title that
+          reflects your professional identity, highlight your years of
+          experience, and explain the impact you make on an organisation. You
+          can also share your educational background and key skills. <br/>
+          If you need some fresh ideas, try CV Wizard – it can refine your profile or write you a new one based on your target role.
         </Typography.Text>
       </div>
       {summary.loading ? <Skeleton /> : null}
