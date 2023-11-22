@@ -414,7 +414,7 @@ const SkillForm = ({ onFinish, initialValues, isLoading }) => {
 const SkillSection = () => {
   const [form] = Form.useForm();
   const { user } = useAuth();
-  const skill = useDoc("skill", user.uid);
+  const skill = useDoc("skill", user.uid, true);
   const createUpdateDoc = useMutateDoc("skill", user.uid, true);
 
   const onFinish = (values) => {

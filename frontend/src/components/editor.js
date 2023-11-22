@@ -159,22 +159,22 @@ const MenuBar = ({ editor }) => {
       >
         h6
       </button> */}
-      <Button
+      {/* <Button
         size="small"
         onClick={() => editor.chain().focus().toggleBulletList().run()}
         className={editor.isActive("bulletList") ? "is-active" : ""}
         type={editor.isActive("bulletList") ? "primary" : undefined}
       >
         bullet list
-      </Button>
-      <Button
+      </Button> */}
+      {/* <Button
         size="small"
         onClick={() => editor.chain().focus().toggleOrderedList().run()}
         className={editor.isActive("orderedList") ? "is-active" : ""}
         type={editor.isActive("orderedList") ? "primary" : undefined}
       >
         ordered list
-      </Button>
+      </Button> */}
       {/* <button
         onClick={() => editor.chain().focus().toggleCodeBlock().run()}
         className={editor.isActive('codeBlock') ? 'is-active' : ''}
@@ -251,6 +251,7 @@ const Tiptap = ({ content, onChange }) => {
       // console.log(editor.getHTML());
       onChange(editor.getHTML());
     },
+  
     slotBefore: <MenuBar />,
   });
 

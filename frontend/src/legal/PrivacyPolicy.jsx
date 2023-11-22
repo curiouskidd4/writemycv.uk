@@ -16,7 +16,7 @@ export default function PrivacyPolicy() {
           <Typography.Title level={2}>Privacy Notice</Typography.Title>
           <Typography.Paragraph>
             This privacy notice discloses the privacy practices for
-            schoolleadersadvantage.com. This privacy notice applies solely to
+            resu.me. This privacy notice applies solely to
             information collected by this website. It will notify you of the
             following:
           </Typography.Paragraph>
@@ -154,11 +154,11 @@ export default function PrivacyPolicy() {
             If you feel that we are not abiding by this privacy policy, please
             contact us immediately via email at{" "}
             <a
-              href="mailto:info@inspiredschoolsolutions.com"
+              href="mailto:hello@resum.me"
               target="_blank"
               rel="noopener"
             >
-              info@inspiredschoolsolutions.com
+              hello@resum.me
             </a>
             .
           </Typography.Paragraph>

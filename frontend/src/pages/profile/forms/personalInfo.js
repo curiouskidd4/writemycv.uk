@@ -170,7 +170,7 @@ const PersonalInfoForm = ({ onFinish, initialValues, isLoading }) => {
 const PersonalInfoSection = () => {
   const { user } = useAuth();
 
-  const personalInfo = useDoc("personalInfo", user.uid);
+  const personalInfo = useDoc("personalInfo", user.uid, true);
   const updateProfile = useMutateDoc("personalInfo", user.uid, true);
 
   const onFinish = (values) => {

@@ -1,5 +1,3 @@
-// userRoutes.ts
-
 import { Router, Request, Response } from "express";
 // import { myMiddleware } from '../middlewares';
 import { Validator } from "express-json-validator-middleware";
@@ -12,20 +10,15 @@ import express from "express";
 const { validate } = new Validator({});
 
 const router = Router();
-// router.use(bodyParser.raw({type: '*/*'}));
 
-console.log("STRIPE_BACKEND_KEY", STRIPE_BACKEND_KEY.value());
-const stripe = new stripe_(
-  "sk_test_51NzKZcSHT210NSXLdn7ORLdshtiGdauxKjauxwEN7NrojYaxRdn5AmDl7EPTWv0UwzJCTgPhtvOLYPhtQnL0d9JN00oefj9riQ",
-  {
-    apiVersion: "2023-08-16",
-  }
-);
 
-const DOMAIN = "http://localhost:3000";
 
 const fulfillOrder = async (session: stripe_.Checkout.Session) => {
   // Update user document
+  const stripe = new stripe_(STRIPE_BACKEND_KEY.value(), {
+    apiVersion: "2023-08-16",
+  });
+
   let email = session.customer_details?.email;
 
   if (!email) {
@@ -59,10 +52,13 @@ const fulfillOrder = async (session: stripe_.Checkout.Session) => {
   let userId = user.docs[0].id;
   console.log("User ID: ", userId);
 
-  await db.collection("users").doc(userId).update({
-    expiry: new Date(expiry * 1000),
-    subscriptionId: subscriptionId,
-  });
+  await db
+    .collection("users")
+    .doc(userId)
+    .update({
+      expiry: new Date(expiry * 1000),
+      subscriptionId: subscriptionId,
+    });
 
   // get subscription
   // const subscription = stripe.subscriptions.retrieve(subscriptionId);
@@ -70,9 +66,11 @@ const fulfillOrder = async (session: stripe_.Checkout.Session) => {
 
 // Webhook for stripe
 router.post("/webhook", async (req: any, res: Response) => {
-  const payload  = req.rawBody;
+  const payload = req.rawBody;
   const sig = req.headers["stripe-signature"] as string;
-
+  const stripe = new stripe_(STRIPE_BACKEND_KEY.value(), {
+    apiVersion: "2023-08-16",
+  });
   let event: stripe_.Event;
 
   try {

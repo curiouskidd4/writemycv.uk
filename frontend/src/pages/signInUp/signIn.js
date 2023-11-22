@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { Form, Input, Button, notification, Radio, Typography } from "antd";
 import { Link } from "react-router-dom";
-
+import { GoogleOutlined, LockOutlined } from "@ant-design/icons";
+import { auth } from "../../services/firebase";
+import { useAuth } from "../../authContext";
 const layout = {
   labelCol: { span: 8 },
   wrapperCol: { span: 16 },
@@ -25,6 +27,8 @@ const CustomInput = (props) => {
 
 const SignInForm = (props) => {
   const [form] = Form.useForm();
+  const auth = useAuth();
+
   const [loading, updateLoading] = useState(false);
 
   const openNotification = (type, title, description) => {
@@ -109,7 +113,26 @@ const SignInForm = (props) => {
           {" "}
           <a style={{ color: "var(--primary)" }}>Sign Up</a>
         </Link>
-      </Typography.Text >
+      </Typography.Text>
+
+      <div
+        style={{
+          marginTop: "2rem",
+        }}
+      >
+        <Typography.Text type="secondary">
+          Or continue with Google
+          <Button
+            style={{ marginLeft: "20px" }}
+            onClick={() => {
+              auth.signInWithGoogle();
+            }}
+          >
+            <GoogleOutlined />
+            Google
+          </Button>
+        </Typography.Text>
+      </div>
     </>
   );
 };

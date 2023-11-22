@@ -715,7 +715,7 @@ const ExperienceForm = ({ onFinish, initialValues, isLoading }) => {
 const ExperienceSection = () => {
   const [form] = Form.useForm();
   const { user } = useAuth();
-  const experience = useDoc("experience", user.uid);
+  const experience = useDoc("experience", user.uid, true);
   const createUpdateDoc = useMutateDoc("experience", user.uid, true);
 
   const onFinish = (values) => {
@@ -723,7 +723,7 @@ const ExperienceSection = () => {
     // For each item in values.experienceItems change dateRange to startDate and endDate of firestore
     let newValues = values.experienceList.map((item) => {
       let newItem = { ...item };
-      newItem.startDate = newItem.dateRange[0].toDate();
+      newItem.startDate =  newItem.dateRange[0] ? newItem.dateRange[0].toDate() : null;
       newItem.endDate = newItem.dateRange[1]
         ? newItem.dateRange[1].toDate()
         : null;
@@ -750,7 +750,7 @@ const ExperienceSection = () => {
       ...rest,
       description: rest.description || rest.descriptions,
       dateRange: [
-        dayjs(startDate.toDate()),
+        startDate? dayjs(startDate.toDate()): null,
         endDate ? dayjs(endDate.toDate()) : null,
       ],
     })) || [];

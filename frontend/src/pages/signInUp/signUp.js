@@ -10,6 +10,7 @@ import {
 } from "antd";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../authContext";
+import { GoogleOutlined, LockOutlined } from "@ant-design/icons";
 
 const layout = {
   labelCol: { span: 8 },
@@ -150,6 +151,24 @@ const SignUpForm = (props) => {
           <a style={{ color: "var(--primary)" }}>Sign In</a>
         </Link>
       </Typography.Text>
+      <div
+        style={{
+          marginTop: "2rem",
+        }}
+      >
+        <Typography.Text type="secondary">
+          Or continue with Google
+          <Button
+            style={{ marginLeft: "20px" }}
+            onClick={() => {
+              auth.signInWithGoogle();
+            }}
+          >
+            <GoogleOutlined />
+            Google
+          </Button>
+        </Typography.Text>
+      </div>
     </Form>
   );
 };

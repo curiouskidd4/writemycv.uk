@@ -38,10 +38,12 @@ import { downloadStorageContent } from "../../helpers";
 import "./index.css";
 import MoreOptions from "./moreOptions";
 import { NewResumeModal } from "./newResumeModal";
+import useUtils from "../../utils/download";
 
 
 const ResumeItem = ({ resume }) => {
   const { user } = useAuth();
+  const utils = useUtils();
   const [state, setState] = useState({
     error: "",
     loading: true,
@@ -83,6 +85,13 @@ const ResumeItem = ({ resume }) => {
     let url = URL.createObjectURL(data);
     // Open the url in new tab
     window.open(url, "_blank");
+  };
+
+  const downloadResumeDocx = async (e) => {
+    // e.preventDefault();
+    await utils.exportResumeToDoc({ resumeId: resume.id });
+    console.log("data", utils.data?.url);
+    window.open(utils.data?.url, "_blank");
   };
 
   let createdAt = moment(resume.createdAt.toDate()).fromNow();
@@ -144,6 +153,8 @@ const ResumeItem = ({ resume }) => {
                       <MoreOptions
                         resumeId={resume.id}
                         publicResumeId={resume.publicResumeId}
+                        downloadDocx={downloadResumeDocx}
+                        downloadLoading={utils.loading}
                       />
                     }
                     trigger="click"

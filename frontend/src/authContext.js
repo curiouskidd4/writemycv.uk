@@ -11,8 +11,11 @@ import {
   signInWithEmailAndPassword,
   updatePassword,
   reauthenticateWithCredential,
+  GoogleAuthProvider,
+  signInWithPopup,
 } from "firebase/auth";
 import { addDoc, collection, doc, getDoc, setDoc } from "firebase/firestore";
+const gauthProvider = new GoogleAuthProvider();
 const baseUrl = process.env.REACT_APP_API_URL;
 
 const authContext = createContext();
@@ -66,7 +69,6 @@ const useProvideAuth = () => {
     const userDoc = await getDoc(userRef);
     if (userDoc.exists()) {
       let userData = userDoc.data();
-
 
       let res = window.pendo.initialize({
         visitor: {
@@ -193,10 +195,24 @@ const useProvideAuth = () => {
     });
   };
 
-  const reautheticate = async  (password) => {
+  const reautheticate = async (password) => {
     let user = auth.currentUser;
     let credential = EmailAuthProvider.credential(user.email, password);
     return reauthenticateWithCredential(user, credential);
+  };
+
+  const signInWithGoogle = async () => {
+    try {
+      let res = await signInWithPopup(auth, gauthProvider);
+      const credential = GoogleAuthProvider.credentialFromResult(res);
+      let user = res.user;
+      await saveUserToFirebase(user);
+    } catch (err) {
+      return {
+        message: err.message,
+        code: err.code,
+      };
+    }
   };
 
   const logout = async () => {
@@ -229,7 +245,8 @@ const useProvideAuth = () => {
     updateUserProfie,
     markProfileCompleted,
     resetPassword,
-    reautheticate
+    reautheticate,
+    signInWithGoogle,
   };
 };
 

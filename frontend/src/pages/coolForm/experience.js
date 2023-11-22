@@ -31,7 +31,7 @@ let questions = [
   {
     id: "6",
     question:
-      "Short description of your role (in 2-3 bullet points or 50-70 words)",
+      "Short description of your role ( 50-70 words)",
     type: "textarea",
     tip: "",
     isOptional: true,

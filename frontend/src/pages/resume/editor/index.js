@@ -47,8 +47,8 @@ import { ProviderResume } from "../../../resumeContext";
 const ResumeSectionSorter = ({ sectionOrder, onChange }) => {
   const defaultSctionOrder = [
     "professionalSummary",
-    "education",
     "experience",
+    "education",
     "skills",
   ];
 

@@ -72,3 +72,9 @@ frontend/build
 frontend/node_modules
 data/
 resu-me*.json
+functions/.env.local
+functions/.env.resu-me-a5cff
+.env.dev
+.firebaserc
+firebase-export-1697437240554Sk6nOT/
+**/old/

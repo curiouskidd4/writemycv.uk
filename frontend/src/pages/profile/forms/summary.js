@@ -279,7 +279,7 @@ const ProfessionalSummary = () => {
   const { user } = useAuth();
   const [form] = Form.useForm();
 
-  const summary = useDoc("professionalSummary", user.uid);
+  const summary = useDoc("professionalSummary", user.uid, true);
   const updateSummary = useMutateDoc("professionalSummary", user.uid, true);
   const onFinish = (values) => {
     // console.log("Received values of form: ", values);

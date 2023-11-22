@@ -4,10 +4,10 @@ import { Readable } from "stream";
 
 interface File {
   path: string;
-  filename: string;
-  mimeType: string;
-  encoding: string;
-  file: Readable;
+  filename?: string;
+  mimeType?: string;
+  encoding?: string;
+  file?: Readable;
 }
 
 interface CustomRequest extends Request {

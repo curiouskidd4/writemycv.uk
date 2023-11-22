@@ -47,7 +47,7 @@ let questions = [
   {
     id: "6",
     question:
-      "Mention your projects, achievements, awards, etc. (in 2-3 bullet points)",
+      "Mention your projects, achievements, awards, etc. ",
     type: "text",
     // tip: "If you have graduated in last 2 years, please add relevant achievements",
     isOptional: true,

@@ -392,6 +392,41 @@ const useOpenAI = () => {
     }
   };
 
+  const parseResume = async (data) => {
+    setState({
+      loading: true,
+      data: null,
+      error: null,
+    });
+    try {
+      const token = await auth.user.getIdToken();
+      const response = await axios.post(
+        `${BASE_URL}/api/openai/parseResume`,
+        data,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "content-type": "multipart/form-data",
+
+          },
+        }
+      );
+
+      setState({
+        loading: false,
+        data: response.data,
+        error: null,
+      });
+      return response.data;
+    } catch (err) {
+      setState({
+        loading: false,
+        data: null,
+        error: err.response.data,
+      });
+    }
+  };
+
   return {
     ...state,
     getEducationSummary,
@@ -404,7 +439,8 @@ const useOpenAI = () => {
     getThemeSuggestions,
     getThemeDescription,
     getResumeSummary, 
-    getAchivementSuggestion
+    getAchivementSuggestion, 
+    parseResume,
   };
 };
 

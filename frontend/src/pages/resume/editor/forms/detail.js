@@ -119,7 +119,7 @@ const DetailForm = ({ resumeId }) => {
     values = values.map((item) => {
       let newItem = { ...item };
       newItem.dateRange = [
-        dayjs(item.startDate.toDate()),
+        item.startDate? dayjs(item.startDate.toDate()): null,
         item.endDate ? dayjs(item.endDate.toDate()) : null,
       ];
       delete newItem.startDate;
@@ -135,7 +135,7 @@ const DetailForm = ({ resumeId }) => {
     values = values.map((item) => {
       let newItem = { ...item };
       newItem.dateRange = [
-        dayjs(item.startDate.toDate()),
+        item.startDate? dayjs(item.startDate.toDate()): null,
         item.endDate ? dayjs(item.endDate.toDate()) : null,
       ];
       delete newItem.startDate;

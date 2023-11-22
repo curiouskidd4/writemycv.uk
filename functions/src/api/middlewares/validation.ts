@@ -13,6 +13,7 @@ const extractFiles = async (
   res: Response,
   next: NextFunction
 ) => {
+
   const multipart =
     req.method === "POST" &&
     req.headers["content-type"] &&
@@ -38,7 +39,6 @@ const extractFiles = async (
   // Process files
   busboyInstance.on("file", (fieldname, file, info) => {
     const { filename, encoding, mimeType } = info;
-
     const path = join(tmpdir(), `${new Date().toISOString()}-${filename}`);
     // NOTE: Multiple files could have same fieldname (which is y I'm using arrays here)
     incomingFiles[fieldname] = incomingFiles[fieldname] || [];
@@ -64,14 +64,20 @@ const extractFiles = async (
     //
     file.pipe(writeStream);
   });
+  busboyInstance.on("error", (e) => {
+    console.log("Execution started, error Block");
+    console.log(e);
+    console.log("Execution Ended, error Block");
+  });
   //
-  busboyInstance.on("finish", async () => {
+  busboyInstance.on("close", async () => {
     await Promise.all(writes);
     req.files = incomingFiles;
     req.body = incomingFields;
     next();
   });
-  req.pipe(busboyInstance);
+  // req.pipe(busboyInstance);
+  busboyInstance.end(req.body);
 };
 
 const validateFirebaseIdToken = async (
@@ -79,10 +85,7 @@ const validateFirebaseIdToken = async (
   res: Response,
   next: NextFunction
 ) => {
-
-  const excludedRoutes: string[] = [
-    '/stripe/webhook',
-  ];
+  const excludedRoutes: string[] = ["/stripe/webhook"];
 
   if (excludedRoutes.includes(req.path)) {
     // Exclude the route from authentication

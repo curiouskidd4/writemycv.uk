@@ -191,8 +191,9 @@ const AchievementStep2 = ({ selectedTheme, achievement, onChange, onSave }) => {
             </div>
           )}
           {!openai.loading &&
-            openai.data?.result?.examples?.map((item) => (
+            openai.data?.result?.examples?.map((item, idx) => (
               <div
+                key={idx}
                 type="text"
                 className="openai-generated-content-item"
                 onClick={() => onSelectDescription(item)}
@@ -301,14 +302,21 @@ const Achievements = ({ jobTitle, description, value, onChange }) => {
   };
 
   const addAchievement = () => {
-    let mode = state.editIdx ? "edit" : "add";
+    let mode = (state.editIdx != null || state.editIdx != undefined) ? "edit" : "add";
     if (mode == "edit") {
       // Update the value
       value[state.editIdx] = {
-        theme: state.selectedTheme,
+        theme: state.selectedTheme || "",
         description: state.currentAchievement,
       };
       onChange(value);
+      setState({
+        ...state,
+        modalVisible: false,
+        mode: null,
+        currentAchievement: null,
+        selectedTheme: null,
+      });
     } else {
       let newValue = value ? [...value] : [];
       newValue.push({

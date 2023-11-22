@@ -24,6 +24,7 @@ export const NewResumeModal = ({ visible, onCancel, onConfirm, userId }) => {
       userId,
       deleted: false,
       createdAt: new Date(),
+      copyFromProfile: true,
     };
     // Drop empty fields
     Object.keys(data).forEach((key) => data[key] == null && delete data[key]);
@@ -105,7 +106,7 @@ export const NewResumeModal = ({ visible, onCancel, onConfirm, userId }) => {
             placeholder="Mention job description you are targeting"
             autoSize={{ minRows: 3, maxRows: 5 }} />
         </Form.Item>
-
+{/* 
         <Form.Item
           // label="Copy from your profile"
           name="copyFromProfile"
@@ -113,7 +114,7 @@ export const NewResumeModal = ({ visible, onCancel, onConfirm, userId }) => {
           valuePropName="checked"
         >
           <Checkbox>Copy data from your profile</Checkbox>
-        </Form.Item>
+        </Form.Item> */}
 
         <Form.Item>
           <Button

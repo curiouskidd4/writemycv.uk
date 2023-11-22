@@ -8,19 +8,18 @@ import stripe_ from "stripe";
 import { STRIPE_BACKEND_KEY } from "../../utils/vars";
 import bodyParser from "body-parser";
 const { validate } = new Validator({});
-
 const router = Router();
-console.log("STRIPE_BACKEND_KEY", STRIPE_BACKEND_KEY.value());
-const stripe = new stripe_(
-  "sk_test_51NzKZcSHT210NSXLdn7ORLdshtiGdauxKjauxwEN7NrojYaxRdn5AmDl7EPTWv0UwzJCTgPhtvOLYPhtQnL0d9JN00oefj9riQ",
-  {
-    apiVersion: "2023-08-16",
-  }
-);
 
 const DOMAIN = "http://localhost:3000";
 // Create checkout session
 router.post("/create-checkout-session", async (req: Request, res: Response) => {
+  const stripe = new stripe_(
+    STRIPE_BACKEND_KEY.value(),
+    {
+      apiVersion: "2023-08-16",
+    }
+  );
+  
   // Get Price ID from body
   const { priceId, quantity } = req.body;
 
@@ -50,6 +49,13 @@ router.post("/create-checkout-session", async (req: Request, res: Response) => {
 });
 
 const fulfillOrder = async (session: stripe_.Checkout.Session) => {
+  const stripe = new stripe_(
+    STRIPE_BACKEND_KEY.value(),
+    {
+      apiVersion: "2023-08-16",
+    }
+  );
+  
   // Update user document
   let email = session.customer_details?.email;
 

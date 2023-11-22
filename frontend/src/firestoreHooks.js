@@ -96,6 +96,8 @@ const useMutateDoc = (collectionName, docId, merge) => {
   const mutate = async (data) => {
     setLoading(true);
     let id = docId;
+    // data = JSON.parse(JSON.stringify(data));
+    
     try {
       if (docId === "new") {
         // const docRef = await collection(db, collectionName).add(data);

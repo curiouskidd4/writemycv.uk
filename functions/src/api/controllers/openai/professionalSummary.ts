@@ -1,7 +1,10 @@
-import e from "cors";
 import { Resume } from "../../../types/resume";
 import { db } from "../../../utils/firebase";
-import { openai } from "../../../utils/openai";
+import {
+  openai,
+  DEFAULT_MODEL,
+  DEFAULT_SYSTEM_MESSAGE,
+} from "../../../utils/openai";
 
 const PROFSUMMARY_PROMPT = `You are a helpful AI assistant expert at generating professional summary given a resume sections. 
 Generate a professional summary in about 50-60 words highlighting the key skills and achievements of the candidate. Make sure to pick the right skills and achievements based on the role they are looking for.
@@ -46,8 +49,11 @@ Existing Summary:
 Rewritten Summary in 50-60 words in professional way for a resume:
 `;
 
-const generateProfessionalSummary = async (resumeId: string, userId: string,  n: number) => {
-
+const generateProfessionalSummary = async (
+  resumeId: string,
+  userId: string,
+  n: number
+) => {
   let resumeData;
   let targetRole;
   let targetSector;
@@ -104,15 +110,13 @@ const generateProfessionalSummary = async (resumeId: string, userId: string,  n:
   }
   console.log("prompt", prompt);
   const response = await openai.chat.completions.create({
-    model: "gpt-3.5-turbo-0613",
-    // model: "gpt-4-0613",
+    model: DEFAULT_MODEL,
     temperature: 0.5,
     n: n || 1,
     messages: [
       {
         role: "system",
-        content:
-          "You are a helpul AI that helps people write impressive resumes.",
+        content: DEFAULT_SYSTEM_MESSAGE,
       },
       { role: "user", content: prompt },
     ],
@@ -191,15 +195,14 @@ const rewriteProfessionalSummary = async (
     prompt +
     "\n\nRewrite the below summary in a more professional way and try to improve it.\n\nSummary:\n";
   const response = await openai.chat.completions.create({
-    model: "gpt-3.5-turbo-0613",
-    // model: "gpt-4-0613",
+    model: DEFAULT_MODEL,
     temperature: 0.5,
     n: n || 1,
     messages: [
       {
         role: "system",
-        content:
-          "You are a helpul AI that helps people write impressive resumes.",
+        content: DEFAULT_SYSTEM_MESSAGE,
+
       },
       { role: "user", content: prompt },
     ],

@@ -1,9 +1,0 @@
-main.private {
-  min-height: calc(100vh - 210px);
-}
-
-@media (max-width: 767px) {
-  main.private {
-    min-height: calc(100vh - 244px);
-  }
-}

@@ -44,7 +44,7 @@ import { downloadStorageContent } from "../../helpers";
 import "./index.css";
 import { useMutateDoc } from "../../firestoreHooks";
 
-const MoreOptions = ({ resumeId, publicResumeId }) => {
+const MoreOptions = ({ resumeId, publicResumeId, downloadDocx , downloadLoading}) => {
   const [copyModalVisible, setCopyModalVisible] = useState(false);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   let existingPublicLink =
@@ -186,14 +186,27 @@ const MoreOptions = ({ resumeId, publicResumeId }) => {
             Get Public Link
           </Button>
         )}
+       <Button
+          type="link"
+          loading={downloadLoading}
+          // icon={<DownloadOutlined />}
+          icon={
+            <span role="img" aria-label="share-alt" class="anticon anticon-share-alt"><img src="/icon-word.svg" width="16px" /></span>}
 
+          onClick={(e) => {
+            e.preventDefault();
+            downloadDocx();
+          }}
+        >
+          Download Word
+        </Button>
         <Button
           type="link"
           icon={<DeleteOutlined />}
           danger
           onClick={(e) => {
             e.preventDefault();
-            setDeleteModalVisible(true);
+            setDeleteModalVisible(e);
           }}
         >
           Delete Resume

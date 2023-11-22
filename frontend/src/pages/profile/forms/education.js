@@ -34,6 +34,7 @@ import { useOpenAI } from "../../../utils";
 import CustomDateRange from "../../../components/dateRange";
 import { MagicWandIcon, MagicWandLoading } from "../../../components/faIcons";
 import Markdown from "react-markdown";
+import withPaywall from "../../../components/paywallHOC";
 
 const FormLabelWithAIActions = ({
   degree,
@@ -229,40 +230,7 @@ const FormLabelWithAIActions = ({
             placement="bottomRight"
             trigger={["click"]}
             content={
-              <div>
-                <Space direction="vertical">
-                  <Typography.Text type="secondary">
-                    Write with CV Wizard
-                  </Typography.Text>
-                  <Button
-                    type="link"
-                    size="small"
-                    disabled={
-                      description && description.length > 20 ? false : true
-                    }
-                    onClick={handleRewrite}
-                  >
-                    Rephrase and Optimise
-                  </Button>
-                  {/* <Button
-                    type="link"
-                    size="small"
-                    disabled={
-                      description && description.length > 20 ? false : true
-                    }
-                  >
-                    Repharse with Instructions
-                  </Button> */}
-                  <Button
-                    type="link"
-                    size="small"
-                    disabled={degree && school ? false : true}
-                    onClick={handleGenSummary}
-                  >
-                    Generate New Summary
-                  </Button>
-                </Space>
-              </div>
+              withPaywall(popOverContent())
             }
           >
             <Button type="link" size="small">
@@ -275,6 +243,41 @@ const FormLabelWithAIActions = ({
       />
     </>
   );
+
+  function popOverContent() {
+    return <div>
+      <Space direction="vertical">
+        <Typography.Text type="secondary">
+          Write with CV Wizard
+        </Typography.Text>
+        <Button
+          type="link"
+          size="small"
+          disabled={description && description.length > 20 ? false : true}
+          onClick={handleRewrite}
+        >
+          Rephrase and Optimise
+        </Button>
+        {/* <Button
+          type="link"
+          size="small"
+          disabled={
+            description && description.length > 20 ? false : true
+          }
+        >
+          Repharse with Instructions
+        </Button> */}
+        <Button
+          type="link"
+          size="small"
+          disabled={degree && school ? false : true}
+          onClick={handleGenSummary}
+        >
+          Generate New Summary
+        </Button>
+      </Space>
+    </div>;
+  }
 };
 
 const CourseLabelWithAIActions = ({ degree, school, onAddCourses }) => {
@@ -796,9 +799,7 @@ const EducationForm = ({ onFinish, initialValues, isLoading }) => {
         <Button type="primary" htmlType="submit" loading={isLoading}>
           Save
         </Button>
-        {/* <Button htmlType="button" onClick={onReset}>
-          Reset
-        </Button> */}
+        
       </Form.Item>
     </Form>
   );
@@ -807,7 +808,7 @@ const EducationForm = ({ onFinish, initialValues, isLoading }) => {
 const EducationSection = () => {
   const [form] = Form.useForm();
   const { user } = useAuth();
-  const education = useDoc("education", user.uid);
+  const education = useDoc("education", user.uid, true);
   const createUpdateDoc = useMutateDoc("education", user.uid, true);
 
   const onFinish = (values) => {
@@ -815,7 +816,7 @@ const EducationSection = () => {
     // For each item in values.EducationItems change dateRange to startDate and endDate of firestore
     let newValues = values.educationList.map((item) => {
       let newItem = { ...item };
-      newItem.startDate = newItem.dateRange[0].toDate();
+      newItem.startDate =newItem.dateRange[0] ? newItem.dateRange[0].toDate() : null;
       newItem.endDate = newItem.dateRange[1]
         ? newItem.dateRange[1].toDate()
         : null;
@@ -843,7 +844,7 @@ const EducationSection = () => {
       description: rest.description || rest.descriptions,
 
       dateRange: [
-        dayjs(startDate.toDate()),
+        startDate? dayjs(startDate.toDate()) : null,
         endDate ? dayjs(endDate.toDate()) : null,
       ],
     })) || [];

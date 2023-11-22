@@ -1,29 +1,29 @@
-// userRoutes.ts
-
 import { Router, Request, Response } from "express";
 // import { myMiddleware } from '../middlewares';
 import { Validator } from "express-json-validator-middleware";
 import { db } from "../../utils/firebase";
 import skillSuggestion from "../controllers/openai/skillsSuggestion";
 import {
-  educationHelper,
-  experienceHelper,
-  experienceSummaryRewrite,
-  experienceSummarySuggestion,
   educationSummaryRewrite,
   educationSummarySuggestion,
   eductionCoursesHelper,
-  // themeSuggestion,
-  // themeDescriptionSuggestion,
-} from "../controllers/openai/resumeai";
-import {themeSuggestion, themeDescriptionSuggestion, achievementRewrite} from "../controllers/openai/achievements"
+} from "../controllers/openai/education";
+import {
+  experienceSummaryRewrite,
+  experienceSummarySuggestion,
+} from "../controllers/openai/experience";
+import {
+  themeSuggestion,
+  themeDescriptionSuggestion,
+  achievementRewrite,
+} from "../controllers/openai/achievements";
 import {
   generateProfessionalSummary,
   rewriteProfessionalSummary,
 } from "../controllers/openai/professionalSummary";
 import { CustomRequest } from "../../types/requests";
+import resumeExtraction from "../controllers/openai/resumeParsing";
 
-const { validate } = new Validator({});
 
 const router = Router();
 
@@ -166,48 +166,6 @@ router.post("/experienceSummary", async (req: Request, res: Response) => {
   }
 });
 
-router.post("/experienceHelper", async (req: Request, res: Response) => {
-  /*
-  API for chatbot which helps user to write experience section for a resume
-  */
-  const currentRole = req.body.currentRole;
-  const targetRole = req.body.targetRole;
-  const messages = req.body.messages || [];
-
-  if (!currentRole) {
-    res.status(400).json({ message: "currentRole is required" });
-    return;
-  }
-  if (!targetRole) {
-    res.status(400).json({ message: "targetRole is required" });
-    return;
-  }
-
-  let response = await experienceHelper(currentRole, targetRole, messages);
-  res.status(200).json({ result: response, message: "success" });
-
-  return;
-});
-
-router.post("/educationHelper", async (req: Request, res: Response) => {
-  /*
-  API for chatbot which helps user to write education section for a resume
-  */
-  const currentRole = req.body.currentRole;
-  const targetRole = req.body.targetRole;
-  const messages = req.body.messages || [];
-
-  if (!currentRole) {
-    res.status(400).json({ message: "currentRole is required" });
-  }
-  if (!targetRole) {
-    res.status(400).json({ message: "targetRole is required" });
-  }
-
-  let response = await educationHelper(currentRole, targetRole, messages);
-
-  res.status(200).json({ result: response, message: "success" });
-});
 
 router.post("/resumeSummary", async (req: Request, res: Response) => {
   const resumeId = req.body.resumeId;
@@ -246,18 +204,20 @@ router.post("/themeDescription", async (req: Request, res: Response) => {
   res.status(200).json({ result: suggestion, message: "success" });
 });
 
-
 router.post("/achievementHelper", async (req: Request, res: Response) => {
   const role = req.body.role;
-  const theme = req.body.theme;
+  let theme = req.body.theme;
   const existingAchievement = req.body.existingAchievement || "";
   const rewrite = req.body.rewrite;
-  if ( !theme) {
+  if (!theme && !rewrite) {
     res.status(400).json({ message: "theme is required" });
     return;
   }
 
   if (rewrite) {
+    if (!theme){
+      theme = "Unknown"
+    }
     let suggestion = await achievementRewrite(theme, existingAchievement!, 3);
     console.log(suggestion);
     res.status(200).json({ result: suggestion, message: "success" });
@@ -268,23 +228,28 @@ router.post("/achievementHelper", async (req: Request, res: Response) => {
     res.status(200).json({ result: suggestion, message: "success" });
     return;
   }
-}
-);
+});
 
-router.post("/professionalSummary", async (req: CustomRequest, res: Response) => {
-  const resumeId = req.body.resumeId;
-  const generateFromProfile = req.body.generateFromProfile;
-  const rewrite = req.body.mode;
-  const existingSummary = req.body.existingSummary || "";
-  const userId = req.user?.uid;
-  if (!resumeId && !generateFromProfile) {
-    res.status(400).json({ message: "resumeId is required" });
-    return;
-  }
+router.post(
+  "/professionalSummary",
+  async (req: CustomRequest, res: Response) => {
+    const resumeId = req.body.resumeId;
+    const generateFromProfile = req.body.generateFromProfile;
+    const rewrite = req.body.mode;
+    const existingSummary = req.body.existingSummary || "";
+    const userId = req.user?.uid;
+    if (!resumeId && !generateFromProfile) {
+      res.status(400).json({ message: "resumeId is required" });
+      return;
+    }
 
-  
     if (rewrite) {
-      let suggestion = await rewriteProfessionalSummary(resumeId, existingSummary!,  userId!, 3);
+      let suggestion = await rewriteProfessionalSummary(
+        resumeId,
+        existingSummary!,
+        userId!,
+        3
+      );
       console.log(suggestion);
       res.status(200).json({ result: suggestion, message: "success" });
       return;
@@ -294,7 +259,18 @@ router.post("/professionalSummary", async (req: CustomRequest, res: Response) =>
       res.status(200).json({ result: suggestion, message: "success" });
       return;
     }
-  
+  }
+);
+
+router.post("/parseResume", async (req: CustomRequest, res: Response) => {
+  let userId = req.user?.uid;
+    console.log(req.files)
+  if (!userId) {
+    res.status(400).json({ message: "userId is required" });
+    return;
+  }
+
+  await resumeExtraction(req.files['file'][0], userId, res);
 });
 
 export default router;

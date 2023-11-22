@@ -4,9 +4,9 @@ import nunjucks from "nunjucks";
 import puppeteer from "puppeteer";
 import { Resume } from "../../../types/resume";
 import hash from "object-hash";
+// import inlinCss from "inline-css";
 
 let PATH_TO_TEMPLATE = "data/resume-templates";
-
 
 nunjucks.configure([PATH_TO_TEMPLATE], { autoescape: true });
 
@@ -38,7 +38,7 @@ const generatePdfnScreenShot = async (
     printBackground: true,
     margin: {
       top: "20px",
-      bottom: "40px",
+      bottom: "20px",
       left: "20px",
       right: "20px",
     },
@@ -66,7 +66,10 @@ const exportResume = async (resumeId: string, userId: string) => {
     const resumeData = await getResume(resumeId);
 
     // Compute hash of relevant data to check if resume needs to be exported
-
+    if (resumeData.personalInfo) {
+      resumeData.personalInfo.phoneString = `${resumeData.personalInfo?.phone.countryCode}-${resumeData.personalInfo?.phone.number}`;
+    }
+    console.log("resumeData.personalInfo", resumeData.personalInfo);
     let relevantData = {
       experienceList: resumeData.experienceList,
       educationList: resumeData.educationList,
@@ -82,52 +85,62 @@ const exportResume = async (resumeId: string, userId: string) => {
     let newHash = hash(relevantDataHash);
 
     // If hash has changed, then export resume
-    // console.log(resumeData); 
+    // console.log(resumeData);
     if (resumeData && newHash != resumeHash) {
       const resumeTemplate = "simple/resume";
       let experienceList = resumeData.experienceList?.map((experience) => {
         // Convert start date and end date to "MMM YYYY" format
-        let startDate = experience.startDate.toDate();
+        let startDate = experience.startDate
+          ? experience.startDate.toDate()
+          : null;
         let endDate = experience.endDate
           ? experience.endDate.toDate()
           : "Current";
+        if (startDate == null) {
+          endDate = "";
+          startDate = null;
+        }
         return {
           ...experience,
-          startDate: startDate.toLocaleString("default", {
+          startDate: startDate? startDate.toLocaleString("default", {
             month: "short",
             year: "numeric",
-          }),
+          }) : startDate,
           endDate:
-            endDate != "Current"
+          endDate ? endDate != "Current"
               ? endDate.toLocaleString("default", {
                   month: "short",
                   year: "numeric",
                 })
-              : endDate,
+              : endDate: endDate,
         };
       });
 
       let educationList = resumeData.educationList?.map((education) => {
         // Convert start date and end date to "MMM YYYY" format
-        let startDate = education.startDate.toDate();
+        let startDate = education.startDate
+          ? education.startDate.toDate()
+          : null;
         let endDate = education.endDate
           ? education.endDate.toDate()
           : "Current";
         return {
           ...education,
-          startDate: startDate.toLocaleString("default", {
-            month: "short",
+          isSubDetailAvailable: startDate && endDate ? true : false,
+          startDate: startDate? startDate.toLocaleString("default", {
+            // month: "short",
             year: "numeric",
-          }),
+          }) : null,
           endDate:
             endDate != "Current"
               ? endDate.toLocaleString("default", {
-                  month: "short",
+                  // month: "short",
                   year: "numeric",
                 })
               : endDate,
         };
       });
+      console.log("educationList", educationList);
       const sectionOrder = resumeData.sectionOrder || [
         "professionalSummary",
         "education",
@@ -141,7 +154,7 @@ const exportResume = async (resumeId: string, userId: string) => {
         educationList,
       });
 
-      console.log(resumeTemplateHtml);
+      // console.log(resumeTemplateHtml);
       // Save html to storage
       let htmlPath = `userData/${userId}/resumes/${resumeId}/resume.html`;
       const bucket = storage().bucket();

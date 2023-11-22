@@ -34,7 +34,7 @@ import {
 // import Predictions from "./predictions";
 import LoginSignupPage from "./pages/signInUp";
 import CustomHeader from "./components/header";
-import Footer from "./components/Footer.jsx";
+import Footer from "./components/footer.jsx";
 import PrivacyPolicy from "./legal/PrivacyPolicy.jsx";
 // import Contact from "./communication/Contact";
 import TermsService from "./legal/TermsService";
