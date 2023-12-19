@@ -309,7 +309,8 @@ export const EDITOR_JS_TOOLS = {
   // simpleImage: SimpleImage,
 };
 
-const EditorJsInput = ({ value, onChange }) => {
+const EditorJsInput = (props) => {
+  const { value, onChange } = props;
   //   const [editorState, setEditorState] = React.useState(() =>
   //     EditorState.createEmpty()
   //   );

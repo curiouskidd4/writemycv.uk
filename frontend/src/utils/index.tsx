@@ -4,27 +4,47 @@ import { useAuth } from "../authContext";
 import { useOpenAIContext } from "../customContext";
 
 const BASE_URL =
-  process.env.REACT_APP_BASE_URL || "http://127.0.0.1:5001/resu-me-a5cff/us-central1";
+  process.env.REACT_APP_BASE_URL ||
+  "http://127.0.0.1:5001/resu-me-a5cff/us-central1";
 
+type OpenAIContextType = {
+  getEducationSummary: (data: any) => void;
+  getExperienceSummary: (data: any) => void;
+  getProfessionalSummary: (data: any) => void;
+  getSkills: (data: any) => void;
+  getEducationCourses: (data: any) => void;
+  getExperienceAchivements: (data: any) => void;
+  getEducationCoursesSuggestion: (data: any) => void;
+  getThemeSuggestions: (data: any) => void;
+  getThemeDescription: (data: any) => void;
+  getResumeSummary: (data: any) => void;
+  getAchivementSuggestion: (data: any) => void;
+  parseResume: (data: any) => void;
+  loading: boolean;
+  data: any;
+  error: any;
+};
+
+type OpenAIStateType = {
+  loading: boolean;
+  data: any;
+  error: any;
+};
 const useOpenAI = () => {
   const auth = useAuth();
   const openaiContext = useOpenAIContext();
-  // const [loading, setLoading] = useState(false);
 
-  // const [data, setData] = useState(null);
-
-  // const [error, setError] = useState("");
-  const [state, setState] = useState({
+  const [state, setState] = useState<OpenAIStateType>({
     loading: false,
-    data: null,
+    data: {},
     error: null,
   });
 
-  const getEducationSummary = async (data) => {
-    data = {...openaiContext, ...data, };
+  const getEducationSummary = async (data: any) => {
+    data = { ...openaiContext, ...data };
     setState({
       loading: true,
-      data: null,
+      data: {},
       error: null,
     });
     try {
@@ -43,7 +63,7 @@ const useOpenAI = () => {
         data: response.data,
         error: null,
       });
-    } catch (err) {
+    } catch (err: any) {
       setState({
         loading: false,
         data: null,
@@ -52,8 +72,8 @@ const useOpenAI = () => {
     }
   };
 
-  const getEducationCoursesSuggestion = async (data) => {
-    data = {...openaiContext, ...data, };
+  const getEducationCoursesSuggestion = async (data: any) => {
+    data = { ...openaiContext, ...data };
 
     setState({
       loading: true,
@@ -76,7 +96,7 @@ const useOpenAI = () => {
         data: response.data,
         error: null,
       });
-    } catch (err) {
+    } catch (err: any) {
       setState({
         loading: false,
         data: null,
@@ -85,8 +105,8 @@ const useOpenAI = () => {
     }
   };
 
-  const getExperienceSummary = async (data) => {
-    data = {...openaiContext, ...data, };
+  const getExperienceSummary = async (data: any) => {
+    data = { ...openaiContext, ...data };
 
     setState({
       loading: true,
@@ -110,7 +130,7 @@ const useOpenAI = () => {
         data: response.data,
         error: null,
       });
-    } catch (err) {
+    } catch (err: any) {
       setState({
         loading: false,
         data: null,
@@ -119,8 +139,8 @@ const useOpenAI = () => {
     }
   };
 
-  const getProfessionalSummary = async (data) => {
-    data = {...openaiContext, ...data, };
+  const getProfessionalSummary = async (data: any) => {
+    data = { ...openaiContext, ...data };
 
     setState({
       loading: true,
@@ -144,7 +164,7 @@ const useOpenAI = () => {
         data: response.data,
         error: null,
       });
-    } catch (err) {
+    } catch (err: any) {
       setState({
         loading: false,
         data: null,
@@ -153,8 +173,8 @@ const useOpenAI = () => {
     }
   };
 
-  const getSkills = async (data) => {
-    data = {...openaiContext, ...data, };
+  const getSkills = async (data: any) => {
+    data = { ...openaiContext, ...data };
 
     setState({
       loading: true,
@@ -178,7 +198,7 @@ const useOpenAI = () => {
         data: response.data,
         error: null,
       });
-    } catch (err) {
+    } catch (err: any) {
       setState({
         loading: false,
         data: null,
@@ -187,8 +207,8 @@ const useOpenAI = () => {
     }
   };
 
-  const getEducationCourses = async (data) => {
-    data = {...openaiContext, ...data, };
+  const getEducationCourses = async (data: any) => {
+    data = { ...openaiContext, ...data };
 
     setState({
       loading: true,
@@ -212,7 +232,7 @@ const useOpenAI = () => {
         data: response.data,
         error: null,
       });
-    } catch (err) {
+    } catch (err: any) {
       setState({
         loading: false,
         data: null,
@@ -221,8 +241,8 @@ const useOpenAI = () => {
     }
   };
 
-  const getExperienceAchivements = async (data) => {
-    data = {...openaiContext, ...data, };
+  const getExperienceAchivements = async (data: any) => {
+    data = { ...openaiContext, ...data };
 
     setState({
       loading: true,
@@ -246,7 +266,7 @@ const useOpenAI = () => {
         data: response.data,
         error: null,
       });
-    } catch (err) {
+    } catch (err: any) {
       setState({
         loading: false,
         data: null,
@@ -255,8 +275,8 @@ const useOpenAI = () => {
     }
   };
 
-  const getThemeSuggestions = async (data) => {
-    data = {...openaiContext, ...data, };
+  const getThemeSuggestions = async (data: any) => {
+    data = { ...openaiContext, ...data };
 
     setState({
       loading: true,
@@ -280,7 +300,7 @@ const useOpenAI = () => {
         data: response.data,
         error: null,
       });
-    } catch (err) {
+    } catch (err: any) {
       setState({
         loading: false,
         data: null,
@@ -289,8 +309,8 @@ const useOpenAI = () => {
     }
   };
 
-  const getThemeDescription = async (data) => {
-    data = {...openaiContext, ...data, };
+  const getThemeDescription = async (data: any) => {
+    data = { ...openaiContext, ...data };
 
     setState({
       loading: true,
@@ -315,7 +335,7 @@ const useOpenAI = () => {
         data: response.data,
         error: null,
       });
-    } catch (err) {
+    } catch (err: any) {
       setState({
         loading: false,
         data: null,
@@ -324,8 +344,8 @@ const useOpenAI = () => {
     }
   };
 
-  const getAchivementSuggestion = async (data) => {
-    data = {...openaiContext, ...data, };
+  const getAchivementSuggestion = async (data: any) => {
+    data = { ...openaiContext, ...data };
 
     setState({
       loading: true,
@@ -350,7 +370,7 @@ const useOpenAI = () => {
         data: response.data,
         error: null,
       });
-    } catch (err) {
+    } catch (err: any) {
       setState({
         loading: false,
         data: null,
@@ -359,7 +379,7 @@ const useOpenAI = () => {
     }
   };
 
-  const getResumeSummary = async (data) => {
+  const getResumeSummary = async (data: any) => {
     setState({
       loading: true,
       data: null,
@@ -383,7 +403,7 @@ const useOpenAI = () => {
         data: response.data,
         error: null,
       });
-    } catch (err) {
+    } catch (err: any) {
       setState({
         loading: false,
         data: null,
@@ -392,7 +412,7 @@ const useOpenAI = () => {
     }
   };
 
-  const parseResume = async (data) => {
+  const parseResume = async (data: any) => {
     setState({
       loading: true,
       data: null,
@@ -407,7 +427,6 @@ const useOpenAI = () => {
           headers: {
             Authorization: `Bearer ${token}`,
             "content-type": "multipart/form-data",
-
           },
         }
       );
@@ -418,7 +437,7 @@ const useOpenAI = () => {
         error: null,
       });
       return response.data;
-    } catch (err) {
+    } catch (err: any) {
       setState({
         loading: false,
         data: null,
@@ -438,8 +457,8 @@ const useOpenAI = () => {
     getEducationCoursesSuggestion,
     getThemeSuggestions,
     getThemeDescription,
-    getResumeSummary, 
-    getAchivementSuggestion, 
+    getResumeSummary,
+    getAchivementSuggestion,
     parseResume,
   };
 };

@@ -1,0 +1,74 @@
+.resume-edit-steps .ant-steps-item{
+    min-height: 76px;
+}
+.resume-edit-steps .ant-steps-item .ant-steps-item-title {
+    color: rgba(0, 0, 0, 0.7) !important;
+    /* margin-top: -2px; */
+    line-height: normal;
+
+    
+}
+
+.resume-edit-steps .ant-steps-item.ant-steps-item-active .ant-steps-item-title {
+    color: rgba(0, 0, 0, 0.9) !important;
+    /* margin-top: -2px; */
+    line-height: normal;
+    font-weight: 600;
+}
+
+.resume-edit-steps .ant-steps-item .step-description {
+    color: rgba(0, 0, 0, 0.7) !important;
+    /* margin-top: -2px; */
+    line-height: normal;
+
+}
+
+
+.resume-edit-steps .ant-steps-item-active .step-description {
+    color: rgba(0, 0, 0, 0.8) !important;
+    /* margin-top: -2px; */
+    line-height: normal;
+
+}
+
+.resume-edit-steps .ant-steps-item-disabled .step-description {
+    color: rgba(0, 0, 0, 0.45) !important;
+    /* margin-top: -2px; */
+    line-height: normal;
+
+}
+
+/*  */
+
+.resume-edit-steps .ant-steps-item-title {
+    font-weight: 500;
+}
+
+
+.resume-edit-steps .ant-steps-item-active .ant-steps-icon-dot {
+    /* outline: 2px solid var(--primary); */
+    outline: 3px solid #25676359;
+    outline-offset: 2px;
+
+}
+.detail-form-header {
+    font-weight: 500;
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+}
+
+.detail-form-body {
+    margin-bottom: 1rem;
+}
+
+.detail-form-body .cv-input {
+    /* margin-bottom: 1rem; */
+    min-height: 320px;
+}
+
+
+.detail-form-body .cv-message {
+    /* margin-bottom: 1rem; */
+    min-height: 64px;
+    padding-top: 24px;
+}

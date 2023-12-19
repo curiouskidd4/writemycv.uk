@@ -8,7 +8,9 @@ enum OPENAI_MODELS {
   GPT_4_TURBO = 'gpt-4-1106-preview'
 }
 
-const DEFAULT_MODEL = OPENAI_MODELS.GPT_3_5_TURBO_1106;
+// const DEFAULT_MODEL = OPENAI_MODELS.GPT_3_5_TURBO_1106;
+const DEFAULT_MODEL = OPENAI_MODELS.GPT_4;
+
 const DEFAULT_SYSTEM_MESSAGE = "You are a helpul AI that helps people write impressive resumes. Please follow the instructions exactly";
 const openai = new OpenAI({
   apiKey:OPEN_API_KEY.value(), // defaults to process.env["OPENAI_API_KEY"]

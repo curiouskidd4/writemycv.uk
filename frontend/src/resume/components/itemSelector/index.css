@@ -1,0 +1,40 @@
+.item-selector-card {
+  border: 1px solid #d9d9d9;
+  border-radius: 2px;
+  margin-bottom: 8px;
+  padding: 8px;
+  cursor: pointer;
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.item-selector-card .title {
+    font-weight: 500;
+    overflow: hidden;
+    width: calc(100% - 8px);
+    text-overflow: ellipsis;
+}
+
+.item-selector-card .description {
+    line-height: normal;
+    white-space: normal;
+    color: #00000097;
+}
+.item-selector-card .dateString {
+    line-height: normal;
+    white-space: normal;
+    color: #00000097;
+}
+
+
+.item-selector-card.item-selector-card-selected svg {
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.item-selector-card.item-selector-card-selected {
+  background-color: #25676320 !important;
+  border: 1px solid #256763b6;
+  color: rgba(0, 0, 0, 0.95);
+}
+.item-selector-card.item-selector-card-selected svg {
+  color: green;
+}

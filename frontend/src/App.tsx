@@ -1,26 +1,12 @@
-import logo from "./logo.svg";
 import React from "react";
 
 import "./App.css";
 import {
-  Row,
-  Col,
-  Button,
-  Card,
-  Tag,
-  Typography,
-  Layout,
-  Menu,
-  Anchor,
   ConfigProvider,
   Spin,
 } from "antd";
-import { useEffect, useRef, useState } from "react";
-import ReactMarkdown from "react-markdown";
 import { QueryClient, QueryClientProvider } from "react-query";
 
-import axios from "axios";
-import remarkGfm from "remark-gfm";
 import {
   createBrowserRouter,
   Navigate,
@@ -32,44 +18,36 @@ import {
 
 // import ResponseForm from "./pages/responseForm";
 // import Predictions from "./predictions";
-import LoginSignupPage from "./pages/signInUp";
-import CustomHeader from "./components/header";
+import LoginSignupPage from "./pages/signInUp/index.js";
+import CustomHeader from "./components/header.js";
 import Footer from "./components/footer.jsx";
 import PrivacyPolicy from "./legal/PrivacyPolicy.jsx";
 // import Contact from "./communication/Contact";
-import TermsService from "./legal/TermsService";
+import TermsService from "./legal/TermsService.jsx";
 // import Payment from "./pages/subscription";
-import PublicHeader from "./components/publicHeader";
-import { UserContext } from "./customContext";
-import { useAuth, ProviderAuth } from "./authContext";
-// import ResetPasswordPage from "./pages/signInUp/resetPasswordPage";
-// import ForgotPasswordConfirm from "./pages/signInUp/confirmForgotPassword";
-// import ForgotPassword from "./pages/signInUp/forgotPassword";
-// import SuperAdmin from "./pages/admin";
-// import FinishInvite from "./pages/invite/finishInvite";
-import moment from "moment";
-import Resume from "./pages/resume";
-import Profile from "./pages/profile";
-import EditResume from "./pages/resume/editor";
-import ResumePreview from "./pages/publicResume";
-import LandingPage from "./pages/landing";
-import CoolForm from "./pages/coolForm";
-import AccountSettings from "./pages/account";
-import FAQs from "./pages/faqs";
-import Upgrade from "./pages/upgrade";
-import UpgradeSuccess from "./pages/upgrade/success";
-import UpgradeCancel from "./pages/upgrade/cancel";
-import CustomerOnboarding from "./pages/onboarding";
-import EmailVerification from "./pages/account/emailVerification";
-import ForgotPassword from "./pages/signInUp/forgotPassword";
-// import LabelHome from "./pages/others/label";
-// import LabelTaskPage from "./pages/labelTask";
-// import { PubmedDataItems } from "./services/dataService";
-// import PubmedDataHome from "./pages/pubmedData";
-// import PubmedDataSplit from "./pages/pubmedDataSplit";
-// import { Header } from "antd/es/layout/layout";
+import PublicHeader from "./components/publicHeader.js";
+import { UserContext } from "./customContext.js";
+import { useAuth, ProviderAuth } from "./authContext.js";
 
-const GenLayout = ({ children }) => {
+import moment from "moment";
+import Resume from "./pages/resume/index.js";
+import Profile from "./pages/profile/index.js";
+import EditResume from "./pages/resume/editor/index.js";
+import ResumePreview from "./pages/publicResume/index.js";
+import LandingPage from "./pages/landing/index.js";
+import CoolForm from "./pages/coolForm/index.js";
+import AccountSettings from "./pages/account/index.js";
+import FAQs from "./pages/faqs/index.js";
+import Upgrade from "./pages/upgrade/index.js";
+import UpgradeSuccess from "./pages/upgrade/success.js";
+import UpgradeCancel from "./pages/upgrade/cancel.js";
+import CustomerOnboarding from "./pages/onboarding/index.js";
+import EmailVerification from "./pages/account/emailVerification.js";
+import ForgotPassword from "./pages/signInUp/forgotPassword.js";
+import ResumeEditV2 from "./resume";
+import ResumePreviewV2 from "./resumePreview";
+
+const GenLayout = ({  }) => {
   const { user } = useAuth();
   const match = useLocation();
 
@@ -89,7 +67,7 @@ const GenLayout = ({ children }) => {
   );
 };
 
-const GenPublicLayout = ({ children }) => {
+const GenPublicLayout = ({  }) => {
   // debugger
   const match = useLocation();
 
@@ -132,6 +110,10 @@ const protectedRouter = createBrowserRouter([
       // { path: "superadmin", element: <SuperAdmin /> },
 
       { path: "resumes/:resumeId", element: <EditResume /> },
+      { path: "resumes-v2/:resumeId/edit", element: <ResumeEditV2 /> },
+      { path: "resumes-v2/:resumeId", element: <ResumePreviewV2 /> },
+
+
       { path: "public-resume/:publicResumeId", element: <ResumePreview /> },
 
       {
@@ -217,7 +199,7 @@ const baseRouter = createBrowserRouter([
         path: "forgot-password",
         element: (
           <div>
-            <ForgotPassword isSignup={true} />
+            <ForgotPassword  />
           </div>
         ),
       },

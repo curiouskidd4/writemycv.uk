@@ -1,7 +1,11 @@
 import { Checkbox, Col, DatePicker, Row, Typography } from "antd";
 import { useEffect, useState } from "react";
 
-const CustomDateRange = ({ value, onChange, checkBoxText, ...rest }) => {
+
+
+
+const CustomDateRange = (props) => {
+  const { value, onChange, checkBoxText, ...rest } = props;
   const [currentlyWorking, setCurrentlyWorking] = useState(false);
   useEffect(() => {
     if (currentlyWorking) {

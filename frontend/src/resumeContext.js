@@ -9,9 +9,9 @@ const baseUrl = process.env.REACT_APP_API_URL;
 const resumeContext = createContext();
 
 const ProviderResume = ({ children, resumeId }) => {
-  const auth = useProviderResume({ resumeId });
+  const val = useProviderResume({ resumeId });
   return (
-    <resumeContext.Provider value={auth}>{children}</resumeContext.Provider>
+    <resumeContext.Provider value={val}>{children}</resumeContext.Provider>
   );
 };
 
@@ -27,6 +27,7 @@ const useProviderResume = ({ resumeId }) => {
     loading: true,
     error: null,
     data: null,
+    id: resumeId,
   });
 
   useEffect(() => {

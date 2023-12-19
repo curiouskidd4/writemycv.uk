@@ -2,7 +2,8 @@ import { Input, Select, Space } from "antd";
 import countryCodes from "./callingCodes.json";
 import { useState } from "react";
 
-export const PhoneInput = ({ value, onChange, size, ...props }) => {
+export const PhoneInput = (props) => {
+  const { onChange, value, size } = props;
   const [searchVal, setSearchVal] = useState("In");
   const onPhoneChange = (e) => {
     if (!onChange) return;

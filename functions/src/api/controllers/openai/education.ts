@@ -10,7 +10,13 @@ const educationSummarySuggestion = async (
   role: string,
   n: number = 1
 ) => {
-  let prompt = `Write a short summary (in 50 words) for eduction sections for a resume for the role of ${role}.  Use british english for spellings, don't use pronouns like "I/We". Make sure summary is in  past tense and british english. \nDegree: ${degree}\nSchool: ${school}\nSummary:`;
+  let prompt = `Write a short summary (in 50 words) for eduction sections for a resume for the role of ${role}.  
+  Follow the following guidelines: 
+    - Use british english for spellings, don't use pronouns like "I/We". 
+    - Make sure summary is in  past tense and british english. 
+  Degree: ${degree}
+  School: ${school}
+  Summary:`;
 
   const response = await openai.chat.completions.create({
     model: DEFAULT_MODEL,

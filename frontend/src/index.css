@@ -40,3 +40,17 @@ code {
   -webkit-transform: scale(0.5);
   -webkit-transform-origin: 0 0; */
 }
+
+
+.cv-link-button {
+  padding: 0px 2px;
+  color: var(--primary) !important;
+}
+
+.cv-link-button:hover {
+  color: var(--primary) !important;
+}
+
+.cv-link-button:active {
+  color: var(--primary) !important;
+}

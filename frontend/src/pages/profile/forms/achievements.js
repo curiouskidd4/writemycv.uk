@@ -254,7 +254,8 @@ const AchievementStep2 = ({ selectedTheme, achievement, onChange, onSave }) => {
   );
 };
 
-const Achievements = ({ jobTitle, description, value, onChange }) => {
+const Achievements = (props) => {
+  const { jobTitle, description, value, onChange } = props
   // AI Actions helper
   const [state, setState] = useState({
     modalVisible: false,

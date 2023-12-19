@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import LoginForm from "./signIn";
 import SignUpForm from "./signUp";
 import { Tabs, Row, Col, Button, Typography } from "antd";
-import TrainImg from "../../";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../authContext";
 const { TabPane } = Tabs;

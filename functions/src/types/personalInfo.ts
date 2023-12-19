@@ -13,6 +13,7 @@ interface PersonalInfo {
     phone: PhoneNumber;
     phoneString: string;
     phoneNumber: PhoneNumber;
+    currentRole?: string;
 }
 
 export { PersonalInfo };

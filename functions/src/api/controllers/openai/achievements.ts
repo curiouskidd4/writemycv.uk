@@ -4,6 +4,16 @@ import {
   openai,
 } from "../../../utils/openai";
 
+const _ACHIEVEMENT_GUIDELINES = `Follow the following guidelines: 
+  - Use past tense and british english and don't use pronouns like "I/We".
+  - Do not to use hyperbolic language, rather just use the verb for example "increased" instead of "dramatically increased".
+  - Make sure to lead sentence with the impact created i.e. the numeber if mentioned and the then the method and then the action . 
+  - If the given already follows the above guidelines, then don't change much
+  - Effectively communicate the acievement in the start of the sentence
+`
+
+
+
 const themeSuggestion = async (role: string, alreadyAdded: string[]) => {
   let alreadyAddedStr = alreadyAdded.join(", ");
   let prompt = `Suggest top 10 themes for a ${role}, each theme should be unique and short (max 4 words), also keep them very granualar, Keep in mind this is to add achievements under experience section. Use british english for spellings , don't use pronouns like "I/We".\nAlready added themes: ${alreadyAddedStr}\nSuggested Themes:\n1. `;
@@ -35,7 +45,8 @@ const themeDescriptionSuggestion = async (role: string, theme: string) => {
   //write 2-3 sentence on how one should write an achievement for "Data Visualization" theme in a resume under work experience section and suggest one possible example
 
   let prompt = `Write 2-3 sentence on how one should write an achievement for "${theme}" theme in a resume under work experience section and suggest three possible examples.
-  Use british english for spellings , don't use pronouns like "I/We".
+  Follow the following guidelines:
+  {{guidelines}}
   Follow this JSON format exactly : 
   """
   {
@@ -47,7 +58,7 @@ const themeDescriptionSuggestion = async (role: string, theme: string) => {
         ]
   }
   """ 
-  `;
+  `.replace("{{guidelines}}", _ACHIEVEMENT_GUIDELINES);
 
   const response = await openai.chat.completions.create({
     messages: [
@@ -81,21 +92,26 @@ const achievementRewrite = async (
   existingAchievement: string,
   n: number
 ) => {
-  let prompt = `ReWrite 2-3 sentence for the following existing achievement for a job role in resume for "${theme}" theme in a resume under work experience section and suggest three possible examples.  Use british english for spellings.
+  let prompt = `ReWrite 2-3 sentence for the following existing achievement for a job role in resume for "${theme}" theme in a resume under work experience section and suggest three possible examples.
+  {{guidelines}}}
   existing achievement: ${existingAchievement}
-
+  Rewrite above achievement following the guidelines exactly and suggest three possible examples, make sure to rewrite cohesively, keep it simple and try to make it better.
   Follow this JSON format exactly : 
-  """
   {
     "examples": [
-        "example 1", # Each example should be for about 20-30 words
+        "example 1", # Each example should be for about 20-30 words following the guidelines exactly
         "example 2", 
         "example 3"
-        ]
+        ], 
+        "explanation": [
+          "explanation_1",  # Explanation why the example 1 is better
+          "explanation_2",
+          "explanation_3"
+          ]
   }
-  """ 
-  `;
+  `.replace("{{guidelines}}", _ACHIEVEMENT_GUIDELINES);
 
+  console.log(prompt);
   const response = await openai.chat.completions.create({
     model: DEFAULT_MODEL,
     temperature: 0.5,
@@ -113,7 +129,7 @@ const achievementRewrite = async (
 
   // return suggestions;
   try {
-    let response = JSON.parse(responseString!);
+    let response = JSON.parse(responseString!.trim());
 
     return { ...response };
   } catch (e) {

@@ -46,7 +46,7 @@ const populateResumeDetails = async (resumeId: string, userId: string) => {
 
     // Now populate the resume details
     resumeData.experienceList = experiencesData.experienceList;
-    resumeData.skillList = skillsData.skillList;
+    resumeData.skillList = skillsData?.skillList;
     resumeData.personalInfo = personalDetailsData;
     resumeData.educationList = educationDetailsData.educationList;
     resumeData.professionalSummary = summaryData.professionalSummary;

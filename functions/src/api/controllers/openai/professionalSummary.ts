@@ -10,6 +10,7 @@ const PROFSUMMARY_PROMPT = `You are a helpful AI assistant expert at generating 
 Generate a professional summary in about 50-60 words highlighting the key skills and achievements of the candidate. Make sure to pick the right skills and achievements based on the role they are looking for.
 
 Here are the information: 
+Current Role: {{currentRole}}
 Target Role: {{targetRole}}
 Target Sector: {{targetSector}}
 Target Geography: {{targetGeography}}
@@ -23,16 +24,32 @@ Experience:
 
 Skills:
 {{skills}}
+
+A good summary has following structure, make sure to follow it:
+  - Title and Experience: Start with your current job title and years of experience in the field, if a recent gratuate use generic statement like Proffesional 
+  - Highlight their key skills by mentioning what could they offer to the target role
+  - Major Achievements: Mention major achievements which are relevant to the target role
+Make sure NOT to use pronouns like "I/We/he/they" in sentences, start with verbs and use british english for spellings and keep sentences in 3rd person
+
+Summary:
 `;
 
 const PROFSUMMARY_REWRITE_PROMPT = `You are a helpful AI assistant expert at generating professional summary given a resume sections. 
 Help rewrite the professional summary in about 50-60 words highlighting the key skills and achievements of the candidate. Make sure to pick the right skills and achievements based on the role they are looking for.
+Follow these guidelines:
+  - Title and Experience: Start with your current job title and years of experience in the field.
+  - Key Skills: Highlight 2-3 key skills that are most relevant to the job profile.
+  - Major Achievements: Mention 1-2 significant achievements that are relevant to the job you are applying for.
+  - Career Goal or Value Proposition: Briefly state your career goal or how you can add value to the company.
+  - Customization: Tailor this summary to the target role and sector and geography mentioned below, also make sure it aligns with the job description if mentioned
+  - Don't use pronouns like "I/We" and use british english for spellings
 
 Here are the information: 
+Current Role: {{currentRole}}
 Target Role: {{targetRole}}
 Target Sector: {{targetSector}}
 Target Geography: {{targetGeography}}
-
+Job Description: {{jobDescription}}
 Resume Sections:
 Education: 
 {{education}}
@@ -46,7 +63,7 @@ Skills:
 Existing Summary:
 {{existingSummary}}
 
-Rewritten Summary in 50-60 words in professional way for a resume:
+Summary:
 `;
 
 const generateProfessionalSummary = async (
@@ -61,6 +78,8 @@ const generateProfessionalSummary = async (
   let education;
   let experience;
   let skills;
+  let jobDescription;
+  let currentRole;
 
   let prompt;
   if (resumeId) {
@@ -68,8 +87,11 @@ const generateProfessionalSummary = async (
     resumeData = resumeRef.data() as Resume;
 
     targetRole = resumeData.role;
+    currentRole = resumeData.personalInfo?.currentRole || "N/A";
     targetSector = resumeData.sector || "N/A";
     targetGeography = resumeData.geography || "N/A";
+    jobDescription = resumeData.jobDescription || "N/A";
+
 
     education = JSON.stringify(resumeData.educationList);
     experience = JSON.stringify(resumeData.experienceList);
@@ -80,6 +102,8 @@ const generateProfessionalSummary = async (
       .replace("{{targetGeography}}", targetGeography)
       .replace("{{education}}", education)
       .replace("{{experience}}", experience)
+      .replace("{{currentRole}}", currentRole)
+      .replace("{{jobDescription}}", jobDescription)
       .replace("{{skills}}", skills);
   } else {
     // Get data from profile
@@ -94,8 +118,11 @@ const generateProfessionalSummary = async (
     let personalInfoData = personalInfo.data();
 
     targetRole = personalInfoData?.currentRole;
+    currentRole = personalInfoData?.currentRole;
+
     targetSector = personalInfoData?.targetSector || "N/A";
     targetGeography = personalInfoData?.targetGeography || "N/A";
+    jobDescription = personalInfoData?.jobDescription || "N/A";
 
     education = JSON.stringify(educationData);
     experience = JSON.stringify(experienceData);
@@ -106,6 +133,8 @@ const generateProfessionalSummary = async (
       .replace("{{targetGeography}}", targetGeography)
       .replace("{{education}}", education)
       .replace("{{experience}}", experience)
+      .replace("{{jobDescription}}", jobDescription)
+      .replace("{{currentRole}}", currentRole)
       .replace("{{skills}}", skills);
   }
   console.log("prompt", prompt);

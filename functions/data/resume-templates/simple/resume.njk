@@ -166,6 +166,15 @@
       .description {
         margin-top: 4px;
       }
+      .skill-row {
+        {# display: flex; #}
+        {# flex-wrap: wrap; #}
+        gap: 8px;
+      }
+
+      .skill-item {
+        border-right: 1px solid #ccc;
+      }
     </style>
 </head>
 <body>
@@ -261,9 +270,9 @@
                 <div>
                   
                    
-                  {% if job.achievements and job.achievements|length > 0 %}
+                  {# {% if job.achievements and job.achievements|length > 0 %}
                     <h4 class="experience-achievements">Achievements</h4>
-                  {% endif %}
+                  {% endif %} #}
                   <ul>
                     {% for achievement in job.achievements %}
                       <li>{{ achievement.description }}</li>
@@ -291,11 +300,20 @@
 
     <section class="section skills">
         <h2 class="section-title">Skills</h2>
-        <ul class="skills-list">
+        {# <ul class="skills-list">
         {% for skill in skillList %}
             <li class="skill-item">{{ skill.name }} ( {{ skill.level }} )</li>
         {% endfor %}
-        </ul>
+        </ul> #}
+        <div class="skill-row">
+          {% for skill in skillList %}
+            <div class="skill-item">
+              <strong>{{ skill.name }}</strong>
+              {# <div class="skill-level">
+                <div class="skill-level-bar" style="width: {{ skill.level }}%"></div>
+              </div> #}
+            </div>
+          {% endfor %}
     </section>
 
     {# <section class="section hobbies">

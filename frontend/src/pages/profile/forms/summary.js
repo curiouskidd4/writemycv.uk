@@ -268,7 +268,7 @@ const ProfessionalSummaryForm = ({
       </Form.Item>
 
       <Form.Item>
-        <Button type="primary" htmlType="submit" loading={isLoading}>
+        <Button type="primary" htmlType="submit" loading={isLoading} >
           Save
         </Button>
       </Form.Item>
@@ -297,8 +297,12 @@ const ProfessionalSummary = () => {
 
   return (
     <div>
-      <Typography.Title level={3}>Professional Summary</Typography.Title>
+      <div className="detail-form-header">
+        <Typography.Title level={4}>Professional Summary</Typography.Title>
+      </div>
+
       <div
+        className="detail-form-body"
         style={{
           marginBottom: "0.5rem",
         }}
@@ -308,8 +312,9 @@ const ProfessionalSummary = () => {
           to an employer. Begin your profile with a clear and concise title that
           reflects your professional identity, highlight your years of
           experience, and explain the impact you make on an organisation. You
-          can also share your educational background and key skills. <br/>
-          If you need some fresh ideas, try CV Wizard – it can refine your profile or write you a new one based on your target role.
+          can also share your educational background and key skills. <br />
+          If you need some fresh ideas, try CV Wizard – it can refine your
+          profile or write you a new one based on your target role.
         </Typography.Text>
       </div>
       {summary.loading ? <Skeleton /> : null}

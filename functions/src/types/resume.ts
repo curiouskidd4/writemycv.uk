@@ -20,6 +20,7 @@ interface Resume {
     professionalSummary?: string;
     sectionOrder?: string[];
     exportHash?: string;
+    jobDescription?: string;
 }
 
 export { Resume };

@@ -32,7 +32,6 @@ const SectionCard = ({ title, onClick }) => {
   );
 };
 const ResumeEditForm = ({
-  resumeId
 }) => {
   const [state, setState] = useState({
     currentSection: "",
