@@ -8,7 +8,7 @@ const BASE_URL =
   process.env.REACT_APP_BASE_URL ||
   "http://127.0.0.1:5001/resu-me-a5cff/us-central1";
 
-const professionalSummaryHelper = () => {
+const useProfessionalSummaryHelper = () => {
   const auth = useAuth();
   const resumeData = useResume();
 
@@ -77,4 +77,4 @@ const professionalSummaryHelper = () => {
   };
 };
 
-export default professionalSummaryHelper;
+export default useProfessionalSummaryHelper;

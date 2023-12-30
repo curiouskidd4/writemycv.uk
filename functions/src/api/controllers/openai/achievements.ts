@@ -48,7 +48,6 @@ const themeDescriptionSuggestion = async (role: string, theme: string) => {
   Follow the following guidelines:
   {{guidelines}}
   Follow this JSON format exactly : 
-  """
   {
     "explanation": "how to write in 2- 3 sentences", 
     "examples": [
@@ -57,7 +56,6 @@ const themeDescriptionSuggestion = async (role: string, theme: string) => {
         "example 3"
         ]
   }
-  """ 
   `.replace("{{guidelines}}", _ACHIEVEMENT_GUIDELINES);
 
   const response = await openai.chat.completions.create({

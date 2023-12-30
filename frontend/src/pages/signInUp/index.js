@@ -5,8 +5,9 @@ import SignUpForm from "./signUp";
 import { Tabs, Row, Col, Button, Typography } from "antd";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../authContext";
-const { TabPane } = Tabs;
+import "./index.css";
 
+const { TabPane } = Tabs;
 const LoginSignupPage = ({ isSignup }) => {
   const [flags, updateFlags] = useState({ activeTab: "1" });
   // const auth = new Auth();
@@ -45,40 +46,72 @@ const LoginSignupPage = ({ isSignup }) => {
   return (
     <React.Fragment>
       <div className="login-signup-page">
-        <div className="header">
-          {/* <Button type="link" onClick={() => navigate(-1)}>
-            Back
-          </Button> */}
-        </div>
         <Row
           justify="center"
           align="middle"
           style={{
-            paddingBottom: "4rem",
-            maxWidth: "1200px",
-            margin: "0px auto",
+            // paddingBottom: "4rem",
+            // maxWidth: "1200px",
+            // margin: "0px auto",
+            height: "100vh",
+            width: "100%",
           }}
         >
-          <Col span={12}>
-            <img
-              src="/undraw_online_cv_re_gn0a.svg"
-              style={{ width: "100%", padding: "1rem" }}
-            />
-            <Typography.Title
-              level={3}
+          <Col
+            span={12}
+            style={{
+              height: "100%",
+              background: "#3e4040",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+            }}
+          >
+            <div
               style={{
-                textAlign: "center",
-                fontWeight: 600,
-                color: "#5C5470",
+                maxWidth: "600px",
+                margin: "0px auto",
               }}
             >
-              "Crafted by AI, Tailored for Success."
-            </Typography.Title>
+              <div
+                style={{
+                  width: "100%",
+                  display: "flex",
+                  justifyContent: "center",
+                }}
+              >
+                <img
+                  src="/undraw_online_cv_re_gn0a.svg"
+                  style={{
+                    width: "80%",
+                  }}
+                />
+              </div>
+              <div
+                style={{
+                  margin: "1rem 1rem",
+                  width: "100%",
+                }}
+              >
+                <div className="large-logo">RESU.ME</div>
+
+                <Typography.Title
+                  level={3}
+                  style={{
+                    // textAlign: "center",
+                    fontWeight: 600,
+                    color: "var(--accent-200)",
+                  }}
+                >
+                  Crafted by AI, Tailored for Success.
+                </Typography.Title>
+              </div>
+            </div>
           </Col>
           <Col span={12}>
             <div
               style={{
-                // maxWidth: "600px",
+                maxWidth: "600px",
                 margin: "0px auto",
                 padding: "0px 25px",
               }}
@@ -86,20 +119,7 @@ const LoginSignupPage = ({ isSignup }) => {
               <Typography.Title level={3}>
                 {isSignup ? "Sign Up" : "Sign In"}
               </Typography.Title>
-              {/* <Tabs
-            value={flags.activeTab}
-            onChange={(activeTab) => updateFlags({ ...flags, activeTab })}
-          >
-            {isSignup ? (
-              <TabPane tab="Sign Up" key="2">
-                <SignUpForm onSubmit={signUp} />
-              </TabPane>
-            ) : (
-              <TabPane tab="Log In" key="1">
-                <LoginForm onSubmit={login} />
-              </TabPane>
-            )}
-          </Tabs> */}
+
               {isSignup ? (
                 <SignUpForm onSubmit={signUp} />
               ) : (

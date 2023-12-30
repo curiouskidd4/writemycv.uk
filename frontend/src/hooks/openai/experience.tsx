@@ -3,14 +3,18 @@ import { useContext, useState } from "react";
 import { createContext } from "vm";
 import { useAuth } from "../../authContext";
 import { useResume } from "../../resumeContext";
+import { useProfile } from "../../contexts/profile";
 
 const BASE_URL =
   process.env.REACT_APP_BASE_URL ||
   "http://127.0.0.1:5001/resu-me-a5cff/us-central1";
 
-const experienceHelper = () => {
+const useExperienceHelper = () => {
   const auth = useAuth();
   const resumeData = useResume();
+
+  const profileData  = useProfile(); 
+  const role = profileData?.profile?.personalInfo?.currentRole ||  resumeData?.resume?.targetRole || resumeData?.resume?.personalInfo?.currentRole || "";
 
   type AISuggestionType = {
     results: string[];
@@ -29,26 +33,25 @@ const experienceHelper = () => {
   });
 
   const suggestDescription = async ({
-    degree,
-    school,
-    role,
+    experienceRole,
+    experienceOrg,
     numberSummary = 3,
     existingSummary = "",
     rewrite = false,
   }: {
-    degree: string;
-    school: string;
-    role: string;
-    numberSummary: number;
-    existingSummary: string;
+    experienceRole: string;
+    experienceOrg: string;
+    numberSummary?: number;
+    existingSummary?: string;
     rewrite: boolean;
   }) => {
     let data = {
-      degree,
-      school,
+      experienceRole,
+      experienceOrg,
       role,
       numberSummary,
       existingSummary,
+      rewrite
     };
     setState({
       loading: true,
@@ -88,7 +91,7 @@ const experienceHelper = () => {
   };
 };
 
-const achievementHelper = () => {
+const useAchievementHelper = () => {
   const auth = useAuth();
   const resumeData = useResume();
 
@@ -231,6 +234,6 @@ const achievementHelper = () => {
 };
 
 export {
-    experienceHelper,
-    achievementHelper,
+  useExperienceHelper,
+    useAchievementHelper,
 }

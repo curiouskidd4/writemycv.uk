@@ -8,7 +8,7 @@ import { exportResume } from "./actions/export";
 export const onWrite = functions.runWith(
   {
     timeoutSeconds: 300,
-    memory: "1GB",
+    memory: "2GB",
   }
 ).firestore
   .document("resumes/{resumeId}")

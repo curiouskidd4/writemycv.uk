@@ -1,8 +1,11 @@
 import React from "react";
 import { Education } from "../../../types/resume";
 import EducationSelector from "./components/selector";
-import { Typography } from "antd";
+import { Button, Col, Menu, Row, Typography } from "antd";
 import EducationIterator from "./components/educationIterator";
+import { PlusOutlined } from "@ant-design/icons";
+import "./index.css";
+
 
 type EducationFlowProps = {
   editMode: boolean;
@@ -67,12 +70,26 @@ const EducationFlow = ({
           <div className="detail-form-header">
             <Typography.Title level={4}>Education</Typography.Title>
           </div>
-
-          <EducationIterator
-            educationList={educationList}
-            syncEducation={syncEducation}
-            onFinish={onFinish}
-          />
+          <Row>
+            {/* <Col span={8}>
+              <EducationMenu
+                educationList={educationList}
+                addNew={() => {
+                  setState((prev) => ({
+                    ...prev,
+                    selectedEducationItems: null,
+                  }));
+                }}
+              />
+            </Col>
+            <Col span={16}> */}
+              <EducationIterator
+                educationList={educationList}
+                syncEducation={syncEducation}
+                onFinish={onFinish}
+              />
+            {/* </Col> */}
+          </Row>
         </>
       );
     }

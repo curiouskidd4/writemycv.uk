@@ -1,5 +1,10 @@
 import { Timestamp } from "@firebase/firestore-types";
 
+interface PublicResume {
+  resumeId: string;
+  userId: string;
+  createdAt: Timestamp;
+}
 interface PhoneNumber {
   countryCode: string;
   number: string;
@@ -37,7 +42,8 @@ interface Education {
   startDate: Timestamp;
   endDate: Timestamp | null;
   grade: string | null;
-  modules: string | null;
+  // modules: string | null;
+  modules: string[] | null;
   dissertation: EducationDisseration | null;
   description: string | null;
   aiSuggestions: AIEducationSuggestion[] | null;
@@ -66,7 +72,7 @@ interface Experience {
   location?: string;
   position: string;
   startDate: Timestamp;
-  endDate?: Timestamp;
+  endDate: Timestamp|null;
   description: string;
   achievements: Achievement[] | null;
   aiSuggestions: AIExperienceSuggestion[] | null;
@@ -108,11 +114,14 @@ interface Resume {
   educationList: Education[];
   experienceList: Experience[];
   skillList: Skill[];
-  skillSuggestions: aiSkillSuggestions[] | null;
+  skillSuggestions: aiSkillSuggestions | null;
   professionalSummary: string | null;
   updatedAt: Timestamp;
   createdAt: Timestamp;
+  deletedAt: Timestamp | null;
+  isDeleted: boolean;
   userId: string;
+  publicResumeId: string | null;
 }
 export type {
   PersonalInfo,
@@ -126,4 +135,5 @@ export type {
   PhoneNumber,
   EducationDisseration,
   Resume,
+  PublicResume
 };

@@ -1,6 +1,16 @@
 import React, { useEffect } from "react";
-import { Button, Col, Input, Row, Select, Space, Spin, Typography } from "antd";
-import { useOpenAI } from "../../../utils";
+import {
+  Button,
+  Col,
+  Input,
+  Row,
+  Select,
+  Skeleton,
+  Space,
+  Spin,
+  Typography,
+} from "antd";
+// import { useOpenAI } from "../../../utils";
 import { MagicWandIcon } from "../../../components/faIcons";
 import {
   PlusOutlined,
@@ -8,6 +18,8 @@ import {
   DeleteOutlined,
 } from "@ant-design/icons";
 import { Skill } from "../../../types/resume";
+import useOpenAI from "../../../hooks/openai";
+import CVWizardBox from "../../../components/cvWizardBox";
 
 const SkillItem = ({
   skill,
@@ -60,19 +72,26 @@ const SkillItem = ({
 type SkillFlowProps = {
   skillList: Skill[];
   onFinish?: () => void;
-  syncSkills : (skills: Skill[]) => Promise<void>;
+  syncSkills: (skills: Skill[]) => Promise<void>;
+  showTitle?: boolean;
 };
-const SkillFlow = ({ skillList, onFinish, syncSkills }: SkillFlowProps) => {
+const SkillFlow = ({
+  skillList,
+  onFinish,
+  syncSkills,
+  showTitle = true,
+}: SkillFlowProps) => {
   const [state, setState] = React.useState({
     skillList: skillList,
     skillText: "",
     loading: false,
   });
-  const openai = useOpenAI();
+  const skillHelper = useOpenAI.useSkillHelper();
 
+  const existingSkills = state.skillList.map((s) => s.name);
   useEffect(() => {
-    openai.getSkills({
-      role: "Machine Learning Engineer",
+    skillHelper.getSuggestions({
+      existingSkills: existingSkills,
     });
   }, []);
 
@@ -89,7 +108,7 @@ const SkillFlow = ({ skillList, onFinish, syncSkills }: SkillFlowProps) => {
       ...prev,
       loading: false,
     }));
-  }
+  };
 
   const addSkill = (skillName: string) => {
     setState((prev) => ({
@@ -125,12 +144,15 @@ const SkillFlow = ({ skillList, onFinish, syncSkills }: SkillFlowProps) => {
 
   return (
     <div>
-      <div className="detail-form-header">
-        <Typography.Title level={4}>Skills</Typography.Title>
-      </div>
+      {showTitle && (
+        <div className="detail-form-header">
+          <Typography.Title level={4}>Skills</Typography.Title>
+        </div>
+      )}
       <div className="detail-form-body">
         <Row>
           <Input
+            size="large"
             placeholder="Add a skill"
             style={{
               width: "200px",
@@ -159,41 +181,49 @@ const SkillFlow = ({ skillList, onFinish, syncSkills }: SkillFlowProps) => {
           }}
         >
           <Space direction="vertical" wrap>
+            
             <Row
               style={{
                 width: "100%",
               }}
             >
-              <Typography.Text type="secondary">
-                {" "}
-                <MagicWandIcon /> CV Wizard Suggestions:
-              </Typography.Text>
+              <CVWizardBox>
+                <Typography.Text type="secondary">
+                  <MagicWandIcon /> CV Wizard Suggestions:
+                </Typography.Text>
+                {skillHelper.loading && <Skeleton active></Skeleton>}
+
+                {skillHelper.suggestions &&
+                  skillHelper.suggestions!.results.length > 0 && (
+                    <Row
+                      style={{
+                        marginTop: "12px",
+                      }}
+                      gutter={[6, 6]}
+                    >
+                      {skillHelper
+                        .suggestions!.results.filter(
+                          (s) => !existingSkills.includes(s)
+                        )
+                        .map((item: any, idx: number) => (
+                          <Col key={idx}>
+                            <Button
+                              size="small"
+                              onClick={() => {
+                                addSkill(item);
+                              }}
+                            >
+                              <PlusOutlined />
+                              {item}
+                            </Button>
+                          </Col>
+                        ))}
+                    </Row>
+                  )}
+              </CVWizardBox>
             </Row>
-            <Row
-              gutter={[8, 4]}
-              style={{
-                width: "100%",
-              }}
-            >
-              {openai.loading && <Spin></Spin>}
-              {!openai.loading && (
-                <>
-                  {openai.data?.results?.map((skill: any) => (
-                    <Col>
-                      <Button
-                        size="small"
-                        onClick={() => {
-                          addSkill(skill);
-                        }}
-                      >
-                        <PlusOutlined />
-                        {skill}
-                      </Button>
-                    </Col>
-                  ))}
-                </>
-              )}
-            </Row>
+
+           
           </Space>
         </Row>
         <Row>
@@ -223,7 +253,7 @@ const SkillFlow = ({ skillList, onFinish, syncSkills }: SkillFlowProps) => {
             type="primary"
             loading={state.loading}
             onClick={() => {
-              onSave( )
+              onSave();
             }}
           >
             Save

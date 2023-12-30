@@ -2,16 +2,20 @@ import axios from "axios";
 import { useContext, useState } from "react";
 import { createContext } from "vm";
 import { useAuth } from "../../authContext";
-import { useResume } from "../../resumeContext";
+import { useProfile } from "../../contexts/profile";
+import { useResume } from "../../contexts/resume";
 
 const BASE_URL =
   process.env.REACT_APP_BASE_URL ||
   "http://127.0.0.1:5001/resu-me-a5cff/us-central1";
 
-const educationHelper = () => {
+const useEducationHelper = () => {
   const auth = useAuth();
   const resumeData = useResume();
 
+  const profileData  = useProfile(); 
+  const role = profileData?.profile?.personalInfo?.currentRole ||  resumeData?.resume?.targetRole || resumeData?.resume?.personalInfo?.currentRole || "";
+  // console.log("resumeData", resumeData)
   type AISuggestionType = {
     results: string[];
     message: string;
@@ -30,25 +34,23 @@ const educationHelper = () => {
     error: null,
   });
 
-  const rewriteDescription = async ({
+  const suggestCourses = async ({
     degree,
     school,
-    role,
     numberSummary = 3,
-    existingSummary = "",
+    existingCourses = [],
   }: {
     degree: string;
     school: string;
-    role: string;
-    numberSummary: number;
-    existingSummary: string;
+    numberSummary?: number;
+    existingCourses?: string[];
   }) => {
     let data = {
       degree,
       school,
       role,
       numberSummary,
-      existingSummary,
+      existingCourses: existingCourses.join(","),
     };
     setState({
       loading: true,
@@ -59,7 +61,7 @@ const educationHelper = () => {
     try {
       const token = await auth.user.getIdToken();
       const response = await axios.post(
-        `${BASE_URL}/api/openai/educationSummary`,
+        `${BASE_URL}/api/openai/eductionCoursesHelper`,
         data,
         {
           headers: {
@@ -69,8 +71,8 @@ const educationHelper = () => {
       );
       setState({
         loading: false,
-        descriptionSuggestions: response.data,
-        courseSuggestions: null,
+        descriptionSuggestions: null,
+        courseSuggestions: response.data,
         error: null,
       });
     } catch (err: any) {
@@ -86,17 +88,15 @@ const educationHelper = () => {
   const suggestDescription = async ({
     degree,
     school,
-    role,
     numberSummary = 3,
     existingSummary = "",
     rewrite=false,
   }: {
     degree: string;
     school: string;
-    role: string;
-    numberSummary: number;
-    existingSummary: string;
-    rewrite: boolean;
+    numberSummary?: number;
+    existingSummary?: string;
+    rewrite?: boolean;
   }) => {
     let data = {
       degree,
@@ -145,9 +145,9 @@ const educationHelper = () => {
     descriptionSuggestions: state.descriptionSuggestions,
     courseSuggestions: state.courseSuggestions,
     error: state.error,
-    rewriteDescription,
+    suggestCourses,
     suggestDescription,
   };
 };
 
-export default educationHelper;
+export default useEducationHelper;

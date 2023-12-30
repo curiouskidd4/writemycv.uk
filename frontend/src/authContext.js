@@ -37,6 +37,7 @@ const useProvideAuth = () => {
     user: null,
     isAuthenticated: false,
     isProfileComplete: false,
+    isRepoCompleted: false,
     isEmailVerified: false,
     authToken: null,
   });
@@ -61,6 +62,8 @@ const useProvideAuth = () => {
     return () => unsubscribe();
   }, []);
 
+  const checkIfProfileCreated = async (user) => {};
+
   const saveUserToFirebase = async (user) => {
     const userRef = doc(db, "users", user.uid);
     let firstName = user.displayName?.split(" ")[0];
@@ -69,6 +72,41 @@ const useProvideAuth = () => {
     const userDoc = await getDoc(userRef);
     if (userDoc.exists()) {
       let userData = userDoc.data();
+
+      if (userData.isRepoCompleted == undefined) {
+        // Check if all the repos exist
+        let educationRef = doc(db, "education", user.uid);
+        let experienceRef = doc(db, "experience", user.uid);
+        let skillsRef = doc(db, "skill", user.uid);
+        let professionalSummaryRef = doc(db, "professionalSummary", user.uid);
+        let personalInfoRef = doc(db, "personalInfo", user.uid);
+
+        let items = await Promise.all([
+          getDoc(educationRef),
+          getDoc(experienceRef),
+          getDoc(skillsRef),
+          getDoc(professionalSummaryRef),
+          getDoc(personalInfoRef),
+        ]);
+
+        let isRepoCompleted = true;
+        for (let item of items) {
+          if (!item.exists()) {
+            isRepoCompleted = false;
+            break;
+          }
+        }
+
+        await setDoc(
+          userRef,
+          {
+            isRepoCompleted: isRepoCompleted,
+          },
+          { merge: true }
+        );
+
+        userData.isRepoCompleted = isRepoCompleted;
+      }
 
       let res = window.pendo.initialize({
         visitor: {
@@ -91,6 +129,7 @@ const useProvideAuth = () => {
         user: user,
         isAuthenticated: true,
         isProfileComplete: userData.profileComplete,
+        isRepoCompleted: userData.isRepoCompleted,
         isEmailVerified: user.emailVerified,
         authToken: null,
       });
@@ -104,6 +143,7 @@ const useProvideAuth = () => {
       email: user.email,
       firebaseId: user.uid,
       profileComplete: false,
+      isRepoCompleted: false,
       photoURL: user.photoURL,
     });
 
@@ -215,6 +255,24 @@ const useProvideAuth = () => {
     }
   };
 
+  const overrideCVImport = async (data) => {
+    let user = auth.currentUser;
+    let userRef = doc(db, "users", user.uid);
+    await setDoc(
+      userRef,
+      {
+        isRepoCompleted: true,
+      },
+      { merge: true }
+    );
+
+    // Update state 
+    // setState((prev) => ({
+    //   ...prev,
+    //   isRepoCompleted: true,
+    // }));
+  };
+
   const logout = async () => {
     try {
       await auth.signOut();
@@ -247,6 +305,7 @@ const useProvideAuth = () => {
     resetPassword,
     reautheticate,
     signInWithGoogle,
+    overrideCVImport
   };
 };
 

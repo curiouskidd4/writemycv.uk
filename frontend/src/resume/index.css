@@ -1,23 +1,36 @@
+.resume-steps-col {
+    background-color: #f6fffe;
+    border-radius: 20px;
+    padding: 24px 0px;
+    height: 100%;
+}
 .resume-edit-steps .ant-steps-item{
     min-height: 76px;
 }
 .resume-edit-steps .ant-steps-item .ant-steps-item-title {
-    color: rgba(0, 0, 0, 0.7) !important;
+    /* color: rgba(0, 0, 0, 0.7) !important; */
+    color: var(--primary-400) !important;
+    opacity: 0.7;
     /* margin-top: -2px; */
     line-height: normal;
-
     
 }
 
 .resume-edit-steps .ant-steps-item.ant-steps-item-active .ant-steps-item-title {
-    color: rgba(0, 0, 0, 0.9) !important;
+    /* color: rgba(0, 0, 0, 0.9) !important; */
+    color: var(--primary) !important;
+    opacity: 1;
+
     /* margin-top: -2px; */
     line-height: normal;
     font-weight: 600;
 }
 
 .resume-edit-steps .ant-steps-item .step-description {
-    color: rgba(0, 0, 0, 0.7) !important;
+    /* color: rgba(0, 0, 0, 0.7) !important; */
+    color: var(--primary-500) !important;
+    opacity: 0.7;
+
     /* margin-top: -2px; */
     line-height: normal;
 
@@ -25,14 +38,19 @@
 
 
 .resume-edit-steps .ant-steps-item-active .step-description {
-    color: rgba(0, 0, 0, 0.8) !important;
+    /* color: rgba(0, 0, 0, 0.8) !important; */
+    color: var(--primary-500) !important;
+    opacity: 1;
+
     /* margin-top: -2px; */
     line-height: normal;
 
 }
 
 .resume-edit-steps .ant-steps-item-disabled .step-description {
-    color: rgba(0, 0, 0, 0.45) !important;
+    /* color: rgba(0, 0, 0, 0.45) !important; */
+    color: var(--primary-400) !important;
+    opacity: 0.6;
     /* margin-top: -2px; */
     line-height: normal;
 

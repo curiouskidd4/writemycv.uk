@@ -1,10 +1,7 @@
 import React from "react";
 
 import "./App.css";
-import {
-  ConfigProvider,
-  Spin,
-} from "antd";
+import { ConfigProvider, Row,  Spin } from "antd";
 import { QueryClient, QueryClientProvider } from "react-query";
 
 import {
@@ -46,8 +43,11 @@ import EmailVerification from "./pages/account/emailVerification.js";
 import ForgotPassword from "./pages/signInUp/forgotPassword.js";
 import ResumeEditV2 from "./resume";
 import ResumePreviewV2 from "./resumePreview";
+import ProfileV2 from "./profile";
+import Sider from "./components/sider";
+import ImportCVToProfile from "./importCV";
 
-const GenLayout = ({  }) => {
+const GenLayout = ({}) => {
   const { user } = useAuth();
   const match = useLocation();
 
@@ -58,29 +58,43 @@ const GenLayout = ({  }) => {
 
   return (
     <>
-      {isResumeEdit || publicResume ? null : <CustomHeader />}
-      <div id={isResumeEdit? "detail-large" : "detail"}>
-        <Outlet />
+      {/* {publicResume ? null : <CustomHeader />} */}
+      <div className="layout">
+        <Sider />
+        <div id={isResumeEdit ? "detail-large" : "detail"}>
+          <div className="outlet">
+          <Outlet />
+
+          </div>
+          <Footer />
+
+        </div>
       </div>
-      <Footer />
     </>
   );
 };
 
-const GenPublicLayout = ({  }) => {
+const GenPublicLayout = ({}) => {
   // debugger
   const match = useLocation();
 
-  let publicResume =
-    match.pathname.search(/\/public-resume\/[a-zA-Z0-9]+/) == 0;
+  let hideNavBar =
+    match.pathname.search(/\/public-resume\/[a-zA-Z0-9]+/) == 0 ||
+    match.pathname.search(/\/(signin|signup)/) == 0;
+
+  let hideFooter =
+    match.pathname.search(/\/public-resume\/[a-zA-Z0-9]+/) == 0 ||
+    match.pathname.search(/\/(signin|signup)/) == 0;
 
   return (
     <>
-      {publicResume ? null : <PublicHeader />}
+      {hideNavBar ? null : <PublicHeader />}
       <div id="public-detail">
         <Outlet />
       </div>
-      <Footer />
+      {/* <Footer />
+       */}
+      {hideFooter ? null : <Footer />}
     </>
   );
 };
@@ -98,9 +112,17 @@ const protectedRouter = createBrowserRouter([
         path: "resumes",
         element: <Resume />,
       },
+      // {
+      //   path: "repository",
+      //   element: <Profile />,
+      // },
       {
-        path: "profile",
-        element: <Profile />,
+        path: "repository",
+        element: <ProfileV2 />,
+      },
+      {
+        path: "profile-v2",
+        element: <ProfileV2 />,
       },
       { path: "terms-service", element: <TermsService /> },
       { path: "privacy-policy", element: <PrivacyPolicy /> },
@@ -109,10 +131,9 @@ const protectedRouter = createBrowserRouter([
       // { path: "use", element: <Help /> },
       // { path: "superadmin", element: <SuperAdmin /> },
 
-      { path: "resumes/:resumeId", element: <EditResume /> },
-      { path: "resumes-v2/:resumeId/edit", element: <ResumeEditV2 /> },
-      { path: "resumes-v2/:resumeId", element: <ResumePreviewV2 /> },
-
+      // { path: "resumes/:resumeId", element: <EditResume /> },
+      { path: "resumes/:resumeId/edit", element: <ResumeEditV2 /> },
+      { path: "resumes/:resumeId", element: <ResumePreviewV2 /> },
 
       { path: "public-resume/:publicResumeId", element: <ResumePreview /> },
 
@@ -199,7 +220,7 @@ const baseRouter = createBrowserRouter([
         path: "forgot-password",
         element: (
           <div>
-            <ForgotPassword  />
+            <ForgotPassword />
           </div>
         ),
       },
@@ -266,7 +287,9 @@ const BaseApp = () => {
         <>
           {auth.isAuthenticated &&
             auth.user &&
-            (auth.isProfileComplete && auth.isEmailVerified ? (
+            (auth.isProfileComplete && auth.isEmailVerified && auth.isRepoCompleted  ? (
+            // (auth.isProfileComplete && auth.isEmailVerified  ? (
+
               <>
                 <RouterProvider router={protectedRouter} />
               </>
@@ -276,13 +299,8 @@ const BaseApp = () => {
               </>
             ) : !auth.isProfileComplete ? (
               <CustomerOnboarding />
-            ) : null)
-            }
-            {
-              !auth.isAuthenticated && (
-                <RouterProvider router={baseRouter} />
-              )
-            }
+            )  : !auth.isRepoCompleted ? (<ImportCVToProfile />): null)}
+          {!auth.isAuthenticated && <RouterProvider router={baseRouter} />}
         </>
       )}
     </React.StrictMode>

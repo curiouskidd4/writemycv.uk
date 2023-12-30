@@ -26,12 +26,11 @@ service cloud.firestore {
     // Public resume can be read by anyone but only the owner can write
 
     match /publicResume/{resumeId} {
-      allow read: if true;
+      allow read: if request.auth.uid == resource.data.userId;
+      allow create: if request.auth.uid == request.resource.data.userId;
+
     }
 
-    match /publicResume/{resumeId} {
-      allow write: if request.auth.uid == resource.data.userId;
-    }
 
     // Education section can be written by the owner of the resume
 

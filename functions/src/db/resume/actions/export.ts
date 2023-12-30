@@ -31,13 +31,23 @@ const generatePdfnScreenShot = async (
   });
   const page = await browser.newPage();
   await page.setContent(html);
+  // Wait for all images to load
+  await page.evaluateHandle("document.fonts.ready");
+  // Make sure no network requests are pending
+  try{
+    await page.waitForNavigation({ waitUntil: "networkidle2", timeout: 5000,
+  });
+  } catch (error) {
+    console.log(error);
+  }
+
   await page.emulateMediaType("screen");
   await page.setViewport({ width: 1920, height: 1080 });
   const pdf = await page.pdf({
     format: "A4",
     printBackground: true,
     margin: {
-      top: "20px",
+      top: "16px",
       bottom: "20px",
       left: "20px",
       right: "20px",
@@ -102,6 +112,8 @@ const exportResume = async (resumeId: string, userId: string) => {
         }
         return {
           ...experience,
+          isSubDetailAvailable: true,
+
           startDate: startDate? startDate.toLocaleString("default", {
             month: "short",
             year: "numeric",
@@ -152,6 +164,7 @@ const exportResume = async (resumeId: string, userId: string) => {
         ...resumeData,
         experienceList,
         educationList,
+        skillText : resumeData.skillList?.map((skill) => skill.name).join(", "),
       });
 
       // console.log(resumeTemplateHtml);

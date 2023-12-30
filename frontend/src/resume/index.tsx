@@ -97,17 +97,29 @@ const ResumeEditSteps = ({
   return (
     <Space direction="vertical">
       {editMode && !isCollapsed ? (
-        <Row style={{ height: "20px" }}>
+        <Row style={{ height: "20px", marginBottom: "12px" }}>
           <Col>
-            <Typography.Text type="secondary">
+            <Typography.Text
+              type="secondary"
+              style={{
+                color: "var(--accent-400)",
+              }}
+            >
               Select a section to edit
             </Typography.Text>
           </Col>
         </Row>
       ) : (
-        <Row style={{ height: "20px" }}>
+        <Row style={{ height: "20px", marginBottom: "12px" }}>
           <Col>
-            <Typography.Text type="secondary"> </Typography.Text>
+            <Typography.Text
+              type="secondary"
+              style={{
+                color: "var(--accent-400)",
+              }}
+            >
+              {" "}
+            </Typography.Text>
           </Col>
         </Row>
       )}
@@ -137,7 +149,7 @@ const ResumeEditSteps = ({
             };
           })}
         />
-
+        {/* 
         {isCollapsed ? (
           <Button
             type="text"
@@ -156,7 +168,7 @@ const ResumeEditSteps = ({
           >
             Collapse
           </Button>
-        )}
+        )} */}
       </Space>
     </Space>
   );
@@ -173,7 +185,7 @@ const ResumeEditV2Loader = () => {
   };
 
   const toThisResume = () => {
-    navigate(`/resumes-v2/${resumeData.resume?.id}`);
+    navigate(`/resumes/${resumeData.resume?.id}`);
   };
 
   if (resumeData.loading) {
@@ -184,10 +196,11 @@ const ResumeEditV2Loader = () => {
     return <div>Resume not found</div>;
   }
   return (
-    <div>
+    <div className="content">
       <Row
         style={{
-          height: "36px",
+          height: "64px",
+          marginBottom: "12px",
         }}
         align="middle"
       >
@@ -211,7 +224,7 @@ const ResumeEditV2Loader = () => {
           <Col style={{ marginLeft: "auto" }}>
             <Button
               onClick={() => {
-                navigate(`/resumes-v2/${resumeData.resume?.id}`, {
+                navigate(`/resumes/${resumeData.resume?.id}`, {
                   state: {
                     editMode: true,
                   },
@@ -223,8 +236,8 @@ const ResumeEditV2Loader = () => {
           </Col>
         )}
       </Row>
-      <Row gutter={48}>
-        <Col span={6}>
+      <Row gutter={48} style={{ margin: "0px 16px" }}>
+        <Col span={6} className="resume-steps-col">
           <ResumeEditSteps
             current={current}
             setCurrent={setCurrent}
@@ -234,7 +247,7 @@ const ResumeEditV2Loader = () => {
         <Col
           span={18}
           style={{
-            paddingLeft: "48px",
+            paddingLeft: "24px",
           }}
         >
           <Navigation

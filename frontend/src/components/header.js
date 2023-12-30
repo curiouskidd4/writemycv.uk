@@ -28,6 +28,7 @@ import {
 } from "react-router-dom";
 import { MenuOutlined, UserOutlined } from "@ant-design/icons";
 import { useAuth } from "../authContext";
+import { ProfileIcon } from "./faIcons";
 
 const { Header, Content, Footer, Sider } = Layout;
 const { useBreakpoint } = Grid;
@@ -44,12 +45,15 @@ const CustomHeader = () => {
     navigate("");
   };
   return (
-    <Header className="header" style={{ background: "#ffffff00" }}>
+    <Header className="header auth-header" style={{ background: "#ffffff00" }}>
+      <div style={{
+                  borderBottom: "1px solid #b9b4c775",
+                  width: "100%",
+      }}>
       <Row
         style={{
-          maxWidth: "1200px",
+          maxWidth: "1400px",
           margin: "0px auto",
-          borderBottom: "1px solid #B9B4C7",
         }}
       >
         <Col span={8} style={{ margin: "auto" }} className="logo">
@@ -59,15 +63,21 @@ const CustomHeader = () => {
           <div style={{ float: "right" }} className="nav-menu">
             <Button
               onClick={() => navigate("/resumes")}
-              type={location.pathname == "/resumes" ? "link" : "text"}
+              type="text"
+              // type={location.pathname == "/resumes" ? "link" : "text"}
+              className={location.pathname.match(/\/resumes/) ? "active" : ""}
+
             >
               Resumes
             </Button>
             <Button
-              onClick={() => navigate("/profile")}
-              type={location.pathname.match(/\/profile/) ? "link" : "text"}
+              onClick={() => navigate("/repository")}
+              type="text"
+
+              // type={location.pathname.match(/\/profile/) ? "link" : "text"}
+              className={location.pathname.match(/\/repository/) ? "active" : ""}
             >
-              Your Profile
+              Repository
             </Button>
 
             <Popover
@@ -99,8 +109,13 @@ const CustomHeader = () => {
                 </div>
               }
             >
-              <Button>
-                <UserOutlined />
+              <Button style={{
+                borderRadius: "50%",
+                width: "44px",
+                height: "44px",
+              }}>
+                {/* <UserOutlined /> */}
+                <ProfileIcon />
               </Button>
             </Popover>
           </div>
@@ -150,7 +165,8 @@ const CustomHeader = () => {
           </div>
         </Col>
       </Row>
-      <div className="logo" />
+      </div>
+      {/* <div className="logo" /> */}
       {/* <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['2']} items={items1} /> */}
     </Header>
   );

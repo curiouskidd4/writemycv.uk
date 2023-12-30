@@ -279,6 +279,7 @@ const ProfessionalSummaryFlow = ({
   const onSave = async (values: any) => {
     setState({ ...state, loading: true });
     await syncProfessionalSummary(values.professionalSummary);
+    await onFinish(values.professionalSummary)
     setState({ ...state, loading: false });
   }
 

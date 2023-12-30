@@ -1,7 +1,13 @@
 import { Button, Col, Row, Typography } from "antd";
 import React from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { useResume } from "../../../contexts/resume";
 
 const FinishView = () => {
+  const { resumeId } = useParams();
+  const { downloadResume } = useResume();
+
+  const navigate = useNavigate();
   return (
     <div>
       <Row>
@@ -18,7 +24,7 @@ const FinishView = () => {
         marginTop: "24px"
       }}>
         <Col>
-          <Button type="primary" onClick={() => {}}>
+          <Button type="primary" onClick={() => navigate(`resumes/${resumeId}`)}>
             Preview CV
           </Button>
         </Col>

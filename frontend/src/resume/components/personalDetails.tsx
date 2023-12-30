@@ -6,12 +6,14 @@ type PersonalDetailsProps = {
   initialValues?: any;
   onFinish?: (values: any) => Promise<void>;
   syncPersonalInfo: (values: any) => Promise<void>;
+  showTitle?: boolean;
 };
 
 const PersonalDetails = ({
   initialValues,
   onFinish,
   syncPersonalInfo,
+  showTitle = true,
 }: PersonalDetailsProps) => {
   const [loading, setLoading] = React.useState(false);
 
@@ -33,9 +35,11 @@ const PersonalDetails = ({
   };
   return (
     <div>
-      <div className="detail-form-header">
-        <Typography.Title level={4}>Personal Info</Typography.Title>
-      </div>
+      {showTitle ? (
+        <div className="detail-form-header">
+          <Typography.Title level={4}>Personal Info</Typography.Title>
+        </div>
+      ) : null}
       <div className="detail-form-body">
         <Form
           name="personal_info"

@@ -1,3 +1,9 @@
+.education-history-selector {
+    background-color: white;
+    border-radius: 12px;
+    padding: 12px;
+}
+
 .education-menu .ant-menu-title-content {
     margin: 12px;
     /* padding: 4px; */
@@ -43,3 +49,10 @@
 
 
  /* ant-menu-item-selected */
+
+ .education-course-tag {
+    background-color: var(--primary-400);
+    color: white;
+    font-size: 14px;
+    padding: 4px 8px;
+ }

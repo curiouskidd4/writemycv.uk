@@ -9,6 +9,7 @@ import {
   Space,
   Tag,
   Typography,
+  message,
 } from "antd";
 import {
   CalendarIcon,
@@ -27,13 +28,13 @@ import "./index.css";
 import { useNavigate } from "react-router-dom";
 
 const EducationCard = ({ education }: { education: Education }) => {
-  let startDate = moment(education.startDate.toDate()).format("MMM YYYY");
+  let startDate = education.startDate ? moment(education.startDate.toDate()).format("MMM YYYY") : "Present";
   let endDate = education.endDate
     ? moment(education.endDate.toDate()).format("MMM YYYY")
     : "Present";
   return (
     <div>
-      <Row>
+      <Row >
         <Typography.Title
           level={5}
           style={{
@@ -56,7 +57,8 @@ const EducationCard = ({ education }: { education: Education }) => {
         <Col>
           <Typography.Text>
             <CalendarIcon />
-            {startDate} - {endDate}
+            {startDate == "Present" ? "Present" : 
+            `${startDate} - ${endDate}`}
           </Typography.Text>
         </Col>
         {education.grade && (
@@ -88,8 +90,8 @@ const EducationCard = ({ education }: { education: Education }) => {
 };
 
 const ExperienceCard = ({ experience }: { experience: Experience }) => {
-  let startDate = moment(experience.startDate.toDate()).format("MMM YYYY");
-  let endDate = experience.endDate
+    let startDate = experience.startDate ? moment(experience.startDate.toDate()).format("MMM YYYY") : "Present";
+    let endDate = experience.endDate
     ? moment(experience.endDate.toDate()).format("MMM YYYY")
     : "Present";
   return (
@@ -114,10 +116,11 @@ const ExperienceCard = ({ experience }: { experience: Experience }) => {
         </Typography.Text>
       </Row>
       <Row gutter={16}>
-        <Col>
+      <Col>
           <Typography.Text>
             <CalendarIcon />
-            {startDate} - {endDate}
+            {startDate == "Present" ? "Present" : 
+            `${startDate} - ${endDate}`}
           </Typography.Text>
         </Col>
         {/* {education.grade && (
@@ -181,15 +184,39 @@ const ResumePreviewV2_ = () => {
     return <div>Loading...</div>;
   }
 
+  const downloadResume = async () => {
+    let res = message.loading("Downloading resume...");
+    await resumeData.downloadResume();
+    message.destroy();
+    message.success("Resume downloaded!");
+  }
+
+  const copyPublicLink = async () => {
+    let res = message.loading("Copying public link...");
+    let publicLink = await resumeData.copyPublicLink();
+    message.destroy();
+    navigator.clipboard.writeText(publicLink);
+      message.success("Public link copied to clipboard");
+    // message.success("Public link copied!");
+  }
+
+  const deleteResume = async () => {
+    let res = message.loading("Deleting resume...");
+    await resumeData.softDeleteResume();
+    message.destroy();
+    message.success("Resume deleted!");
+    navigate("/resumes");
+  }
   const toResumes = () => {
     navigate("/resumes");
   };
   return (
     <div className="resume-preview">
       <Row
-        style={{
-          height: "36px",
-        }}
+       style={{
+        height: "64px",
+        marginBottom: "12px",
+      }}
         align="middle"
       >
         <Col>
@@ -234,12 +261,19 @@ const ResumePreviewV2_ = () => {
                 },
               ],
               onClick: (item) => {
-                console.log(item);
+                // console.log(item);
+                if (item.key === "1") {
+                  downloadResume();
+                }else if (item.key === "2") {
+                  copyPublicLink();
+                }else if (item.key === "3") {
+                  deleteResume();
+                }
               },
             }}
             onClick={() =>
               // Pass editMode = true
-              navigate("/resumes-v2/" + resumeData.resume?.id + "/edit", {
+              navigate("/resumes/" + resumeData.resume?.id + "/edit", {
                 state: { editMode: true },
               })
             }

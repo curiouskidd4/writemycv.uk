@@ -4,10 +4,13 @@
     <meta charset="UTF-8" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
+    {# <link
       href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,100;0,200;0,300;0,400;1,100;1,200;1,300;1,400&family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,100;0,9..40,200;0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;0,9..40,900;0,9..40,1000;1,9..40,100;1,9..40,200;1,9..40,300;1,9..40,400;1,9..40,500;1,9..40,600;1,9..40,700;1,9..40,800;1,9..40,900;1,9..40,1000&family=Hanken+Grotesk:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=IBM+Plex+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Karla:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,200;1,300;1,400;1,500;1,600;1,700;1,800&family=Manrope:wght@200;300;400;500;600;700;800&family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800&family=Nunito+Sans:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;0,1000;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900;1,1000&family=Open+Sans:wght@300;400&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap"
       rel="stylesheet"
-    />
+    /> #}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,100;0,200;0,300;0,400;1,100;1,200;1,300;1,400&family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,100;0,9..40,200;0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;0,9..40,900;0,9..40,1000;1,9..40,100;1,9..40,200;1,9..40,300;1,9..40,400;1,9..40,500;1,9..40,600;1,9..40,700;1,9..40,800;1,9..40,900;1,9..40,1000&family=Hanken+Grotesk:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=IBM+Plex+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Karla:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,200;1,300;1,400;1,500;1,600;1,700;1,800&family=Libre+Baskerville:wght@700&family=Manrope:wght@200;300;400;500;600;700;800&family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800&family=Nunito+Sans:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;0,1000;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900;1,1000&family=Open+Sans:wght@300;400&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800&family=Rethink+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet">
     <script src="https://kit.fontawesome.com/ace12ff356.js" crossorigin="anonymous"></script>
     <link
       rel="stylesheet"
@@ -40,12 +43,19 @@
 
     </script>
 <style>
+    .fa-solid {
+      color: rgb(254 174 157);
+    }
      html {
         height: 100%;
+        background: radial-gradient( circle, rgba(195, 208, 231, 0.5508797268907564) 0%, rgba(247, 233, 221, 0.5508797268907564) 80% );
+
      }
+  
      ul {
           padding-inline-start: 24px;
      }
+
       .material-symbols-outlined {
         font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 16;
         font-size: 11px;
@@ -64,18 +74,34 @@
 
       }
 
+    h3 {
+                font-weight: 600;
+                margin-top: 1rem;
+
+      }
+
       body {
         width: 21cm;
         min-height: 29.7cm;
-        font-family: Arial, sans-serif;
+        {# font-family: Arial, sans-serif; #}
+        {# font-family: 'Rethink Sans', sans-serif; #}
+        {# font-family: 'Open Sans', sans-serif; #}
+        {# font-family: 'Montserrat', sans-serif; #}
+        {# font-family: 'Manrope', sans-serif; #}
+            {# font-family: 'Karla', sans-serif; #}
+                {# font-family: 'IBM Plex Sans', sans-serif; #}
+                {# 'Hanken Grotesk', sans-serif; #}
+                {# font-family: 'DM Sans', sans-serif; #}
+        font-family: 'Nunito Sans', sans-serif;
         /* margin: 20px; */
         line-height: 1.4;
         background-color: grey;
-        font-family: Poppins, sans-serif;
-        font-size: 11px;
-        font-weight: 300;
+        {# font-family: Poppins, sans-serif; #}
+        font-size: 12px;
+        font-weight: 400;
+        color: rgba(0, 0, 0, 0.88);
         background-color: white;
-
+        {# border: none; #}
       }
       .resume-container {
         /* width: 21cm; */
@@ -102,6 +128,7 @@
       .header-title {
         font-size: 2rem;
         margin: 0.125rem 0;
+            color: #256763;
       }
 
       .header-subtitle {
@@ -125,6 +152,7 @@
         align-items: center;
         gap: 4px;
         font-size: 12px;
+        color: #256763 !important;
         {# display: grid;
         grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
         gap: 4px;
@@ -134,10 +162,16 @@
 
       .section h2 {
         font-weight: 600;
+        margin-top: 1.5rem;
+        color: #256763;
+      }
+
+      a {
+        color: #256763;
       }
 
       .section h3 {
-        font-weight: 400;
+        font-weight: 600;
       }
 
       .section-item {
@@ -175,6 +209,13 @@
       .skill-item {
         border-right: 1px solid #ccc;
       }
+      .education-date.subdetails{
+        margin-bottom: 6px;
+      }
+
+      .experience-date.subdetails{
+        margin-bottom: 6px;
+      }
     </style>
 </head>
 <body>
@@ -205,7 +246,7 @@
                   {% if personalInfo.linkedin %}
           <span class="item"
             ><i class="fab fa-linkedin-in"></i>
-            {{ personalInfo.linkedin }}</span
+           <a href="{{personalInfo.linkedin}}"> {{ personalInfo.linkedin | replace("https://", "") }} </a></span
           >
           {% endif %}
           </div>
@@ -306,14 +347,15 @@
         {% endfor %}
         </ul> #}
         <div class="skill-row">
-          {% for skill in skillList %}
-            <div class="skill-item">
-              <strong>{{ skill.name }}</strong>
+          {# {% for skill in skillList %} #}
+            {# <div class="skill-item"> #}
+              {# <strong>{{ skill.name }}</strong> #}
               {# <div class="skill-level">
                 <div class="skill-level-bar" style="width: {{ skill.level }}%"></div>
               </div> #}
-            </div>
-          {% endfor %}
+            {# </div> #}
+          {# {% endfor %} #}
+          <strong>{{ skillText }}</strong>
     </section>
 
     {# <section class="section hobbies">

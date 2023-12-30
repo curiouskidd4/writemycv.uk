@@ -7,6 +7,7 @@ import {
   Radio,
   Checkbox,
   Typography,
+  Divider
 } from "antd";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../authContext";
@@ -136,38 +137,54 @@ const SignUpForm = (props) => {
           loading={loading}
           type="primary"
           htmlType="submit"
-          style={{ marginRight: "20px" }}
+          style={{ width: "100%" }}
         >
-          Submit
+          Sign Up
         </Button>
-        <Button htmlType="button" onClick={onReset}>
-          Reset
-        </Button>
+        
       </Form.Item>
-      <Typography.Text type="secondary">
-        Have an account?{" "}
-        <Link to="/signin">
-          {" "}
-          <a style={{ color: "var(--primary)" }}>Sign In</a>
-        </Link>
-      </Typography.Text>
+      
       <div
         style={{
           marginTop: "2rem",
         }}
       >
-        <Typography.Text type="secondary">
-          Or continue with Google
-          <Button
-            style={{ marginLeft: "20px" }}
-            onClick={() => {
-              auth.signInWithGoogle();
-            }}
-          >
-            <GoogleOutlined />
-            Google
-          </Button>
-        </Typography.Text>
+        <Divider>Or</Divider>
+
+        <Button
+          style={{
+            height: "64px",
+            width: "100%",
+            borderRadius: "12px",
+            marginTop: "12px",
+          }}
+          onClick={() => {
+            auth.signInWithGoogle();
+          }}
+          icon={
+            <img
+              src="/googleIconV2.svg"
+              style={{
+                paddingTop: "6px",
+              }}
+            ></img>
+          }
+        ></Button>
+
+        <div
+          style={{
+            marginTop: "48px",
+            textAlign: "center",
+          }}
+        >
+          <Typography.Text type="secondary">
+            Already have an account?
+            <Link to="/signin">
+              {" "}
+              <a style={{ color: "var(--primary)" }}>Sign In</a>
+            </Link>
+          </Typography.Text>
+        </div>
       </div>
     </Form>
   );

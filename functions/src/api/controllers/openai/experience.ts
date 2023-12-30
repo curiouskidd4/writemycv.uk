@@ -52,7 +52,7 @@ const experienceSummaryRewrite = async (
     ],
   });
   const summaries = response.choices.map((item) => {
-    return item.message;
+    return item.message.content;
   });
   return summaries;
 };

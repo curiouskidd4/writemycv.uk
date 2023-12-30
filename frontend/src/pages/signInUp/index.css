@@ -5,35 +5,46 @@
   margin: 20px 0;
 }
 .reset-password {
-    max-width: 600px;
-    margin: 0px auto;
-    padding: 0px 1.5rem;
-
+  max-width: 600px;
+  margin: 0px auto;
+  padding: 0px 1.5rem;
 }
 .reset-password .header h1 {
-    color: var(--primary);
-    font-size: 28px;
-    font-weight: 600;
-    margin: 20px 0;
-  }
-  
+  color: var(--primary);
+  font-size: 28px;
+  font-weight: 600;
+  margin: 20px 0;
+}
+
 .login-signup-page {
-    max-width: 600px;
-    margin: 0px auto;
-    padding: 0px 1.5rem;
+  /* max-width: 600px; */
+  /* margin: 0px auto; */
+  /* padding: 0px 1.5rem; */
 }
 
 .login-signup-page .header {
-    align-items: center;
-    display: flex;
-    justify-content: space-between;
-    margin: 20px 0;
-  }
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  margin: 20px 0;
+}
 
 .login-signup-page .header h1 {
-    color: var(--primary);
-    font-size: 28px;
-    font-weight: 600;
-    margin: 20px 0;
-  }
-  
+  color: var(--primary);
+  font-size: 28px;
+  font-weight: 600;
+  margin: 20px 0;
+}
+
+.large-logo {
+  font-family: "Barlow Condensed", sans-serif;
+  /* font-family: "Manrope", sans-serif; */
+
+  /* color: #214683 !important; */
+  color: var(--primary-400);
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  font-weight: 800;
+  font-size: 64px;
+}

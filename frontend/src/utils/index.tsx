@@ -36,7 +36,7 @@ const useOpenAI = () => {
 
   const [state, setState] = useState<OpenAIStateType>({
     loading: false,
-    data: {},
+    data: null,
     error: null,
   });
 

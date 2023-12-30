@@ -158,9 +158,9 @@ const MoreOptions = ({ resumeId, publicResumeId, downloadDocx , downloadLoading}
       </Modal>
 
       <Space direction="vertical">
-        <Button type="link" icon={<CopyOutlined />}>
+        {/* <Button type="link" icon={<CopyOutlined />}>
           Copy Resume
-        </Button>
+        </Button> */}
         {publicResumeId ? (
           <Button
             type="link"
@@ -186,7 +186,7 @@ const MoreOptions = ({ resumeId, publicResumeId, downloadDocx , downloadLoading}
             Get Public Link
           </Button>
         )}
-       <Button
+       {/* <Button
           type="link"
           loading={downloadLoading}
           // icon={<DownloadOutlined />}
@@ -199,7 +199,7 @@ const MoreOptions = ({ resumeId, publicResumeId, downloadDocx , downloadLoading}
           }}
         >
           Download Word
-        </Button>
+        </Button> */}
         <Button
           type="link"
           icon={<DeleteOutlined />}

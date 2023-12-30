@@ -1,18 +1,18 @@
-import educationHelper from "./education";
+import useEducationHelper from "./education";
 import {
-    experienceHelper,
-    achievementHelper,
+    useAchievementHelper,
+    useExperienceHelper,
 } from "./experience";
-import skillHelper from "./skills";
-import professionalSummaryHelper  from "./summary";
+import useSkillHelper from "./skills";
+import useProfessionalSummaryHelper  from "./summary";
 
 
-const useOpenAI = {
-    educationHelper,
-    experienceHelper,
-    achievementHelper,
-    skillHelper,
-    professionalSummaryHelper,
+const openAI = {
+    useEducationHelper,
+    useAchievementHelper,
+    useExperienceHelper,
+    useSkillHelper,
+    useProfessionalSummaryHelper,
 };
 
-export default useOpenAI;
+export default openAI;

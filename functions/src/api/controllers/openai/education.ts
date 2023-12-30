@@ -30,7 +30,7 @@ const educationSummarySuggestion = async (
     ],
   });
   const summaries = response.choices.map((item) => {
-    return item.message;
+    return item.message.content;
   });
 
   return summaries;
@@ -45,14 +45,21 @@ const eductionCoursesHelper = async (
 ) => {
   let prompt;
   if (instructions) {
-    prompt = `Suggest few courses (comma separated, at most 5) for a ${degree} degree from ${school} for the role of ${role}.  Use british english for spellings, don't use pronouns like "I/We". Make sure courses are relevant to the role and are short (max 4 words), also keep them very granualar. \nFollow the following instructions carefully: ${instructions}  \nDegree: ${degree}\nSchool: ${school}`;
+    prompt = `Suggest few courses (comma separated, at most 10) for a ${degree} degree from ${school} for the role of ${role}.  Use british english for spellings, don't use pronouns like "I/We". Make sure courses are relevant to the role and are short (max 4 words), also keep them very granualar. \nFollow the following instructions carefully: ${instructions}  \nDegree: ${degree}\nSchool: ${school}, 
+    Output Format: 
+    {"courses": ["course 1", "course 2", "course 3"]}
+    Courses:\n`;
   } else {
-    prompt = `Suggest few courses (comma separated, at most 5) for a ${degree} degree from ${school} for the role of ${role}.  Use british english for spellings, don't use pronouns like "I/We". Make sure courses are relevant to the role and are short (max 4 words), also keep them very granualar. (generate comma separated, at most 5)\n \nDegree: ${degree}\nSchool: ${school}`;
+    prompt = `Suggest few courses (comma separated, at most 10) for a ${degree} degree from ${school} for the role of ${role}.  Use british english for spellings, don't use pronouns like "I/We". Make sure courses are relevant to the role and are short (max 4 words), also keep them very granualar. (generate comma separated, at most 5)\n \nDegree: ${degree}\nSchool: ${school}
+    Output Format: 
+    {"courses": ["course 1", "course 2", "course 3"]}
+    
+    Courses:\n`;
   }
 
   const response = await openai.chat.completions.create({
     model: DEFAULT_MODEL,
-    n: n,
+    n: 1,
     temperature: 0.25,
     messages: [
       {
@@ -62,11 +69,21 @@ const eductionCoursesHelper = async (
       { role: "user", content: prompt },
     ],
   });
-  const summaries = response.choices.map((item) => {
-    return item.message;
+  let finalSuggestions: string[] = []
+  const suggestions = response.choices.map((item) => {
+    let suggestions = []
+    try{
+      console.log(item.message.content)
+      suggestions = JSON.parse(item.message.content!).courses;
+    }catch(e){
+      console.log(e)
+    }
+    // return suggestions;
+    finalSuggestions = [...finalSuggestions, ...suggestions]
+    
   });
 
-  return summaries;
+  return finalSuggestions;
 };
 
 const educationSummaryRewrite = async (
@@ -97,7 +114,7 @@ const educationSummaryRewrite = async (
     ],
   });
   const summaries = response.choices.map((item) => {
-    return item.message;
+    return item.message.content;
   });
   return summaries;
 };

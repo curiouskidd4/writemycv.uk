@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faWandMagicSparkles , faCalendar, faStar, faHouse, faPhone, faCalendarAlt, faEnvelope, faDownload, faShare, faTrash, faPenToSquare, faChevronLeft, faChevronRight} from "@fortawesome/free-solid-svg-icons";
+import { faWandMagicSparkles , faCalendar, faStar, faHouse, faPhone, faCalendarAlt, faEnvelope, faDownload, faShare, faTrash, faPenToSquare, faChevronLeft, faChevronRight, faUpload, faPlus, faUserTie, faGraduationCap, faBriefcase, faScrewdriverWrench, faBullhorn, faLightbulb, faRetweet, faCheck, faCircleMinus, faUser, faEllipsisVertical} from "@fortawesome/free-solid-svg-icons";
 
 export const MagicWandIcon = () => (
   <FontAwesomeIcon
@@ -119,6 +119,25 @@ export const EditIcon = () => (
 );
 
 
+export const UploadIcon = () => (
+  <FontAwesomeIcon
+    icon={faUpload}
+    style={{
+      marginRight: "6px",
+      color: "#E9AFA3",
+    }}
+  />
+);
+
+export const PlusIcon = () => (
+  <FontAwesomeIcon
+    icon={faPlus}
+    style={{
+      marginRight: "6px",
+      color: "#E9AFA3",
+    }}
+  />
+);
 export const CollapseLeft = () => (
   <FontAwesomeIcon
     icon={faChevronLeft}
@@ -136,6 +155,120 @@ export const CollapseRight = () => (
       marginRight: "6px",
       color: "#E9AFA3",
       transform: "rotate(180deg)",
+    }}
+  />
+);
+
+export const PersonalInfoIcon = () => (
+  <FontAwesomeIcon
+    icon={faUserTie}
+    style={{
+      marginRight: "6px",
+      color: "#E9AFA3",
+    }}
+  />
+);
+
+export const EducationIcon = () => (
+  <FontAwesomeIcon
+    icon={faGraduationCap}
+    style={{
+      marginRight: "6px",
+      color: "#E9AFA3",
+    }}
+  />
+);
+
+export const ExperienceIcon = () => (
+  <FontAwesomeIcon
+    icon={faBriefcase}
+    style={{
+      marginRight: "6px",
+      color: "#E9AFA3",
+    }}
+  />
+);
+
+export const SkillsIcon = () => (
+  <FontAwesomeIcon
+    icon={faScrewdriverWrench}
+    style={{
+      marginRight: "6px",
+      color: "#E9AFA3",
+    }}
+  />
+);
+
+
+export const ReferencesIcon = () => (
+  <FontAwesomeIcon
+    icon={faBullhorn}
+    style={{
+      marginRight: "6px",
+      color: "#E9AFA3",
+    }}
+  />
+);
+
+
+export const LightBulbIcon = () => (
+  <FontAwesomeIcon
+    icon={faLightbulb}
+    style={{
+      marginRight: "6px",
+      color: "#E9AFA3",
+    }}
+  />
+);
+
+
+export const RepharseIcon = () => (
+  <FontAwesomeIcon
+    icon={faRetweet}
+    style={{
+      marginRight: "6px",
+      color: "#E9AFA3",
+    }}
+  />
+);
+
+
+export const CheckIcon = () => (
+  <FontAwesomeIcon
+    icon={faCheck}
+    style={{
+      marginRight: "6px",
+      color: "#E9AFA3",
+    }}
+  />
+);
+
+export const AIWizardHideIcon = () => (
+  <FontAwesomeIcon
+    icon={faCircleMinus}
+    style={{
+      marginRight: "6px",
+      color: "#E9AFA3",
+    }}
+  />
+);
+
+export const ProfileIcon = () => (
+  <FontAwesomeIcon
+    icon={faUser}
+    style={{
+      marginRight: "6px",
+      color: "#E9AFA3",
+    }}
+  />
+);
+
+export const MoreIcon = () => (
+  <FontAwesomeIcon
+    icon={faEllipsisVertical}
+    style={{
+      marginRight: "6px",
+      color: "#E9AFA3",
     }}
   />
 );
