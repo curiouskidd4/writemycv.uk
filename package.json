@@ -1,6 +1,10 @@
 {
   "dependencies": {
     "html-to-docx": "^1.8.0",
-    "mammoth": "^1.6.0"
+    "mammoth": "^1.6.0",
+    "resend": "^2.1.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.46"
   }
 }

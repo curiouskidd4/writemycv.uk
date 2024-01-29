@@ -63,26 +63,26 @@ const CustomerOnboarding = () => {
       type: "text",
       dataKey: "name",
     },
-    {
-      id: 2,
-      question: "What's your gender?",
-      type: "options",
-      options: ["Male", "Female", "Other"],
-      dataKey: "gender",
-    },
-    {
-      id: 3,
-      question: "What's your Date of Birth?",
-      type: "date",
-      dataKey: "dob",
-    },
-    {
-      id: 4,
-      question: "Please provide you contact number",
-      type: "phone-number",
-      tip: "We will not share your contact number with anyone without your permission",
-      dataKey: "phoneNumber",
-    },
+    // {
+    //   id: 2,
+    //   question: "What's your gender?",
+    //   type: "options",
+    //   options: ["Male", "Female", "Other"],
+    //   dataKey: "gender",
+    // },
+    // {
+    //   id: 3,
+    //   question: "What's your Date of Birth?",
+    //   type: "date",
+    //   dataKey: "dob",
+    // },
+    // {
+    //   id: 4,
+    //   question: "Please provide you contact number",
+    //   type: "phone-number",
+    //   tip: "We will not share your contact number with anyone without your permission",
+    //   dataKey: "phoneNumber",
+    // },
   ];
 
   const saveResponse = (response) => {

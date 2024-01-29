@@ -40,7 +40,7 @@ function getItem(label, key, icon, children) {
   };
 }
 
-const PublicHeader = () => {
+const PublicHeader = ({showSignInButtons=true}) => {
   const screens = useBreakpoint();
 
   const navigate = useNavigate();
@@ -65,6 +65,7 @@ const PublicHeader = () => {
         <Col span={16}>
           <div style={{ float: "right" }} className="nav-menu">
             <Space>
+              {showSignInButtons  && <>
               <Button
                 // size="large"
                 type="link"
@@ -79,7 +80,7 @@ const PublicHeader = () => {
                 onClick={() => navigate("/signup")}
               >
                 Sign Up
-              </Button>
+              </Button></>}
             </Space>
 
             

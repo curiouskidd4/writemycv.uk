@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import SaveButton from "./saveButton";
 import CVGoals from "./cvGoals";
-import { Education, Experience, PersonalInfo, Resume, Skill } from "../../types/resume";
+import { Award, Education, Experience, Language, PersonalInfo, Publication, Resume, Skill, Volunteering } from "../../types/resume";
 import PersonalDetails from "./personalDetails";
 import EducationForm from "./education";
 import EducationFlow from "./education";
@@ -10,6 +10,11 @@ import SkillFlow from "./skills";
 import ProfessionalSummaryFlow from "./professionalSummary";
 import FinishView from "./finish";
 import { useResume } from "../../contexts/resume";
+import AwardFlow from "./awards";
+import PublicationFlow from "./publication";
+import VolunteerFlow from "./volunteering";
+import LanguageFlow from "./languages";
+import { message } from "antd";
 
 type NavigationProps = {
   current: number| null;
@@ -39,27 +44,63 @@ const Navigation = ({ current, setCurrent, resume, editMode }: NavigationProps) 
 
   const syncResumeDetails = async (resume: Resume) => {
     await resumeContext.saveResumeDetails(resume);
+    message.success("Resume details saved!");
   }
   const syncEducation = async (educationList: Education[]) => {
     await resumeContext.saveEducation(educationList);
+    message.success("Education saved!");
   }
 
 
 
   const syncPersonalInfo = async (personalInfo: PersonalInfo) => {
     await resumeContext.savePersonalInfo(personalInfo);
+    message.success("Progress Saved!");
   }
 
   const syncExperience = async (experienceList: Experience[]) => {
     await resumeContext.saveExperience(experienceList);
+    message.success("Progress Saved!");
+
   }
 
   const syncSkills = async (skillList: Skill[]) => {
     await resumeContext.saveSkills(skillList);
+    message.success("Progress Saved!");
+
   }
   const syncProfessionalSummary = async (professionalSummary: string) => {
     await resumeContext.saveProfessionalSummary(professionalSummary);
+    message.success("Progress Saved!");
+
   }
+
+  const syncAwards = async (awardList: Award[]) => {
+    await resumeContext.saveAwards(awardList);
+    message.success("Progress Saved!");
+
+  }
+
+  const syncPublications = async (publicationList: Publication[]) => {
+    await resumeContext.savePublication(publicationList);
+    message.success("Progress Saved!");
+
+  }
+
+  const syncVolunteering = async (volunteeringList: Volunteering[]) => {
+    await resumeContext.saveVolunteering(volunteeringList);
+    message.success("Progress Saved!");
+
+  }
+
+  const syncLanguages = async (languageList: Language[]) => {
+    await resumeContext.saveLanguages(languageList);
+    message.success("Progress Saved!");
+
+  }
+
+
+
 
   if (current === 0) {
     return (
@@ -136,7 +177,65 @@ const Navigation = ({ current, setCurrent, resume, editMode }: NavigationProps) 
             isFinished: true,
             current: null,
           }));
+
+          await resumeContext.markResumeComplete();
         }}
+      />
+    );
+  }
+  else if (current == 6) {
+    return (
+      <AwardFlow
+        awardList={resume.awardList || []}
+        onFinish={async () => {
+          setCurrent(7);
+        }}
+        syncAward={syncAwards}
+      />
+    );
+  }
+  else if (current == 7) {
+    return (
+      <PublicationFlow
+        publicationList={resume.publicationList || []}
+        onFinish={async () => {
+          setCurrent(6);
+          
+        }}
+        syncPublication={syncPublications}
+      />
+    );
+  }
+  else if (current == 8) {
+    return (
+      <VolunteerFlow
+        volunteerList={resume.volunteeringList || []}
+        onFinish={async () => {
+          setCurrent(9);
+        }}
+        syncVolunteer={syncVolunteering}
+
+      />
+    );
+  }
+  else if (current == 9) {
+    return (
+      <LanguageFlow
+        languageList={resume.languageList || []}
+        onFinish={async () => {
+          setCurrent(9);
+        }}
+        syncLanguages={syncLanguages}
+
+      />
+    );
+  }
+  else if (current == 10) {
+    return (
+      <FinishView
+        // onFinish={() => {
+          
+        // }}
       />
     );
   }

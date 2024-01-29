@@ -5,7 +5,7 @@ import { useOpenAIContext } from "../customContext";
 
 const BASE_URL =
   process.env.REACT_APP_BASE_URL ||
-  "http://127.0.0.1:5001/resu-me-a5cff/us-central1";
+  "http://127.0.0.1:5001/resu-me-a5cff/us-central1/api";
 
 type OpenAIContextType = {
   getEducationSummary: (data: any) => void;
@@ -50,7 +50,7 @@ const useOpenAI = () => {
     try {
       const token = await auth.user.getIdToken();
       const response = await axios.post(
-        `${BASE_URL}/api/openai/educationSummary`,
+        `${BASE_URL}/openai/educationSummary`,
         data,
         {
           headers: {
@@ -83,7 +83,7 @@ const useOpenAI = () => {
     try {
       const token = await auth.user.getIdToken();
       const response = await axios.post(
-        `${BASE_URL}/api/openai/eductionCoursesHelper`,
+        `${BASE_URL}/openai/eductionCoursesHelper`,
         data,
         {
           headers: {
@@ -117,7 +117,7 @@ const useOpenAI = () => {
       const token = await auth.user.getIdToken();
 
       const response = await axios.post(
-        `${BASE_URL}/api/openai/experienceSummary`,
+        `${BASE_URL}/openai/experienceSummary`,
         data,
         {
           headers: {
@@ -151,7 +151,7 @@ const useOpenAI = () => {
       const token = await auth.user.getIdToken();
 
       const response = await axios.post(
-        `${BASE_URL}/api/openai/professionalSummary`,
+        `${BASE_URL}/openai/professionalSummary`,
         data,
         {
           headers: {
@@ -185,7 +185,7 @@ const useOpenAI = () => {
       const token = await auth.user.getIdToken();
 
       const response = await axios.post(
-        `${BASE_URL}/api/openai/skillsSuggestions`,
+        `${BASE_URL}/openai/skillsSuggestions`,
         data,
         {
           headers: {
@@ -219,7 +219,7 @@ const useOpenAI = () => {
       const token = await auth.user.getIdToken();
 
       const response = await axios.post(
-        `${BASE_URL}/api/openai/educationCourses`,
+        `${BASE_URL}/openai/educationCourses`,
         data,
         {
           headers: {
@@ -253,7 +253,7 @@ const useOpenAI = () => {
       const token = await auth.user.getIdToken();
 
       const response = await axios.post(
-        `${BASE_URL}/api/openai/experienceAchivements`,
+        `${BASE_URL}/openai/experienceAchivements`,
         data,
         {
           headers: {
@@ -287,7 +287,7 @@ const useOpenAI = () => {
       const token = await auth.user.getIdToken();
 
       const response = await axios.post(
-        `${BASE_URL}/api/openai/themeSuggestions`,
+        `${BASE_URL}/openai/themeSuggestions`,
         data,
         {
           headers: {
@@ -321,7 +321,7 @@ const useOpenAI = () => {
       const token = await auth.user.getIdToken();
 
       const response = await axios.post(
-        `${BASE_URL}/api/openai/themeDescription`,
+        `${BASE_URL}/openai/themeDescription`,
         data,
         {
           headers: {
@@ -356,7 +356,7 @@ const useOpenAI = () => {
       const token = await auth.user.getIdToken();
 
       const response = await axios.post(
-        `${BASE_URL}/api/openai/achievementHelper`,
+        `${BASE_URL}/openai/achievementHelper`,
         data,
         {
           headers: {
@@ -389,7 +389,7 @@ const useOpenAI = () => {
       const token = await auth.user.getIdToken();
 
       const response = await axios.post(
-        `${BASE_URL}/api/openai/professionalSummary`,
+        `${BASE_URL}/openai/professionalSummary`,
         data,
         {
           headers: {
@@ -421,7 +421,7 @@ const useOpenAI = () => {
     try {
       const token = await auth.user.getIdToken();
       const response = await axios.post(
-        `${BASE_URL}/api/openai/parseResume`,
+        `${BASE_URL}/openai/parseResume`,
         data,
         {
           headers: {

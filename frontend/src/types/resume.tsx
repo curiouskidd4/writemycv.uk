@@ -49,12 +49,29 @@ interface Education {
   aiSuggestions: AIEducationSuggestion[] | null;
 }
 
+
 interface EducationList {
   educationList: Education[];
   updatedAt: Timestamp;
   createdAt: Timestamp;
   userId: string;
 }
+
+interface Award {
+  id: string;
+  title: string;
+  organization: string | null;
+  date: Timestamp;
+  description: string;
+}
+
+interface AwardList {
+  awardList: Award[];
+  updatedAt: Timestamp;
+  createdAt: Timestamp;
+  userId: string;
+}
+
 interface Achievement {
   theme: string | null;
   description: string;
@@ -91,6 +108,49 @@ interface Skill {
   level: string;
 }
 
+interface Language {
+  name: string;
+  fluency: string;
+}
+
+interface LanguageList {
+  languageList: Language[];
+  updatedAt: Timestamp;
+  createdAt: Timestamp;
+  userId: string;
+}
+
+interface Publication {
+  id: string;
+  title: string;
+  description: string;
+  link: string | null;
+  date: Timestamp;
+}
+
+interface PublicationList {
+  publicationList: Publication[];
+  updatedAt: Timestamp;
+  createdAt: Timestamp;
+  userId: string;
+}
+
+interface Volunteering {
+  id  : string;
+  title: string;
+  startDate: Timestamp;
+  endDate: Timestamp | null;
+  description: string;
+}
+
+interface VolunteeringList {
+  volunteeringList: Volunteering[];
+  updatedAt: Timestamp;
+  createdAt: Timestamp;
+  userId: string;
+}
+
+
 interface SkillList {
   skillList: Skill[];
   updatedAt: Timestamp;
@@ -113,6 +173,10 @@ interface Resume {
   personalInfo: PersonalInfo;
   educationList: Education[];
   experienceList: Experience[];
+  awardList: Award[];
+  publicationList: Publication[];
+  volunteeringList: Volunteering[];
+  languageList: Language[];
   skillList: Skill[];
   skillSuggestions: aiSkillSuggestions | null;
   professionalSummary: string | null;
@@ -135,5 +199,9 @@ export type {
   PhoneNumber,
   EducationDisseration,
   Resume,
-  PublicResume
+  PublicResume, 
+  Language, Award, AwardList, 
+  Publication, PublicationList,
+  Volunteering, VolunteeringList,
+  LanguageList,
 };

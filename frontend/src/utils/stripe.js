@@ -4,7 +4,7 @@ import { useAuth } from "../authContext";
 
 const BASE_URL =
   process.env.REACT_APP_BASE_URL ||
-  "http://127.0.0.1:5001/resu-me-a5cff/us-central1";
+  "http://127.0.0.1:5001/resu-me-a5cff/us-central1/api";
 
 const useStripe = () => {
   const [state, setState] = useState({
@@ -23,7 +23,7 @@ const useStripe = () => {
     try {
       const token = await auth.user.getIdToken();
       const response = await axios.post(
-        `${BASE_URL}/api/stripe/create-checkout-session`,
+        `${BASE_URL}/stripe/create-checkout-session`,
         data,
         {
           headers: {

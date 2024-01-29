@@ -1,4 +1,4 @@
-import { Checkbox, Col, DatePicker, Row, Typography } from "antd";
+import { Checkbox, Col, DatePicker, Row, Typography, Space } from "antd";
 import { useEffect, useState } from "react";
 
 
@@ -33,6 +33,7 @@ const CustomDateRange = (props) => {
   };
   return (
     <Row gutter={[12, 12]}>
+      <Space  direction="vertical" size={12} >
       <Col>
         <DatePicker.RangePicker
           value={value}
@@ -45,6 +46,7 @@ const CustomDateRange = (props) => {
       <Col>
         <CurrentCheckbox />
       </Col>
+      </Space>
     </Row>
   );
 };

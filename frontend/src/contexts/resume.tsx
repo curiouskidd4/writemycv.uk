@@ -19,11 +19,15 @@ import {
   DocumentReference,
 } from "firebase/firestore";
 import {
+  Award,
   Education,
   Experience,
+  Language,
   PersonalInfo,
+  Publication,
   Resume,
   Skill,
+  Volunteering,
 } from "../types/resume";
 import { message } from "antd";
 
@@ -35,9 +39,15 @@ type ResumeContextType = {
   saveProfessionalSummary: (professionalSummary: string) => Promise<void>;
   savePersonalInfo: (personalInfo: PersonalInfo) => Promise<void>;
   saveResumeDetails: (resumeDetails: ResumeDetails) => Promise<void>;
+  saveAwards: (awards: Award[]) => Promise<void>;
+  savePublication: (publications: Publication[]) => Promise<void>;
+  saveVolunteering: (volunteerings: Volunteering[]) => Promise<void>;
+  saveLanguages: (languages: Language[]) => Promise<void>;
   downloadResume: () => Promise<void>;
   softDeleteResume: () => Promise<void>;
   copyPublicLink: () => Promise<string>;
+  markResumeComplete: () => Promise<void>;
+
   loading: boolean;
   resumeHTMLLoading: boolean;
   resumeHTML: string;
@@ -71,6 +81,11 @@ const ResumeContext = createContext<ResumeContextType>({
   downloadResume: async () => {},
   softDeleteResume: async () => {},
   copyPublicLink: async () => "",
+  markResumeComplete: async () => {},
+  saveAwards: async () => {},
+  savePublication: async () => {},
+  saveVolunteering: async () => {},
+  saveLanguages: async () => {},
 });
 
 const useResumeProvider = () => {
@@ -326,6 +341,94 @@ const useResumeProvider = () => {
     }
   };
 
+  const saveAwards = async (awards: Award[]) => {
+    let awardsFixed = awards.map((award) => {
+      return _fixUndefined(award);
+    });
+    if (resumeId) {
+      const docRef = doc(db, RESUME_COLLECTION, resumeId);
+      await updateDoc(docRef, {
+        awardList: awardsFixed,
+        updatedAt: Timestamp.now(),
+      });
+
+      // Update the local state
+      setState((prev) => ({
+        ...prev,
+        resume: {
+          ...prev.resume!,
+          awardList: awardsFixed,
+        },
+      }));
+    }
+  }
+
+  const savePublication = async (publications: Publication[]) => {
+    let publicationsFixed = publications.map((pub) => {
+      return _fixUndefined(pub);
+    });
+    if (resumeId) {
+      const docRef = doc(db, RESUME_COLLECTION, resumeId);
+      await updateDoc(docRef, {
+        publicationList: publicationsFixed,
+        updatedAt: Timestamp.now(),
+      });
+
+      // Update the local state
+      setState((prev) => ({
+        ...prev,
+        resume: {
+          ...prev.resume!,
+          publicationList: publicationsFixed,
+        },
+      }));
+    }
+  }
+
+  const saveVolunteering = async (volunteerings: Volunteering[]) => {
+    let volunteeringsFixed = volunteerings.map((vol) => {
+      return _fixUndefined(vol);
+    });
+    if (resumeId) {
+      const docRef = doc(db, RESUME_COLLECTION, resumeId);
+      await updateDoc(docRef, {
+        volunteeringList: volunteeringsFixed,
+        updatedAt: Timestamp.now(),
+      });
+
+      // Update the local state
+      setState((prev) => ({
+        ...prev,
+        resume: {
+          ...prev.resume!,
+          volunteeringList: volunteeringsFixed,
+        },
+      }));
+    }
+  }
+
+  const saveLanguages = async (languages: Language[]) => {
+    let languagesFixed = languages.map((lang) => {
+      return _fixUndefined(lang);
+    });
+    if (resumeId) {
+      const docRef = doc(db, RESUME_COLLECTION, resumeId);
+      await updateDoc(docRef, {
+        languageList: languagesFixed,
+        updatedAt: Timestamp.now(),
+      });
+
+      // Update the local state
+      setState((prev) => ({
+        ...prev,
+        resume: {
+          ...prev.resume!,
+          languageList: languagesFixed,
+        },
+      }));
+    }
+  }
+
   const copyPublicLink = async () => {
     // Get public link
     let publicItemId = state.resume?.publicResumeId;
@@ -401,6 +504,24 @@ const useResumeProvider = () => {
     
   };
 
+  const markResumeComplete = async () => {
+    if (resumeId) {
+      const docRef = doc(db, RESUME_COLLECTION, resumeId);
+      await updateDoc(docRef, {
+        isComplete: true,
+      });
+
+      // Update the local state
+      setState((prev) => ({
+        ...prev,
+        resume: {
+          ...prev.resume!,
+          isComplete: true,
+        },
+      }));
+    }
+  }
+
   return {
     saveResumeDetails,
     saveEducation,
@@ -412,6 +533,11 @@ const useResumeProvider = () => {
     downloadResume,
     softDeleteResume, 
     copyPublicLink,
+    markResumeComplete,
+    saveAwards,
+    savePublication,
+    saveVolunteering,
+    saveLanguages,
     ...state,
   };
 };

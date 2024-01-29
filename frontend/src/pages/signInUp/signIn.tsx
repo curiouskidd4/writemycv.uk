@@ -7,6 +7,7 @@ import {
   Radio,
   Typography,
   Divider,
+  message,
 } from "antd";
 import { Link } from "react-router-dom";
 import { GoogleOutlined, LockOutlined } from "@ant-design/icons";
@@ -44,7 +45,7 @@ const CustomInput = (props: any) => {
 const SignInForm = ({
   onSubmit,
 }: {
-  onSubmit: (username: string, password: string) => Promise<void>;
+  onSubmit: (username: string, password: string) => Promise<any>;
 }) => {
   const [form] = Form.useForm();
   const auth = useAuth();
@@ -83,21 +84,35 @@ const SignInForm = ({
   //   });
   // };
 
-  const onFinish = (values: any) => {
+  const onFinish = async (values: any) => {
     updateLoading(true);
-    onSubmit(values.username, values.password)
-      .then(() => {
-        openNotification("success", "Login Successful");
+    try {
+      let res = await onSubmit(values.username, values.password);
+      if (res.error) {
+        // openNotification("error", "Login Failed", res.error);
+        let errorMessage = "";
+        if (res.code == "auth/user-not-found") {
+          errorMessage = "User not found";
+        }
+        if (res.code == "auth/wrong-password") {
+          errorMessage = "Wrong password";
+        }
+        if (res.code == "auth/too-many-requests") {
+          errorMessage =
+            "Too many requests, User blocked, please try again later";
+        }
+        message.error("Login Failed: " + errorMessage);
         updateLoading(false);
-      })
-      .catch((err: any) => {
-        openNotification(
-          "error",
-          "Login Failed",
-          JSON.stringify(err.response.data?.detail)
-        );
+      } else {
+        // openNotification("success", "Login Successful");
+        message.success("Login Successful");
         updateLoading(false);
-      });
+      }
+    } catch (err: any) {
+      // openNotification("error", "Login Failed", JSON.stringify(err));
+      message.error("Login Failed: " + err.message);
+      updateLoading(false);
+    }
   };
 
   const onFinishFailed = (errorInfo: any) => {

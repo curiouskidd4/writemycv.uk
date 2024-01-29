@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faWandMagicSparkles , faCalendar, faStar, faHouse, faPhone, faCalendarAlt, faEnvelope, faDownload, faShare, faTrash, faPenToSquare, faChevronLeft, faChevronRight, faUpload, faPlus, faUserTie, faGraduationCap, faBriefcase, faScrewdriverWrench, faBullhorn, faLightbulb, faRetweet, faCheck, faCircleMinus, faUser, faEllipsisVertical} from "@fortawesome/free-solid-svg-icons";
+import { faHandshakeAngle, faWandMagicSparkles , faCalendar, faStar, faHouse, faPhone, faCalendarAlt, faEnvelope, faDownload, faShare, faTrash, faPenToSquare, faChevronLeft, faChevronRight, faUpload, faPlus, faUserTie, faGraduationCap, faBriefcase, faScrewdriverWrench, faBullhorn, faLightbulb, faRetweet, faCheck, faCircleMinus, faUser, faEllipsisVertical, faTriangleExclamation, faNewspaper, faLanguage, faAward} from "@fortawesome/free-solid-svg-icons";
 
 export const MagicWandIcon = () => (
   <FontAwesomeIcon
@@ -266,6 +266,59 @@ export const ProfileIcon = () => (
 export const MoreIcon = () => (
   <FontAwesomeIcon
     icon={faEllipsisVertical}
+    style={{
+      marginRight: "6px",
+      color: "#E9AFA3",
+    }}
+  />
+);
+
+export const APIErrorIcon = () => (
+  <FontAwesomeIcon
+    icon={faTriangleExclamation}
+    style={{
+      marginRight: "6px",
+      // color: "#ff4d4f",
+      color: "#ca5858",
+
+      
+    }}
+  />
+);
+
+export const NewsPaperIcon = () => (
+  <FontAwesomeIcon
+    icon={faNewspaper}
+    style={{
+      marginRight: "6px",
+      color: "#E9AFA3",
+    }}
+  />
+);
+
+export const LanguageIcon = () => (
+  <FontAwesomeIcon
+    icon={faLanguage}
+    style={{
+      marginRight: "6px",
+      color: "#E9AFA3",
+    }}
+  />
+);
+
+export const HelpIcon = () => (
+  <FontAwesomeIcon
+    icon={faHandshakeAngle}
+    style={{
+      marginRight: "6px",
+      color: "#E9AFA3",
+    }}
+  />
+);
+
+export const AwardIcon = () => (
+  <FontAwesomeIcon
+    icon={faAward}
     style={{
       marginRight: "6px",
       color: "#E9AFA3",

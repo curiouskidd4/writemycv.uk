@@ -7,7 +7,8 @@ import {
   Radio,
   Checkbox,
   Typography,
-  Divider
+  Divider, 
+  message
 } from "antd";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../authContext";
@@ -49,13 +50,24 @@ const SignUpForm = (props) => {
         values.email
       );
       if (res.error) {
-        openNotification("error", "Signup Failed", JSON.stringify(res.message));
+        // openNotification("error", "Signup Failed", JSON.stringify(res.message));
+        let errMessage = ""; 
+        if (res.code == "auth/email-already-in-use") {
+          errMessage = "Email already in use";
+        } else if (res.code == "auth/invalid-email") {
+          errMessage = "Invalid email";
+        }
+        message.error("Signup Failed: " + errMessage)
       } else {
-        openNotification("success", "Signup Successful", "Please login now");
+        // openNotification("success", "Signup Successful");
+        message.success("Signup Successful");
       }
       form.resetFields();
     } catch (err) {
-      openNotification("error", "Signup Failed", JSON.stringify(err.message));
+      console.log(err);
+      console.log(err.message); 
+      // openNotification("error", "Signup Failed", JSON.stringify(err.message)); 
+      message.error("Signup Failed: " + err.message)
     }
   };
 

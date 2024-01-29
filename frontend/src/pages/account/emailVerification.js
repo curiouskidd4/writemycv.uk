@@ -22,6 +22,16 @@ const EmailVerification = () => {
         console.log(err);
         message.error("Error sending email");
       });
+
+    // auth.sendVerificationEmailCustom() .then(() => {
+    //   setLoading(false);
+    //   message.success("Email sent successfully");
+    // })
+    // .catch((err) => {
+    //   setLoading(false);
+    //   console.log(err);
+    //   message.error("Error sending email");
+    // });
   }
   return (
     <div

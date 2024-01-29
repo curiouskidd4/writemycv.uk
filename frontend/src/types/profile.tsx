@@ -1,5 +1,14 @@
 import { Timestamp } from "@firebase/firestore-types";
-import { Skill, Education, Experience } from "./resume";
+import {
+  Skill,
+  Education,
+  Experience,
+  AwardList,
+  PublicationList,
+  Volunteering,
+  VolunteeringList,
+  LanguageList,
+} from "./resume";
 interface PhoneNumber {
   countryCode: string;
   number: string;
@@ -98,8 +107,8 @@ interface ProfileSkillList {
   userId: string;
 }
 interface AIProfessionalSummarySuggestion {
-    suggestions: string[];
-    createdAt: Timestamp;
+  suggestions: string[];
+  createdAt: Timestamp;
 }
 interface ProfileProfessionalSummary {
   professionalSummary: string;
@@ -115,7 +124,13 @@ interface Profile {
   experience: ProfileExperienceList | null;
   skills: ProfileSkillList | null;
   professionalSummary: ProfileProfessionalSummary | null;
+  awards: AwardList | null;
+  publications: PublicationList | null;
+  volunteering: VolunteeringList | null;
+  languages: LanguageList | null;
   userId: string;
+  // updatedAt: Timestamp;
+  // createdAt: Timestamp;
 }
 export type {
   ProfilePersonalInfo,

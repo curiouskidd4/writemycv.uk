@@ -52,6 +52,7 @@ const ResumeEditSteps = ({
         <div className="step-description">Highlight your key skills</div>
       ),
     },
+    
     {
       title: "Professional Summary",
       description: (
@@ -61,9 +62,65 @@ const ResumeEditSteps = ({
       ),
     },
     {
-      title: "Finished",
-      description: <div className="step-description">You're Done!</div>,
+      title: "Awards",
+      description: (
+        <div className="step-description">
+          Showcase your awards
+        </div>
+      ),
     },
+    {
+      title: "Publications",
+      description: (
+        <div className="step-description">
+          Highlight your publications
+        </div>
+      ),
+    },
+    {
+      title: "Volunteering",
+      description: (
+        <div className="step-description">
+          Let's add your volunteering experience
+        </div>
+      ),
+    },
+    {
+      title: "Languages",
+      description: (
+        <div className="step-description">
+          Let's add your languages
+        </div>
+      ),
+    },
+    // {
+    //   title: "Hobbies",
+    //   description: (
+    //     <div className="step-description">
+    //       Let's add your hobbies
+    //     </div>
+    //   ),
+    // },
+    // {
+    //   title: "References",
+    //   description: (
+    //     <div className="step-description">
+    //       Let's add your references
+    //     </div>
+    //   ),
+    // },
+    {
+      title: "Preview",
+      description: (
+        <div className="step-description">Preview your CV</div>
+      ),
+    },
+   
+    
+    // {
+    //   title: "Finished",
+    //   description: <div className="step-description">You're Done!</div>,
+    // },
   ];
   let steps;
 
@@ -78,9 +135,9 @@ const ResumeEditSteps = ({
     steps = orgSteps;
   }
 
-  if (editMode) {
-    steps = steps.slice(0, steps.length - 1);
-  }
+  // if (editMode) {
+  //   steps = steps.slice(0, steps.length - 1);
+  // }
   const [_current, _setCurrent] = React.useState(0);
   useEffect(() => {
     if (current) {
@@ -95,7 +152,7 @@ const ResumeEditSteps = ({
   }, [_current]);
 
   return (
-    <Space direction="vertical">
+    <Space direction="vertical" >
       {editMode && !isCollapsed ? (
         <Row style={{ height: "20px", marginBottom: "12px" }}>
           <Col>
@@ -137,7 +194,7 @@ const ResumeEditSteps = ({
             return {
               title: step.title,
               description: step.description,
-              disabled: editMode ? false : idx > _current,
+              // disabled: editMode ? false : idx > _current,
               status: editMode
                 ? "finish"
                 : idx === _current
@@ -237,7 +294,7 @@ const ResumeEditV2Loader = () => {
         )}
       </Row>
       <Row gutter={48} style={{ margin: "0px 16px" }}>
-        <Col span={6} className="resume-steps-col">
+        <Col span={6} className="resume-steps-col" style={{height: "80vh", overflowY: "auto"}}>
           <ResumeEditSteps
             current={current}
             setCurrent={setCurrent}

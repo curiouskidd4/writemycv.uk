@@ -216,6 +216,14 @@
       .experience-date.subdetails{
         margin-bottom: 6px;
       }
+
+      .languages-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      
     </style>
 </head>
 <body>
@@ -242,14 +250,16 @@
           >
           
         </div>
-          <div class="profile-details subdetails">
-                  {% if personalInfo.linkedin %}
-          <span class="item"
-            ><i class="fab fa-linkedin-in"></i>
-           <a href="{{personalInfo.linkedin}}"> {{ personalInfo.linkedin | replace("https://", "") }} </a></span
-          >
-          {% endif %}
-          </div>
+        {% if personalInfo.linkedin %}
+            <div class="profile-details subdetails social-links">
+
+                  <span class="item"
+                    ><i class="fab fa-linkedin-in"></i>
+                  <a href="{{personalInfo.linkedin}}"> {{ personalInfo.linkedin | replace("https://", "") }} </a>
+                  </span>
+            </div>
+
+        {% endif %}
 
 
 
@@ -325,6 +335,90 @@
         {% endfor %}
     </section>
 
+    <section class="section awards">
+        {% if awardList %}
+         <h2 class="section-title">Awards</h2>
+           {% for award in awardList %}
+            <div class="section-item">
+                <h3 class="experience-position">
+                  
+                  
+                 {{ award.title }}</h3>
+
+                 {# {% if job.isSubDetailAvailable %} #}
+                <p class="experience-date subdetails">
+                  {% if award.date %}
+                    <i class="fa-solid fa-calendar"></i>
+                    <span>{{ award.date }}</span>
+                    {% endif %}
+                </p>
+                {# {% endif %} #}
+                <p class="experience-description">{{ award.description | safe  }}</p>
+               
+
+            </div>
+        {% endfor %}
+
+        {% endif %}
+    </section>
+
+
+    <section class="section publications">
+        {% if publicationList %}
+         <h2 class="section-title">Publications</h2>
+           {% for publication in publicationList %}
+            <div class="section-item">
+                <h3 class="experience-position">
+                 {{ publication.title }}</h3>
+
+                 {# {% if job.isSubDetailAvailable %} #}
+                <p class="experience-date subdetails">
+                  {% if publication.date %}
+                    <i class="fa-solid fa-calendar"></i>
+                    <span>{{ publication.date }}</span>
+                    {% endif %}
+                </p>
+                {# {% endif %} #}
+                <p class="experience-description">{{ publication.description | safe  }}</p>
+               
+
+            </div>
+        {% endfor %}
+
+        {% endif %}
+    </section>
+
+    <section class="section volunteering">
+        {% if volunteeringList %}
+         <h2 class="section-title">Volunteer Work</h2>
+           {% for volunteer in volunteeringList %}
+            <div class="section-item">
+                <h3 class="experience-position">
+                 {{ volunteer.title }}</h3>
+
+                 {# {% if job.isSubDetailAvailable %} #}
+                <p class="experience-date subdetails">
+                  {% if volunteer.startDate or volunteer.endDate %}
+                    <i class="fa-solid fa-calendar"></i>
+                    {% endif %}
+                    {% if volunteer.startDate and volunteer.endDate %}
+                    {{ volunteer.startDate }} to {{ volunteer.endDate }}
+                    {% elif volunteer.startDate or volunteer.endDate %}
+                    {{ volunteer.startDate }}{{ volunteer.endDate  }}
+                    {% endif %}
+                    
+                </p>
+                {# {% endif %} #}
+                <p class="experience-description">{{ publication.description | safe  }}</p>
+               
+
+            </div>
+        {% endfor %}
+
+        {% endif %}
+    </section>
+
+
     {# <section class="section courses">
         <h2 class="section-title">Courses & Certifications</h2>
         {% for course in courses %}
@@ -338,6 +432,23 @@
             </div>
         {% endfor %}
     </section> #}
+
+    <section class="section languages">
+      {% if languageList %}
+        <h2 class="section-title">Languages</h2>
+        <div class="languages-row">
+        {% for language in languageList %}
+            <span class="language-item">{{ language.name }} ({{ language.fluency}} )  
+              {% if not loop.last %}
+                ,
+              {% endif %}
+
+            </span>
+        {% endfor %}
+        </div>
+        
+      {% endif %}
+    </section>
 
     <section class="section skills">
         <h2 class="section-title">Skills</h2>

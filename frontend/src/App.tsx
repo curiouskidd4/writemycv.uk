@@ -46,6 +46,7 @@ import ResumePreviewV2 from "./resumePreview";
 import ProfileV2 from "./profile";
 import Sider from "./components/sider";
 import ImportCVToProfile from "./importCV";
+import FirebaseUserMangement from "./userManagement";
 
 const GenLayout = ({}) => {
   const { user } = useAuth();
@@ -74,21 +75,21 @@ const GenLayout = ({}) => {
   );
 };
 
-const GenPublicLayout = ({}) => {
+const GenPublicLayout = ({showSigninButtons=true}) => {
   // debugger
   const match = useLocation();
 
   let hideNavBar =
     match.pathname.search(/\/public-resume\/[a-zA-Z0-9]+/) == 0 ||
-    match.pathname.search(/\/(signin|signup)/) == 0;
+    match.pathname.search(/\/(signin|signup|forgot-password)/) == 0;
 
   let hideFooter =
     match.pathname.search(/\/public-resume\/[a-zA-Z0-9]+/) == 0 ||
-    match.pathname.search(/\/(signin|signup)/) == 0;
+    match.pathname.search(/\/(signin|signup|forgot-password)/) == 0;
 
   return (
     <>
-      {hideNavBar ? null : <PublicHeader />}
+      {hideNavBar ? null : <PublicHeader showSignInButtons={showSigninButtons} />}
       <div id="public-detail">
         <Outlet />
       </div>
@@ -186,6 +187,52 @@ const protectedRouter = createBrowserRouter([
   // },
 ]);
 
+const verificationRouter = createBrowserRouter([
+  {
+    path: "/",
+    element: <GenPublicLayout showSigninButtons={false} />,
+
+    children: [
+      {
+        path: "usermgmt",
+        // element: <AccountSettings />,
+        element:  <FirebaseUserMangement />
+      },
+      
+      {
+        path: "verification",
+        // element: <AccountSettings />,
+        element:  <EmailVerification />
+      },
+      {
+        path: "/*",
+        element: (
+          <div>
+            <Navigate to="/verification" />
+          </div>
+        ),
+      },
+    ],
+  },
+  // {
+  //   path: "/label/:id",
+  //   element: <LabelHome />,
+  // },
+  // {
+  //   path: "/label",
+  //   element: <LabelTaskPage />,
+  // },
+
+  // {
+  //   path: "/dataset/:id",
+  //   element: <PubmedDataHome />,
+  // },
+  // {
+  //   path: "/dataset",
+  //   element: <PubmedDataSplit />,
+  // },
+]);
+
 const baseRouter = createBrowserRouter([
   {
     path: "/",
@@ -221,6 +268,14 @@ const baseRouter = createBrowserRouter([
         element: (
           <div>
             <ForgotPassword />
+          </div>
+        ),
+      },
+      {
+        path: "usermgmt",
+        element: (
+          <div>
+            <FirebaseUserMangement />
           </div>
         ),
       },
@@ -287,7 +342,7 @@ const BaseApp = () => {
         <>
           {auth.isAuthenticated &&
             auth.user &&
-            (auth.isProfileComplete && auth.isEmailVerified && auth.isRepoCompleted  ? (
+            ( auth.isEmailVerified && auth.isRepoCompleted  ? (
             // (auth.isProfileComplete && auth.isEmailVerified  ? (
 
               <>
@@ -295,11 +350,13 @@ const BaseApp = () => {
               </>
             ) : !auth.isEmailVerified ? (
               <>
-                <EmailVerification />
+                <RouterProvider router={verificationRouter} />
               </>
-            ) : !auth.isProfileComplete ? (
-              <CustomerOnboarding />
-            )  : !auth.isRepoCompleted ? (<ImportCVToProfile />): null)}
+            ) 
+            // : !auth.isProfileComplete ? (
+            //   <CustomerOnboarding />
+            // )  
+            : !auth.isRepoCompleted ? (<ImportCVToProfile />): null)}
           {!auth.isAuthenticated && <RouterProvider router={baseRouter} />}
         </>
       )}
@@ -315,13 +372,14 @@ const App = () => {
           <ConfigProvider
             theme={{
               token: {
-                fontFamily: "Karla",
+                fontFamily: "DM Sans",
 
-                colorPrimary: "#256763",
+                colorPrimary: "#37FDAA",
                 colorTextSecondary: "#6a7991",
                 colorLink: "#3B73CE",
                 colorLinkHover: "#4B7FD2",
                 colorLinkActive: "#3B73CE",
+                borderRadius: 12,
                 // boxShadow: "0px 0px 0px 0px rgba(0,0,0,0.1)",
                 // boxShadowSecondary: "0px 0px 0px 0px rgba(0,0,0,0.1)",
                 // boxShadowTertiary: "0px 0px 0px 0px rgba(0,0,0,0.1)",

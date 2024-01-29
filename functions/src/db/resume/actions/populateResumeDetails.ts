@@ -45,16 +45,17 @@ const populateResumeDetails = async (resumeId: string, userId: string) => {
     resumeData.id = resumeId;
 
     // Now populate the resume details
-    resumeData.experienceList = experiencesData.experienceList;
-    resumeData.skillList = skillsData?.skillList;
-    resumeData.personalInfo = personalDetailsData;
-    resumeData.educationList = educationDetailsData.educationList;
-    resumeData.professionalSummary = summaryData.professionalSummary;
+    resumeData.experienceList = experiencesData?.experienceList || [];
+    resumeData.skillList = skillsData?.skillList || [];
+    resumeData.personalInfo = personalDetailsData || {};
+    resumeData.educationList = educationDetailsData?.educationList || [];
+    resumeData.professionalSummary = summaryData?.professionalSummary || "";
 
     // Now update the resume document
     await resumeRef.update({ ...resumeData });
   } catch (error) {
-    console.log(error);
+    // console.log(error);
+    throw error;
   }
 };
 

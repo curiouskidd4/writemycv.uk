@@ -4,7 +4,7 @@ import PersonalDetails from "../resume/components/personalDetails";
 import { ProfileProvider, useProfile } from "../contexts/profile";
 import SkillFlow from "../resume/components/skills";
 import { ProfilePersonalInfo } from "../types/profile";
-import { Education, Experience, Skill } from "../types/resume";
+import { Award, Education, Experience, Language, Publication, Skill, Volunteering } from "../types/resume";
 import EducationForm from "../resume/components/education/educationEditForm";
 import ExperienceFlow from "../resume/components/experience";
 import ExperienceForm from "../resume/components/experience/experienceEditForm";
@@ -15,9 +15,13 @@ import {
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import {
+  AwardIcon,
   EditIcon,
   EducationIcon,
   ExperienceIcon,
+  HelpIcon,
+  LanguageIcon,
+  NewsPaperIcon,
   PersonalInfoIcon,
   PlusIcon,
   SkillsIcon,
@@ -26,8 +30,14 @@ import {
 import "./index.css";
 import { NewResumeModal } from "../pages/resume/newResumeModal";
 import { ImportResumeModal } from "./import";
+import { useAuth } from "../authContext";
+import LanguageFlow from "../resume/components/languages";
+import AwardForm from "../resume/components/awards/awardsEditForm";
+import VolunteerForm from "../resume/components/volunteering/volunteerEditForm";
+import PublicationForm from "../resume/components/publication/publicationEditForm";
 
 const ProfileV2_ = () => {
+  const auth = useAuth();
   const [newResumeModalVisible, setNewResumeModalVisible] =
     React.useState<boolean>(false);
   const [importResumeModalVisible, setImportResumeModalVisible] =
@@ -49,6 +59,38 @@ const ProfileV2_ = () => {
   const syncExperience = async (experienceList: Experience[]) => {
     await profileData.saveExperience(experienceList);
   };
+
+  const syncAwards = async (awards: Award[]) => {
+    await profileData.saveAwards(awards);
+  }
+
+  const syncPublications = async (publications: Publication[]) => {
+    await profileData.savePublications(publications);
+  }
+
+  const syncVolunteering = async (volunteering: Volunteering[]) => {
+    await profileData.saveVolunteering(volunteering);
+  }
+
+  const syncLanguages = async (languages: Language[]) => {
+    await profileData.saveLanguages(languages);
+  }
+
+  const basicDetailsCompleted  = profileData.isBasicInfoComplete();
+  const profilePersonalInfo = profileData.profile?.personalInfo;
+  const personalInfo: ProfilePersonalInfo = {
+    firstName: profilePersonalInfo?.firstName || auth.user.displayName?.split(" ")[0] || "",
+    lastName: profilePersonalInfo?.lastName || auth.user.displayName?.split(" ")[1] || "",
+    email: profilePersonalInfo?.email || auth.user.email || "",
+    phone: profilePersonalInfo?.phone || null,
+    location: profilePersonalInfo?.location || "",
+    linkedIn: profilePersonalInfo?.linkedIn || "",
+    city: profilePersonalInfo?.city || "",
+    country: profilePersonalInfo?.country || "",
+    currentRole: profilePersonalInfo?.currentRole || "",
+  }
+
+
   return (
     <div className="profile">
       <Row style={{ height: "64px" }} align="middle">
@@ -109,8 +151,15 @@ const ProfileV2_ = () => {
               key="1"
             >
               <div>
+                {!basicDetailsCompleted ? (
+                  <div>
+                    <Typography.Text type="secondary">
+                      Please complete your following details before proceeding
+                    </Typography.Text>
+                  </div>) : null
+                  }
                 <PersonalDetails
-                  initialValues={profileData.profile?.personalInfo}
+                  initialValues={personalInfo}
                   onFinish={async (values) => {}}
                   syncPersonalInfo={syncPersonalInfo}
                   showTitle={false}
@@ -125,6 +174,7 @@ const ProfileV2_ = () => {
                 </>
               }
               key="3"
+              disabled={!basicDetailsCompleted}
             >
               <EducationForm
                 educationList={
@@ -143,6 +193,7 @@ const ProfileV2_ = () => {
                 </>
               }
               key="4"
+              disabled={!basicDetailsCompleted}
             >
               <ExperienceForm
                 experienceList={
@@ -161,6 +212,7 @@ const ProfileV2_ = () => {
                 </>
               }
               key="5"
+              disabled={!basicDetailsCompleted}
             >
               <SkillFlow
                 skillList={profileData.profile?.skills?.skillList || []}
@@ -169,6 +221,78 @@ const ProfileV2_ = () => {
                 showTitle={false}
               />
             </Tabs.TabPane>
+            <Tabs.TabPane
+              tab={
+                <>
+                  <AwardIcon />
+                  Awards
+                </>
+              }
+              key="6"
+              disabled={!basicDetailsCompleted}
+            >
+              
+              <AwardForm 
+                awardList={profileData.profile?.awards?.awardList || []}
+                onFinish={async () => {}}
+                syncAwards={syncAwards}
+                showTitle={false}
+              />
+            </Tabs.TabPane>
+            <Tabs.TabPane
+              tab={
+                <>
+                  <NewsPaperIcon />
+                  Publications
+                </>
+              }
+              key="7"
+              disabled={!basicDetailsCompleted}
+            >
+              <PublicationForm 
+                publicationList={profileData.profile?.publications?.publicationList || []}
+                onFinish={async () => {}}
+                syncPublications={syncPublications}
+                showTitle={false}
+              />
+            </Tabs.TabPane>
+            <Tabs.TabPane
+              tab={
+                <>
+                  <HelpIcon />
+                  Volunteering
+                </>
+              }
+              key="8"
+              disabled={!basicDetailsCompleted}
+            >
+              <VolunteerForm 
+                volunteerList={profileData.profile?.volunteering?.volunteeringList || []}
+                onFinish={async () => {}}
+                syncVolunteers={syncVolunteering}
+                showTitle={false}
+              />
+            </Tabs.TabPane>
+            
+            <Tabs.TabPane
+              tab={
+                <>
+                  <LanguageIcon />
+                  Languages
+                </>
+              }
+              key="9"
+              disabled={!basicDetailsCompleted}
+            >
+              <LanguageFlow 
+                languageList={profileData.profile?.languages?.languageList || []}
+                // languageList={[]} // TODO: FIX THIS
+                onFinish={async () => {}}
+                syncLanguages={syncLanguages}
+                showTitle={false}
+              />
+            </Tabs.TabPane>
+            
           </Tabs>
         </div>
       ) : null}

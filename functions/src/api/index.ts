@@ -1,7 +1,7 @@
 // app.ts
 
 import express from "express";
-import { openaiRoutes, resumeDownloadRoutes, stripeRoutes, stripeWebhookRoutes } from "./routes";
+import { generalRoutes, openaiRoutes, resumeDownloadRoutes, resumeRoutes, stripeRoutes, stripeWebhookRoutes, unAuth } from "./routes";
 import { db, bucket, functions } from "../utils/firebase";
 import {
   extractFiles,
@@ -10,6 +10,7 @@ import {
 } from "./middlewares/validation";
 import bodyParser from "body-parser";
 import cors from "cors";
+import { HttpsOptions, onRequest } from "firebase-functions/v2/https";
 // import { Sentry } from "../utils/sentry";
 
 const app = express();
@@ -20,7 +21,7 @@ app.use(cors({}));
 
 // Middleware for all routes
 app.use("/stripe", bodyParser.raw({ type: '*/*' }),  stripeWebhookRoutes);
-
+app.use("/unauth", unAuth);
 app.use(extractFiles);
 
 app.use(validateFirebaseIdToken);
@@ -28,6 +29,11 @@ app.use(validateFirebaseIdToken);
 // app.use(bodyParser.urlencoded({ extended: true }));
 // app.use(bodyParser.json());
 app.use("/openai", openaiRoutes);
+app.use("/", generalRoutes);
+app.use("/resume", resumeRoutes);
+
+
+
 
 app.use(express.json());
 app.use("/stripe", stripeRoutes);
@@ -45,9 +51,15 @@ app.use(validationErrorMiddleware);
 // app.use(Sentry.Handlers.errorHandler() as express.ErrorRequestHandler);
 
 // Expose Express API as a single Cloud Function:
-let api = functions.runWith({
+// let api = functions.runWith({
+//   timeoutSeconds: 400,
+
+// }).https.onRequest(app);
+
+let options = {
   timeoutSeconds: 400,
+  memory: "2GiB",
+} as HttpsOptions;
 
-}).https.onRequest(app);
-
+let api =  onRequest(options, app)
 export { api };

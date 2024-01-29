@@ -7,7 +7,7 @@ import { useResume } from "../../contexts/resume";
 
 const BASE_URL =
   process.env.REACT_APP_BASE_URL ||
-  "http://127.0.0.1:5001/resu-me-a5cff/us-central1";
+  "http://127.0.0.1:5001/resu-me-a5cff/us-central1/api";
 
 const useEducationHelper = () => {
   const auth = useAuth();
@@ -61,7 +61,7 @@ const useEducationHelper = () => {
     try {
       const token = await auth.user.getIdToken();
       const response = await axios.post(
-        `${BASE_URL}/api/openai/eductionCoursesHelper`,
+        `${BASE_URL}/openai/eductionCoursesHelper`,
         data,
         {
           headers: {
@@ -80,7 +80,7 @@ const useEducationHelper = () => {
         loading: false,
         descriptionSuggestions: null,
         courseSuggestions: null,
-        error: err.response.data.message,
+        error: err.response?.data?.message || err.message,
       });
     }
   };
@@ -115,7 +115,7 @@ const useEducationHelper = () => {
     try {
       const token = await auth.user.getIdToken();
       const response = await axios.post(
-        `${BASE_URL}/api/openai/educationSummary`,
+        `${BASE_URL}/openai/educationSummary`,
         data,
         {
           headers: {
@@ -134,7 +134,7 @@ const useEducationHelper = () => {
         loading: false,
         descriptionSuggestions: null,
         courseSuggestions: null,
-        error: err.response.data.message,
+        error: err.response?.data?.message || err.message,
       });
     }
   };

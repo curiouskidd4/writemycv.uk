@@ -16,7 +16,7 @@ import {
 } from "firebase/auth";
 import { addDoc, collection, doc, getDoc, setDoc } from "firebase/firestore";
 const gauthProvider = new GoogleAuthProvider();
-const baseUrl = process.env.REACT_APP_API_URL;
+const baseUrl = process.env.REACT_APP_BASE_URL || "http://127.0.0.1:5001/resu-me-a5cff/us-central1/api";
 
 const authContext = createContext();
 
@@ -44,8 +44,10 @@ const useProvideAuth = () => {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
+      //
       if (user) {
         saveUserToFirebase(user);
+
       } else {
         setState({
           loading: false,
@@ -177,6 +179,7 @@ const useProvideAuth = () => {
       await updateProfile(user, { displayName: `${first_name} ${last_name}` });
       // Create a user in the backend
       const userRef = doc(db, "users", user.uid);
+      await sendVerificationEmail(user);
       // Check if user exists in backend
       await setDoc(userRef, {
         first_name: first_name,
@@ -186,6 +189,11 @@ const useProvideAuth = () => {
         firebase_id: user.uid,
         profileComplete: false,
       });
+      return {
+        error: false,
+        message: "User created successfully",
+      
+      }
     } catch (err) {
       return {
         error: true,
@@ -200,8 +208,13 @@ const useProvideAuth = () => {
       let userCred = await signInWithEmailAndPassword(auth, email, password);
       let user = userCred.user;
       await saveUserToFirebase(user);
+      return {
+        error: false,
+        message: "User logged in successfully",
+      }
     } catch (err) {
       return {
+        error: true,
         message: err.message,
         code: err.code,
       };
@@ -216,6 +229,22 @@ const useProvideAuth = () => {
     await sendEmailVerification(auth.currentUser);
   };
 
+  const sendVerificationEmailCustom = async (email) => {
+    let user = auth.currentUser;
+    let token = await user.getIdToken();
+    let res = await axios.post(
+      `${baseUrl}/send-verification-email`,
+      {
+        email: email,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+  };
+
   const markProfileCompleted = async () => {
     setState((prev) => ({
       ...prev,
@@ -224,7 +253,19 @@ const useProvideAuth = () => {
   };
 
   const sendResetPasswordEmail = async (email) => {
-    await sendPasswordResetEmail(auth, email);
+    // await sendPasswordResetEmail(auth, email);
+    let user = auth.currentUser;
+    let res = await axios.post(
+      `${baseUrl}/unauth/send-reset-password-email`,
+      {
+        email: email,
+      },
+      {
+        headers: {
+          // Authorization: `Bearer ${token}`,
+        },
+      }
+    );
   };
 
   const updateUserProfie = (data) => {
@@ -305,7 +346,8 @@ const useProvideAuth = () => {
     resetPassword,
     reautheticate,
     signInWithGoogle,
-    overrideCVImport
+    overrideCVImport, 
+    sendVerificationEmailCustom
   };
 };
 

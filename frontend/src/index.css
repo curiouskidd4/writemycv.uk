@@ -54,3 +54,41 @@ code {
 .cv-link-button:active {
   color: var(--primary) !important;
 }
+
+.menu-selector {
+  min-height: 500px;
+  display: flex;
+  flex-direction: column;
+}
+
+.menu-selector .menu-content {
+  flex: 1;
+}
+
+.menu-selector .empty-content {
+  flex: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.menu-selector .menu-card-details .actions {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0;
+}
+
+.menu-selector .menu-card-details:hover .actions {
+  opacity: 0;
+}
+
+.space {
+  width: 100%;
+}
+
+.resume-edit-detail .ant-row {
+  width: 100%;
+}

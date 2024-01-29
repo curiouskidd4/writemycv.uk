@@ -42,7 +42,7 @@ const SingleExperienceForm = ({
   onFinish,
   saveLoading,
 }: SingleExperienceFormProps) => {
-  const [experienceData, setExperienceData] = React.useState({});
+  const [experienceData, setExperienceData] = React.useState<any>({});
 
   useEffect(() => {
     let startDate = initialValues.startDate
@@ -166,7 +166,7 @@ const SingleExperienceForm = ({
             ),
             2: (
               <AchievementForm
-                position={initialValues.position}
+                position={experienceData.position}
                 initialValues={experienceData}
                 onFinish={(details) => onSave("achievements", details)}
                 saveLoading={saveLoading}

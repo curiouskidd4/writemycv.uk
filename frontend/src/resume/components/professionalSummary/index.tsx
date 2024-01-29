@@ -8,12 +8,13 @@ import {
   Popover,
   Row,
   Select,
+  Skeleton,
   Space,
   Spin,
   Typography,
 } from "antd";
 import { useOpenAI } from "../../../utils";
-import { MagicWandIcon, MagicWandLoading } from "../../../components/faIcons";
+import { LightBulbIcon, MagicWandIcon, MagicWandLoading, RepharseIcon } from "../../../components/faIcons";
 import {
   PlusOutlined,
   ArrowRightOutlined,
@@ -23,6 +24,8 @@ import { Skill } from "../../../types/resume";
 import EditorJsInput from "../../../components/editor";
 import FormLabel from "../../../components/labelWithActions";
 import { useResume } from "../../../contexts/resume";
+import CustomCarousel from "../../../components/suggestionCarousel";
+import CVWizardBox from "../../../components/cvWizardBox";
 
 type FormLabelWithAIActionProps = {
   resumeId: string;
@@ -80,7 +83,7 @@ const FormLabelWithAIActions = ({
 
   return (
     <>
-      <Modal
+      {/* <Modal
         width={600}
         closeIcon={true}
         open={state.modalVisible}
@@ -192,40 +195,133 @@ const FormLabelWithAIActions = ({
             </Space>
           </div>
         )}
-      </Modal>
+      </Modal> */}
+         <Row>
+              {openai.data || openai.loading ? (
+                <CVWizardBox>
+                  <Typography.Text type="secondary">
+                    <MagicWandIcon /> CV Wizard Suggestions:
+                  </Typography.Text>
+                  {openai.loading && <Skeleton active></Skeleton>}
+                  {openai.loading === false &&
+                    openai.data!.result.length >
+                    0 && (
+                      // <Carousel>
+                      //   {descriptionHelper.descriptionSuggestions!.results.map(
+                      //     (item: any, idx: number) => (
+                      //       <div
+                      //         className="openai-generated-content-item"
+                      //         onClick={() => onAddDescription(item)}
+                      //       >
+                      //         {item}
+                      //       </div>
+                      //     )
+                      //   )}
+                      // </Carousel>
+                      <CustomCarousel
+                        suggestions={openai.data.result}
+                        onClick={(item: any) => onSelectDescription(item)} />
+                    )}
+                </CVWizardBox>
+              ) : null}
+            </Row>
       <FormLabel
         action={
-          <Popover
-            placement="bottomRight"
-            trigger={["click"]}
-            content={
-              <div>
-                <Space direction="vertical">
-                  <Typography.Text type="secondary">
-                    Write with CV Wizard
-                  </Typography.Text>
-                  <Button
-                    type="link"
-                    size="small"
-                    disabled={
-                      description && description.length > 20 ? false : true
-                    }
-                    onClick={handleRewrite}
-                  >
-                    Rephrase and Optimise
-                  </Button>
+          // <Popover
+          //   placement="bottomRight"
+          //   trigger={["click"]}
+          //   content={
+          //     <div>
+          //       <Space direction="vertical">
+          //         <Typography.Text type="secondary">
+          //           Write with CV Wizard
+          //         </Typography.Text>
+          //         <Button
+          //           type="link"
+          //           size="small"
+          //           disabled={
+          //             description && description.length > 20 ? false : true
+          //           }
+          //           onClick={handleRewrite}
+          //         >
+          //           Rephrase and Optimise
+          //         </Button>
 
-                  <Button type="link" size="small" onClick={handleGenSummary}>
-                    Generate New Summary
+          //         <Button type="link" size="small" onClick={handleGenSummary}>
+          //           Generate New Summary
+          //         </Button>
+          //       </Space>
+          //     </div>
+          //   }
+          // >
+          //   <Button type="link" size="small">
+          //     <MagicWandIcon /> Write with CV Wizard
+          //   </Button>
+          // </Popover>
+
+          
+                <Popover
+                  placement="topRight"
+                  trigger="click"
+                  content={<Space direction="vertical">
+                    <Button
+                      type="text"
+                      // size="small"
+                      style={{
+                        height: "auto",
+                        textAlign: "left",
+                      }}
+                      disabled={description && description.length > 20 ? false : true}
+                      onClick={() => {
+                        // loadSuggestions({
+                        //   employerName: initialValues?.employerName,
+                        //   position: initialValues?.position,
+                        //   rewrite: true,
+                        //   existingDesscription: description,
+                        // });
+                        handleRewrite()
+                      }}
+                    >
+                      <Typography.Text strong>
+                        {" "}
+                        <RepharseIcon /> Optimize
+                      </Typography.Text>
+                      <br />
+                      <Typography.Text type="secondary">
+                        Rephrase and optimize your current description
+                      </Typography.Text>
+                    </Button>
+                    <Button
+                      type="text"
+                      style={{
+                        height: "auto",
+                        textAlign: "left",
+                        width: "100%",
+                      }}
+                      onClick={() => {
+                        // loadSuggestions({
+                        //   employerName: initialValues?.employerName,
+                        //   position: initialValues?.position,
+                        //   rewrite: false,
+                        // });
+                        handleGenSummary()
+                      }}
+                    >
+                      <Typography.Text strong>
+                        {" "}
+                        <LightBulbIcon /> Generate new ideas
+                      </Typography.Text>
+                      <br />
+                      <Typography.Text type="secondary">
+                        Get new ideas for the desciption
+                      </Typography.Text>
+                    </Button>
+                  </Space>}
+                >
+                  <Button type="link" size="small">
+                    <MagicWandIcon /> Write with CV Wizard
                   </Button>
-                </Space>
-              </div>
-            }
-          >
-            <Button type="link" size="small">
-              <MagicWandIcon /> Write with CV Wizard
-            </Button>
-          </Popover>
+                </Popover>
         }
         label={""}
         required={true}

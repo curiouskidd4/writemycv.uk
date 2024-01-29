@@ -89,7 +89,7 @@ const MoreOptions = ({ resumeId, publicResumeId, downloadDocx , downloadLoading}
       await setDoc(
         resumeRef,
         {
-          deleted: true,
+          isDeleted: true,
         },
         { merge: true }
       );

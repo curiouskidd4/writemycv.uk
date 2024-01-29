@@ -253,7 +253,7 @@ const ResumeItemV2 = ({ resume }) => {
         <img src={state.imgURL} style={{width: "100%"}}></img>
       </div>
     </Modal>
-    <Link to={`/resumes/${resume.id}`}>
+    <Link to={ resume.isComplete ?  `/resumes/${resume.id}` : `/resumes/${resume.id}/edit`}>
       <Card key={resume.id} className="resume-card">
         <div>
         <ExpandOutlined className="expand-icon"  onClick={

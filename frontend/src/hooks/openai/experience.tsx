@@ -7,7 +7,7 @@ import { useProfile } from "../../contexts/profile";
 
 const BASE_URL =
   process.env.REACT_APP_BASE_URL ||
-  "http://127.0.0.1:5001/resu-me-a5cff/us-central1";
+  "http://127.0.0.1:5001/resu-me-a5cff/us-central1/api";
 
 const useExperienceHelper = () => {
   const auth = useAuth();
@@ -61,7 +61,7 @@ const useExperienceHelper = () => {
     try {
       const token = await auth.user.getIdToken();
       const response = await axios.post(
-        `${BASE_URL}/api/openai/experienceSummary`,
+        `${BASE_URL}/openai/experienceSummary`,
         data,
         {
           headers: {
@@ -78,7 +78,7 @@ const useExperienceHelper = () => {
       setState({
         loading: false,
         descriptionSuggestions: null,
-        error: err.response.data.message,
+        error: err.response?.data?.message || err.message,
       });
     }
   };
@@ -146,7 +146,7 @@ const useAchievementHelper = () => {
     try {
       const token = await auth.user.getIdToken();
       const response = await axios.post(
-        `${BASE_URL}/api/openai/themeSuggestions`,
+        `${BASE_URL}/openai/themeSuggestions`,
         data,
         {
           headers: {
@@ -165,7 +165,7 @@ const useAchievementHelper = () => {
         loading: false,
         achievementSuggestion: null,
         themeSuggestion: null,
-        error: err.response.data.message,
+        error: err.response?.data?.message || err.message,
       });
     }
   };
@@ -199,7 +199,7 @@ const useAchievementHelper = () => {
     try {
       const token = await auth.user.getIdToken();
       const response = await axios.post(
-        `${BASE_URL}/api/openai/achievementSuggestions`,
+        `${BASE_URL}/openai/achievementSuggestions`,
         data,
         {
           headers: {
@@ -218,7 +218,7 @@ const useAchievementHelper = () => {
         loading: false,
         achievementSuggestion: null,
         themeSuggestion: null,
-        error: err.response.data.message,
+        error: err.response?.data?.message || err.message,
       });
     }
   };

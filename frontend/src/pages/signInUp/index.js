@@ -15,12 +15,8 @@ const LoginSignupPage = ({ isSignup }) => {
   const navigate = useNavigate();
 
   const login = async (username, password) => {
-    try {
-      let res = await auth.loginWithEmail(username, password);
-    } catch (error) {
-      debugger;
-      throw error;
-    }
+    let res = await auth.loginWithEmail(username, password);
+    return res;
   };
 
   const signUp = (
@@ -47,8 +43,8 @@ const LoginSignupPage = ({ isSignup }) => {
     <React.Fragment>
       <div className="login-signup-page">
         <Row
-          justify="center"
-          align="middle"
+          // justify="center"
+          // align="middle"
           style={{
             // paddingBottom: "4rem",
             // maxWidth: "1200px",
@@ -108,23 +104,43 @@ const LoginSignupPage = ({ isSignup }) => {
               </div>
             </div>
           </Col>
-          <Col span={12}>
+          <Col
+            span={12}
+            style={{
+              height: "100%",
+              overflowY: "auto",
+            }}
+          >
             <div
               style={{
+            height: "100%",
+
                 maxWidth: "600px",
-                margin: "0px auto",
+                margin: "20px auto",
                 padding: "0px 25px",
+                display: "flex",
+                flexDirection: "column",
+                paddingTop: isSignup? "4rem" : "8rem",
               }}
             >
               <Typography.Title level={3}>
                 {isSignup ? "Sign Up" : "Sign In"}
               </Typography.Title>
 
-              {isSignup ? (
-                <SignUpForm onSubmit={signUp} />
-              ) : (
-                <LoginForm onSubmit={login} />
-              )}
+              <div
+                style={{
+                  flex: 1,
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                }}
+              >
+                {isSignup ? (
+                  <SignUpForm onSubmit={signUp} />
+                ) : (
+                  <LoginForm onSubmit={login} />
+                )}
+              </div>
             </div>
           </Col>
         </Row>

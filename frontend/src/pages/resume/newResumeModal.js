@@ -4,12 +4,14 @@ import { doc, setDoc } from "firebase/firestore";
 import { db } from "../../services/firebase";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../authContext";
-const ObjectId = require("bson-objectid");
+import useResumeAPI from "../../api/resume"
 
+const ObjectId = require("bson-objectid");
 export const NewResumeModal = ({ visible, onCancel, onConfirm }) => {
   const [form] = Form.useForm();
-const auth = useAuth();
-const userId = auth.user.uid;
+  const auth = useAuth();
+  const userId = auth.user.uid;
+  const { copyProfileToResume } = useResumeAPI()
   const onReset = () => {
     form.resetFields();
   };
@@ -29,6 +31,8 @@ const userId = auth.user.uid;
     Object.keys(data).forEach((key) => data[key] == null && delete data[key]);
     try {
       await setDoc(doc(db, "resumes", data.id), data);
+      await copyProfileToResume(data.id)
+      // Copy data from profile
       onConfirm(data.id);
       message.success("Resume created successfully");
     } catch (err) {
@@ -50,7 +54,7 @@ const userId = auth.user.uid;
         form={form}
         style={{
           maxWidth: "600px",
-          marginTop: "32px"
+          marginTop: "32px",
         }}
         onFinish={onFinish}
       >
@@ -64,7 +68,7 @@ const userId = auth.user.uid;
             },
           ]}
         >
-          <Input size="large" placeholder="Resume Name"/>
+          <Input size="large" placeholder="Resume Name" />
         </Form.Item>
 
         <Form.Item>
@@ -75,7 +79,6 @@ const userId = auth.user.uid;
           >
             Submit
           </Button>
-         
         </Form.Item>
       </Form>
     </Modal>

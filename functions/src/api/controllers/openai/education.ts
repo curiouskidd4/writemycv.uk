@@ -47,12 +47,12 @@ const eductionCoursesHelper = async (
   if (instructions) {
     prompt = `Suggest few courses (comma separated, at most 10) for a ${degree} degree from ${school} for the role of ${role}.  Use british english for spellings, don't use pronouns like "I/We". Make sure courses are relevant to the role and are short (max 4 words), also keep them very granualar. \nFollow the following instructions carefully: ${instructions}  \nDegree: ${degree}\nSchool: ${school}, 
     Output Format: 
-    {"courses": ["course 1", "course 2", "course 3"]}
+    {"courses": ["course 1", "course 2", "course 3", ...]}
     Courses:\n`;
   } else {
     prompt = `Suggest few courses (comma separated, at most 10) for a ${degree} degree from ${school} for the role of ${role}.  Use british english for spellings, don't use pronouns like "I/We". Make sure courses are relevant to the role and are short (max 4 words), also keep them very granualar. (generate comma separated, at most 5)\n \nDegree: ${degree}\nSchool: ${school}
     Output Format: 
-    {"courses": ["course 1", "course 2", "course 3"]}
+    {"courses": ["course 1", "course 2", "course 3", ...]}
     
     Courses:\n`;
   }

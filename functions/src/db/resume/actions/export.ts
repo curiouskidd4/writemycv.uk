@@ -35,7 +35,7 @@ const generatePdfnScreenShot = async (
   await page.evaluateHandle("document.fonts.ready");
   // Make sure no network requests are pending
   try{
-    await page.waitForNavigation({ waitUntil: "networkidle2", timeout: 5000,
+    await page.waitForNavigation({ waitUntil: "networkidle2", timeout: 2000,
   });
   } catch (error) {
     console.log(error);
@@ -84,6 +84,10 @@ const exportResume = async (resumeId: string, userId: string) => {
       experienceList: resumeData.experienceList,
       educationList: resumeData.educationList,
       skillList: resumeData.skillList,
+      awardList: resumeData.awardList,
+      publicationList: resumeData.publicationList,
+      languageList: resumeData.languageList,
+      volunteeringList: resumeData.volunteeringList,
       professionalSummary: resumeData.professionalSummary,
       sectionOrder: resumeData.sectionOrder,
       personalInfo: resumeData.personalInfo,
@@ -157,15 +161,88 @@ const exportResume = async (resumeId: string, userId: string) => {
         "professionalSummary",
         "education",
         "experience",
+        "awards",
+        "publications",
+        "languages",
+        "volunteering",
+        "languages",
         "skills",
       ];
 
-      const resumeTemplateHtml = nunjucks.render(`${resumeTemplate}.njk`, {
+      let publicationList = resumeData.publicationList?.map((publication) => {
+        // Convert start date and end date to "MMM YYYY" format
+        let date = publication.date ? publication.date.toDate() : null;
+        return {
+          ...publication,
+          date: date
+            ? date.toLocaleString("default", {
+                month: "short",
+                year: "numeric",
+              })
+            : null,
+        };
+      }
+      );
+
+      let awardList = resumeData.awardList?.map((award) => {
+        // Convert start date and end date to "MMM YYYY" format
+        let date = award.date ? award.date.toDate() : null;
+        return {
+          ...award,
+          date: date
+            ? date.toLocaleString("default", {
+                month: "short",
+                year: "numeric",
+              })
+            : null,
+        };
+      });
+
+      let languageList = resumeData.languageList?.map((language) => {
+        return {
+          ...language,
+        };
+      });
+
+      let volunteeringList = resumeData.volunteeringList?.map((volunteering) => {
+        // Convert start date and end date to "MMM YYYY" format
+        let startDate = volunteering.startDate
+          ? volunteering.startDate.toDate()
+          : null;
+        let endDate = volunteering.endDate
+          ? volunteering.endDate.toDate()
+          : "Current";
+        return {
+          ...volunteering,
+          isSubDetailAvailable: startDate && endDate ? true : false,
+          startDate: startDate? startDate.toLocaleString("default", {
+            // month: "short",
+            year: "numeric",
+          }) : null,
+          endDate:
+            endDate != "Current"
+              ? endDate.toLocaleString("default", {
+                  // month: "short",
+                  year: "numeric",
+                })
+              : endDate,
+        };
+      });
+
+
+      const data = {
         ...resumeData,
+        professionalSummary: resumeData.professionalSummary || "",
         experienceList,
         educationList,
-        skillText : resumeData.skillList?.map((skill) => skill.name).join(", "),
-      });
+        awardList,
+        publicationList,
+        languageList,
+        volunteeringList,
+        skillText : resumeData.skillList?.map((skill) => skill.name).join(", ") || "",
+      }
+      console.log("data", data);
+      const resumeTemplateHtml = nunjucks.render(`${resumeTemplate}.njk`, data);
 
       // console.log(resumeTemplateHtml);
       // Save html to storage

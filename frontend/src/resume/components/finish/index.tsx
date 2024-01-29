@@ -24,7 +24,7 @@ const FinishView = () => {
         marginTop: "24px"
       }}>
         <Col>
-          <Button type="primary" onClick={() => navigate(`resumes/${resumeId}`)}>
+          <Button type="primary" onClick={() => navigate(`/resumes/${resumeId}`)}>
             Preview CV
           </Button>
         </Col>

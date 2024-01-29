@@ -11,7 +11,7 @@ import {
   Typography,
 } from "antd";
 // import { useOpenAI } from "../../../utils";
-import { MagicWandIcon } from "../../../components/faIcons";
+import { APIErrorIcon, MagicWandIcon } from "../../../components/faIcons";
 import {
   PlusOutlined,
   ArrowRightOutlined,
@@ -180,13 +180,14 @@ const SkillFlow = ({
             minHeight: "200px",
           }}
         >
-          <Space direction="vertical" wrap>
-            
-            <Row
-              style={{
-                width: "100%",
-              }}
-            >
+          <Space
+            direction="vertical"
+            wrap
+            style={{
+              width: "100%",
+            }}
+          >
+            <Row>
               <CVWizardBox>
                 <Typography.Text type="secondary">
                   <MagicWandIcon /> CV Wizard Suggestions:
@@ -220,10 +221,22 @@ const SkillFlow = ({
                         ))}
                     </Row>
                   )}
+                  <div style={{
+                    width: "100%",
+                    textAlign: "center",
+                    marginTop: "12px",
+                  }}>
+                {skillHelper.error && (
+                  <>
+                  <APIErrorIcon />
+                  <Typography.Text type="danger">
+                    Unable to load suggestions: {skillHelper.error}
+                  </Typography.Text>
+                  </>
+                )}
+                </div>
               </CVWizardBox>
             </Row>
-
-           
           </Space>
         </Row>
         <Row>
