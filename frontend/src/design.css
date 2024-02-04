@@ -1,0 +1,92 @@
+.ant-btn-primary {
+  color: black !important;
+  font: normal normal bold 16px/12px DM Sans !important;
+  height: 41px;
+}
+.ant-btn-link {
+  font: normal normal bold 16px/12px DM Sans !important;
+  height: 41px;
+}
+
+.ant-btn-link:hover {
+  color: var(--accent-1) !important;
+  opacity: 0.7;
+}
+
+.ant-btn-primary:hover {
+  opacity: 0.9;
+}
+
+.ant-form-item-label {
+}
+.ant-form-item-label label {
+  color: var(--black) !important;
+  text-align: left;
+  font: normal normal bold 14px/12px DM Sans !important;
+  letter-spacing: 0px;
+  color: #000000;
+  opacity: 1;
+  height: 18px !important;
+}
+.ant-btn-link {
+  color: var(--accent-1);
+}
+
+a {
+  color: var(--accent-1) !important;
+}
+
+.ant-form-item-control-input-content {
+  input {
+    height: 44px;
+    border: 1px solid #818181;
+  }
+
+  .ant-select-selector {
+    height: 44px !important;
+    border: 1px solid #818181 !important;
+  }
+
+  .ant-picker {
+    height: 44px !important;
+    border: 1px solid #818181 !important;
+  }
+
+  .ant-select-single {
+    height: 44px !important;
+  }
+}
+
+.small-link-btn {
+  height: 16px;
+  color: var(accent-1);
+  text-align: center;
+  font: normal normal bold 12px/12px DM Sans !important;
+  letter-spacing: 0px;
+  /* color: #000000; */
+  opacity: 1;
+}
+
+.ant-btn-default:hover {
+  color: var(--dark-grey) !important;
+  border-color: var(--dark-grey) !important;
+  opacity: 0.8;
+}
+
+.black-button {
+  height: 40px;
+  /* UI Properties */
+  background: var(--black) 0% 0% no-repeat padding-box;
+  background: #000000 0% 0% no-repeat padding-box;
+  border-radius: 12px;
+  opacity: 1;
+  padding: 0px 48px;
+  color: var(--white) !important;
+  text-align: center;
+  font: normal normal bold 16px/12px DM Sans;
+}
+
+.black-button:hover {
+  opacity: 0.9;
+  color: var(--white) !important;
+}

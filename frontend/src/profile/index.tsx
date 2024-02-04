@@ -1,10 +1,18 @@
-import { Col, Dropdown, Row, Tabs, Typography } from "antd";
+import { Button, Col, Dropdown, Row, Tabs, Typography } from "antd";
 import React from "react";
 import PersonalDetails from "../resume/components/personalDetails";
 import { ProfileProvider, useProfile } from "../contexts/profile";
 import SkillFlow from "../resume/components/skills";
 import { ProfilePersonalInfo } from "../types/profile";
-import { Award, Education, Experience, Language, Publication, Skill, Volunteering } from "../types/resume";
+import {
+  Award,
+  Education,
+  Experience,
+  Language,
+  Publication,
+  Skill,
+  Volunteering,
+} from "../types/resume";
 import EducationForm from "../resume/components/education/educationEditForm";
 import ExperienceFlow from "../resume/components/experience";
 import ExperienceForm from "../resume/components/experience/experienceEditForm";
@@ -62,25 +70,31 @@ const ProfileV2_ = () => {
 
   const syncAwards = async (awards: Award[]) => {
     await profileData.saveAwards(awards);
-  }
+  };
 
   const syncPublications = async (publications: Publication[]) => {
     await profileData.savePublications(publications);
-  }
+  };
 
   const syncVolunteering = async (volunteering: Volunteering[]) => {
     await profileData.saveVolunteering(volunteering);
-  }
+  };
 
   const syncLanguages = async (languages: Language[]) => {
     await profileData.saveLanguages(languages);
-  }
+  };
 
-  const basicDetailsCompleted  = profileData.isBasicInfoComplete();
+  const basicDetailsCompleted = profileData.isBasicInfoComplete();
   const profilePersonalInfo = profileData.profile?.personalInfo;
   const personalInfo: ProfilePersonalInfo = {
-    firstName: profilePersonalInfo?.firstName || auth.user.displayName?.split(" ")[0] || "",
-    lastName: profilePersonalInfo?.lastName || auth.user.displayName?.split(" ")[1] || "",
+    firstName:
+      profilePersonalInfo?.firstName ||
+      auth.user.displayName?.split(" ")[0] ||
+      "",
+    lastName:
+      profilePersonalInfo?.lastName ||
+      auth.user.displayName?.split(" ")[1] ||
+      "",
     email: profilePersonalInfo?.email || auth.user.email || "",
     phone: profilePersonalInfo?.phone || null,
     location: profilePersonalInfo?.location || "",
@@ -88,12 +102,11 @@ const ProfileV2_ = () => {
     city: profilePersonalInfo?.city || "",
     country: profilePersonalInfo?.country || "",
     currentRole: profilePersonalInfo?.currentRole || "",
-  }
-
+  };
 
   return (
     <div className="profile">
-      <Row style={{ height: "64px" }} align="middle">
+      <Row  align="middle" className="title-header">
         <Col>
           <Typography.Title
             level={3}
@@ -107,40 +120,28 @@ const ProfileV2_ = () => {
         <Col
           style={{
             marginLeft: "auto",
+            display: "flex",
+            alignItems: "center",
+            gap: "16px",
           }}
+          
         >
-          <Dropdown.Button
-            trigger={["click"]}
-            // type="primary"
-            menu={{
-              items: [
-                {
-                  key: "2",
-                  label: "Import Resume",
-                  icon: <UploadIcon />,
-                },
-              ],
-              onClick: (item: any) => {
-                // console.log(item);
-                if (item.key === "2") {
-                  setImportResumeModalVisible(true);
-                }
-              },
-            }}
+          <Button
             onClick={() => {
               setNewResumeModalVisible(true);
             }}
-            // icon={<i className="fas fa-download"></i>}
           >
             <PlusIcon />
             New CV
-          </Dropdown.Button>
+          </Button>
+
+          <Button icon={<ImportOutlined />}>Import CV</Button>
         </Col>
       </Row>
       {profileData.loading ? <div>Loading...</div> : null}
       {!profileData.loading ? (
-        <div>
-          <Tabs defaultActiveKey="1">
+        <div className="profile-tab">
+          <Tabs defaultActiveKey="1" tabPosition="left">
             <Tabs.TabPane
               tab={
                 <>
@@ -156,8 +157,8 @@ const ProfileV2_ = () => {
                     <Typography.Text type="secondary">
                       Please complete your following details before proceeding
                     </Typography.Text>
-                  </div>) : null
-                  }
+                  </div>
+                ) : null}
                 <PersonalDetails
                   initialValues={personalInfo}
                   onFinish={async (values) => {}}
@@ -231,8 +232,7 @@ const ProfileV2_ = () => {
               key="6"
               disabled={!basicDetailsCompleted}
             >
-              
-              <AwardForm 
+              <AwardForm
                 awardList={profileData.profile?.awards?.awardList || []}
                 onFinish={async () => {}}
                 syncAwards={syncAwards}
@@ -249,8 +249,10 @@ const ProfileV2_ = () => {
               key="7"
               disabled={!basicDetailsCompleted}
             >
-              <PublicationForm 
-                publicationList={profileData.profile?.publications?.publicationList || []}
+              <PublicationForm
+                publicationList={
+                  profileData.profile?.publications?.publicationList || []
+                }
                 onFinish={async () => {}}
                 syncPublications={syncPublications}
                 showTitle={false}
@@ -266,14 +268,16 @@ const ProfileV2_ = () => {
               key="8"
               disabled={!basicDetailsCompleted}
             >
-              <VolunteerForm 
-                volunteerList={profileData.profile?.volunteering?.volunteeringList || []}
+              <VolunteerForm
+                volunteerList={
+                  profileData.profile?.volunteering?.volunteeringList || []
+                }
                 onFinish={async () => {}}
                 syncVolunteers={syncVolunteering}
                 showTitle={false}
               />
             </Tabs.TabPane>
-            
+
             <Tabs.TabPane
               tab={
                 <>
@@ -284,15 +288,16 @@ const ProfileV2_ = () => {
               key="9"
               disabled={!basicDetailsCompleted}
             >
-              <LanguageFlow 
-                languageList={profileData.profile?.languages?.languageList || []}
+              <LanguageFlow
+                languageList={
+                  profileData.profile?.languages?.languageList || []
+                }
                 // languageList={[]} // TODO: FIX THIS
                 onFinish={async () => {}}
                 syncLanguages={syncLanguages}
                 showTitle={false}
               />
             </Tabs.TabPane>
-            
           </Tabs>
         </div>
       ) : null}

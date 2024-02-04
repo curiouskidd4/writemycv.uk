@@ -325,3 +325,14 @@ export const AwardIcon = () => (
     }}
   />
 );
+
+export const AIWizardIcon = () => (
+  <div     className="ai-wizard-icon"
+  >
+  <FontAwesomeIcon
+    icon={faWandMagicSparkles}
+    style={{
+    }}
+  />
+  </div>
+);

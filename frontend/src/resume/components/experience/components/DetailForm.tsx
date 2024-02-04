@@ -89,9 +89,9 @@ export const DetailForm = ({ initialValues, onFinish }: DetailFormProps) => {
         </Col>
       </Row>
 
-      <Button type="primary" htmlType="submit">
+      {/* <Button type="primary" htmlType="submit">
         Save
-      </Button>
+      </Button> */}
     </Form>
   );
 };

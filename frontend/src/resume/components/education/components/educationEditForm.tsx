@@ -1,7 +1,4 @@
-import {
-  Row,
-  Steps,
-} from "antd";
+import { Divider, Row, Steps } from "antd";
 import React, { useEffect } from "react";
 import { Education, EducationList } from "../../../../types/resume";
 // import "./index.css";
@@ -11,7 +8,6 @@ import { Timestamp } from "firebase/firestore";
 import { DetailForm } from "./detailForm";
 import { CourseForm } from "./courseForm";
 import { DescriptionForm } from "./descriptionForm";
-
 
 type SingleEducationFormProps = {
   initialValues?: any;
@@ -105,7 +101,7 @@ const SingleEducationForm = ({
 
   return (
     <div>
-      <Steps
+      {/* <Steps
         style={{
           marginTop: "12px",
         }}
@@ -126,14 +122,14 @@ const SingleEducationForm = ({
             // description,
           },
         ]}
-      />
+      /> */}
 
       <Row
         style={{
           marginTop: "24px",
         }}
       >
-        {
+        {/* {
           {
             0: (
               <DetailForm
@@ -157,7 +153,30 @@ const SingleEducationForm = ({
               />
             ),
           }[state.current]
-        }
+        } */}
+        <>
+          <DetailForm
+            initialValues={educationData}
+            onFinish={(details) => onSave("details", details)}
+            saveLoading={saveLoading}
+          />
+          <Divider
+            className="profile-input-section-divider"
+          />
+          <CourseForm
+            initialValues={educationData}
+            onFinish={(details) => onSave("modules", details)}
+            saveLoading={saveLoading}
+          />
+          <Divider
+                        className="profile-input-section-divider"
+          />
+          <DescriptionForm
+            initialValues={educationData}
+            onFinish={(details) => onSave("description", details)}
+            saveLoading={saveLoading}
+          />
+        </>
       </Row>
     </div>
   );

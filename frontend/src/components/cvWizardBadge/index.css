@@ -1,0 +1,21 @@
+.wizard-badge {
+    color: var(--accent-2) !important;
+    height: 18px;
+    font: normal normal bold 14px/12px DM Sans;
+    letter-spacing: 0px;
+    margin: 0.5rem 0rem;
+
+    .text {
+        color: var(--accent-2) !important;
+        height: 18px;
+        font: normal normal bold 14px/12px DM Sans;
+        letter-spacing: 0px;
+    }
+
+    svg {
+        color: var(--accent-2) !important;
+        height: 15px;
+        letter-spacing: 0px;
+    }
+
+}

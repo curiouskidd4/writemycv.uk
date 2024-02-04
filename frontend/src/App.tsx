@@ -47,6 +47,7 @@ import ProfileV2 from "./profile";
 import Sider from "./components/sider";
 import ImportCVToProfile from "./importCV";
 import FirebaseUserMangement from "./userManagement";
+import "./design.css";
 
 const GenLayout = ({}) => {
   const { user } = useAuth();
@@ -59,9 +60,9 @@ const GenLayout = ({}) => {
 
   return (
     <>
-      {/* {publicResume ? null : <CustomHeader />} */}
+      {publicResume ? null : <CustomHeader />}
       <div className="layout">
-        <Sider />
+        {/* <Sider /> */}
         <div id={isResumeEdit ? "detail-large" : "detail"}>
           <div className="outlet">
           <Outlet />
@@ -320,6 +321,19 @@ const baseRouter = createBrowserRouter([
   },
 ]);
 
+const importRouter = createBrowserRouter([{
+  path: "/",
+  element: <GenLayout />,
+
+  children: [
+    {
+      path: "*",
+      element: <ImportCVToProfile />,
+    },
+  ]
+}])
+
+
 const queryClient = new QueryClient();
 
 const BaseApp = () => {
@@ -356,7 +370,7 @@ const BaseApp = () => {
             // : !auth.isProfileComplete ? (
             //   <CustomerOnboarding />
             // )  
-            : !auth.isRepoCompleted ? (<ImportCVToProfile />): null)}
+            : !auth.isRepoCompleted ? (<RouterProvider router={importRouter} />): null)}
           {!auth.isAuthenticated && <RouterProvider router={baseRouter} />}
         </>
       )}

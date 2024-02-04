@@ -1,14 +1,33 @@
 import {
-  Button, Col,
-  Input, Row, Skeleton,
-  Space, Tag,
-  Typography
+  Button,
+  Col,
+  Input,
+  Row,
+  Skeleton,
+  Space,
+  Tag,
+  Typography,
 } from "antd";
 import React, { useEffect } from "react";
 import { ArrowRightOutlined, PlusOutlined } from "@ant-design/icons";
 import openAI from "../../../../hooks/openai";
-import { MagicWandIcon } from "../../../../components/faIcons";
-import CVWizardBox from "../../../../components/cvWizardBox";
+import {
+  AIWizardIcon,
+  DeleteIcon,
+  MagicWandIcon,
+} from "../../../../components/faIcons";
+import CVWizardBox from "../../../../components/cvWizardBoxV2";
+import "./educationEditForm.css";
+const CourseCard = ({ course }: { course: string }) => {
+  return (
+    <Row className="course-card">
+      <div className="title">{course}</div>
+      <div className="actions">
+        <DeleteIcon />
+      </div>
+    </Row>
+  );
+};
 
 type CourseFormProps = {
   initialValues?: any;
@@ -24,6 +43,7 @@ export const CourseForm = ({ initialValues, onFinish }: CourseFormProps) => {
     loadingSuggestions: false,
     moduleText: "",
     existinModules: initialValues?.modules || [],
+    newItemFlag: false,
   });
 
   const educationHelper = openAI.useEducationHelper();
@@ -48,6 +68,7 @@ export const CourseForm = ({ initialValues, onFinish }: CourseFormProps) => {
     setState((prev) => ({
       ...prev,
       existinModules: [...prev.existinModules, value],
+      newItemFlag: false,
     }));
   };
 
@@ -60,7 +81,8 @@ export const CourseForm = ({ initialValues, onFinish }: CourseFormProps) => {
   };
 
   const loadSuggestions = async ({
-    school, degree,
+    school,
+    degree,
   }: {
     school: string;
     degree: string;
@@ -81,102 +103,52 @@ export const CourseForm = ({ initialValues, onFinish }: CourseFormProps) => {
   };
 
   return (
-    <>
-      <Space
-        direction="vertical"
-        size="large"
-        style={{
-          width: "100%",
-        }}
-      >
-        <Row>
-          <Input
-            size="large"
-            placeholder="Add your courses"
-            style={{
-              width: "300px",
-            }}
-            value={state.moduleText}
-            onChange={(e) => {
-              setState((prev) => ({
-                ...prev,
-                moduleText: e.target.value,
-              }));
-            }}
-            suffix={<ArrowRightOutlined />}
-            onPressEnter={(e) => {
-              onAddCourses(e.currentTarget.value);
-              setState((prev) => ({
-                ...prev,
-                moduleText: "",
-              }));
-            }} />
-        </Row>
+    <div className="profile-tab-detail">
+      <div className="user-input-area">
+        <div className="profile-input-section-title">
+          <Typography.Text strong>Modules</Typography.Text>
+          <Button type="link">
+            <AIWizardIcon />
+          </Button>
+        </div>
 
-        <Row
+        <Space
+          direction="vertical"
+          size="large"
           style={{
             width: "100%",
           }}
         >
-          <CVWizardBox>
-            <Typography.Text type="secondary">
-              <MagicWandIcon /> CV Wizard Suggestions:
-            </Typography.Text>
-            {educationHelper.loading && <Skeleton active></Skeleton>}
+          {/* <Row>
+            <Input
+              size="large"
+              placeholder="Add your courses"
+              style={{
+                width: "300px",
+              }}
+              value={state.moduleText}
+              onChange={(e) => {
+                setState((prev) => ({
+                  ...prev,
+                  moduleText: e.target.value,
+                }));
+              }}
+              suffix={<ArrowRightOutlined />}
+              onPressEnter={(e) => {
+                onAddCourses(e.currentTarget.value);
+                setState((prev) => ({
+                  ...prev,
+                  moduleText: "",
+                }));
+              }}
+            />
+          </Row> */}
 
-            {educationHelper.courseSuggestions &&
-              educationHelper.courseSuggestions!.results.length > 0 && (
-                <Row
-                  style={{
-                    marginTop: "12px",
-                  }}
-                  gutter={[6, 6]}
-                >
-                  {educationHelper
-                    .courseSuggestions!.results.filter(
-                      (s) => !state.existinModules.includes(s)
-                    )
-                    .map((item: any, idx: number) => (
-                      <Col key={idx}>
-                        <Button
-                          size="small"
-                          onClick={() => {
-                            onAddCourses(item);
-                          }}
-                        >
-                          <PlusOutlined />
-                          {item}
-                        </Button>
-                      </Col>
-                    ))}
-                </Row>
-              )}
-          </CVWizardBox>
-        </Row>
-
-        <Row gutter={[6, 6]}>
-          {state.existinModules.length > 0 && (
-            <>
-              <Row
-                style={{
-                  width: "100%",
-                  // marginBottom: "8px",
-                }}
-              >
-                <Typography.Text strong>Added Courses:</Typography.Text>{" "}
-              </Row>
-            </>
-          )}
           {state.existinModules.map((module: string, index: number) => (
-            <Col key={index}>
-              <Tag
-                className="education-course-tag"
-                color=" var(--primary-400)"
-                closable
-              >
-                <span>{module}</span>
-              </Tag>
-            </Col>
+            // <Col key={index}>
+
+            <CourseCard course={module} key={index} />
+            // </Col>
             // <div
             //   key={index}
             //   style={{
@@ -194,13 +166,83 @@ export const CourseForm = ({ initialValues, onFinish }: CourseFormProps) => {
             //   </div>
             // </div>
           ))}
-        </Row>
-        <Row>
-          <Button type="primary" onClick={onSave}>
-            Save
-          </Button>
-        </Row>
-      </Space>
-    </>
+          {!state.newItemFlag && (
+            <Button
+              type="link"
+              className="small-link-btn"
+              onClick={() => {
+                setState((prev) => ({
+                  ...prev,
+                  newItemFlag: true,
+                }));
+              }}
+            >
+              <PlusOutlined />
+              Add New
+            </Button>
+          )}
+          {state.newItemFlag && (
+            <Input
+              size="large"
+              placeholder="Add your courses"
+              style={{
+                width: "300px",
+              }}
+              value={state.moduleText}
+              onChange={(e) => {
+                setState((prev) => ({
+                  ...prev,
+                  moduleText: e.target.value,
+                }));
+              }}
+              suffix={<ArrowRightOutlined />}
+              onPressEnter={(e) => {
+                onAddCourses(e.currentTarget.value);
+                setState((prev) => ({
+                  ...prev,
+                  moduleText: "",
+                }));
+              }}
+            />
+          )}
+        </Space>
+      </div>
+      <div className="ai-wizard-area">
+        <CVWizardBox title="Add modules" subtitle="Highlighting relevant courses in your ‘Education’ section.">
+          <Typography.Text type="secondary">
+            CV Wizard Suggestions:
+          </Typography.Text>
+          {educationHelper.loading && <Skeleton active></Skeleton>}
+
+          {educationHelper.courseSuggestions &&
+            educationHelper.courseSuggestions!.results.length > 0 && (
+              <Row
+                style={{
+                  marginTop: "12px",
+                }}
+                gutter={[6, 6]}
+              >
+                {educationHelper
+                  .courseSuggestions!.results.filter(
+                    (s) => !state.existinModules.includes(s)
+                  )
+                  .map((item: any, idx: number) => (
+                    <Col key={idx}>
+                      <Button
+                        size="small"
+                        onClick={() => {
+                          onAddCourses(item);
+                        }}
+                      >
+                        {/* <PlusOutlined /> */}
+                        {item}
+                      </Button>
+                    </Col>
+                  ))}
+              </Row>
+            )}
+        </CVWizardBox>
+      </div>
+    </div>
   );
 };

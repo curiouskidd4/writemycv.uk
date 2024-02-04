@@ -1,0 +1,147 @@
+.content {
+  /* background: var(--accent-2-dark) 0% 0% no-repeat padding-box; */
+  /* background: #d9d9d9 0% 0% no-repeat padding-box; */
+  background: #F3F9FA 0% 0% no-repeat padding-box;
+  border-radius: 12px;
+  opacity: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 2rem 0rem;
+  padding: 2rem 2rem;
+}
+.content-header {
+  color: var(--black) !important;
+  text-align: center;
+  font: normal normal bold 30px/38px DM Sans;
+  letter-spacing: 0px;
+  color: #000000;
+  opacity: 1;
+  width: 60%;
+}
+
+.content-body {
+  /* UI Properties */
+  color: var(--black) !important;
+  text-align: center;
+  font: normal normal normal 16px/24px DM Sans;
+  letter-spacing: 0px;
+  color: #000000;
+  opacity: 1;
+  margin-top: 24px;
+  width: 80%;
+}
+
+.action {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  gap: 12px;
+}
+
+.action .ant-btn-primary {
+  /* color: var(--white) !important; */
+  text-align: center;
+
+  /* font: normal normal bold 16px/12px DM Sans !important; */
+  /* background: var(--black) 0% 0% no-repeat padding-box; */
+  border-radius: 12px;
+  opacity: 1;
+  /* width: 100%; */
+  height: 40px;
+  border: none;
+  margin-top: 20px;
+}
+
+.modal-header {
+  color: var(--black) !important;
+  font: normal normal bold 24px/12px DM Sans;
+  letter-spacing: 0px;
+  color: #000000;
+  opacity: 1;
+  margin-top: 48px;
+  margin-left: 48px;
+}
+
+.modal-body {
+  color: var(--black) !important;
+  font: normal normal normal 14px/22px DM Sans;
+  letter-spacing: 0px;
+  color: #000000;
+  opacity: 1;
+  margin-top: 24px;
+  margin-left: 48px;
+  margin-right: 48px;
+}
+.modal-body-action {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 32px;
+  margin-bottom: 16px;
+  gap: 12px;
+}
+
+.modal-body-action .ant-btn-primary {
+  width: 300px;
+  height: 41px;
+}
+.para-title {
+  font: normal normal bold 16px/22px DM Sans;
+  margin: 2rem 0rem;
+}
+
+.import-cv-modal {
+  /* padding: 20px; */
+
+  .content-header {
+    font: normal normal bold 30px/40px DM Sans;
+    width: 100%;
+    text-align: left;
+  }
+
+  .content-subtitle {
+    height: 50px;
+    /* UI Properties */
+    color: var(--black);
+    text-align: left;
+    font: normal normal normal 14px/20px DM Sans;
+    letter-spacing: 0px;
+    opacity: 1;
+    margin-top: 16px;
+  }
+
+  .ant-upload-wrapper {
+    width: 60% !important;
+    display: block;
+    margin: 1rem auto;
+
+  }
+
+  .ant-upload-text {
+    font: normal normal normal 16px/24px DM Sans;
+  }
+}
+
+.uploading-message {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  margin: 1rem;
+
+}
+
+.success-message {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  margin: 1rem;
+}

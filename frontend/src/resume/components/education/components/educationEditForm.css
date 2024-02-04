@@ -1,0 +1,23 @@
+.course-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.course-card .title {
+  /* height: 44px; */
+  text-overflow: ellipsis;
+  width: 300px;
+  word-wrap: break-word;
+  border: 1px solid var(--light-black);
+  border-radius: 10px;
+  background: var(--white) 0% 0% no-repeat padding-box;
+  padding: 16px 12px;
+  overflow: hidden;
+  white-space: nowrap;
+
+}
+
+.course-card svg {
+  color: var(--black) !important;
+}
+

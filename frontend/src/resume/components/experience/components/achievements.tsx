@@ -21,10 +21,11 @@ import { useOpenAI } from "../../../../utils";
 import Markdown from "react-markdown";
 import {
   AIWizardHideIcon,
+  AIWizardIcon,
   MagicWandIcon,
   MagicWandLoading,
 } from "../../../../components/faIcons";
-import CVWizardBox from "../../../../components/cvWizardBox";
+import CVWizardBox from "../../../../components/cvWizardBoxV2";
 import { Achievement } from "../../../../types/resume";
 import CustomCarousel from "../../../../components/suggestionCarousel";
 
@@ -297,31 +298,17 @@ const AchievementThemeWizard = ({
     }
   }, [showAIWizard]);
 
-  console.log("showAIWizard", showAIWizard)
+  console.log("showAIWizard", showAIWizard);
   return showAIWizard ? (
-    <CVWizardBox>
-      <>
+    <CVWizardBox title="Achievement Topics" subtitle="Highlighting your key achievements here">
+    <>
         <Row>
           <Col>
             <Typography.Text type="secondary">
-              <MagicWandIcon /> CV Wizard Suggestions:
+               CV Wizard Suggestions:
             </Typography.Text>
           </Col>
-          <Col
-            style={{
-              marginLeft: "auto",
-            }}
-          >
-            <Button
-              type="link"
-              size="small"
-              onClick={() => {
-                onHide();
-              }}
-            >
-              <AIWizardHideIcon /> Hide
-            </Button>
-          </Col>
+          
         </Row>
         <Row>
           <Typography.Text type="secondary">
@@ -380,8 +367,8 @@ const AchievementRewrite = ({
   };
 
   return (
-    <CVWizardBox>
-      <Row>
+    <CVWizardBox title="Achievement Suggestion" subtitle="">
+    <Row>
         <Typography.Text type="secondary">
           <MagicWandIcon /> CV Wizard Suggestions:
         </Typography.Text>
@@ -680,8 +667,17 @@ const Achievements = ({
           />
         )}
       </Modal>
-      <Row style={{ paddingBottom: "1rem", width: "100%" }}>
-        <Row style={{ width: "100%" }}>
+      <div className="profile-tab-detail">
+        <div className="user-input-area">
+          <div className="profile-input-section-title">
+            <Typography.Text strong>Achievements</Typography.Text>
+            <Button type="link" size="small">
+              <AIWizardIcon />
+            </Button>
+          </div>
+
+          <Row style={{ paddingBottom: "1rem", width: "100%" }}>
+            {/* <Row style={{ width: "100%" }}>
           <Col>
             <Typography.Title level={5}>Achievements</Typography.Title>
           </Col>
@@ -694,18 +690,53 @@ const Achievements = ({
               <MagicWandIcon /> CV Wizard
             </Button>
           </Col>
-        </Row>
-        <Row
-          style={{
-            marginBottom: "0.5rem",
-          }}
-        >
-          <Typography.Text type="secondary">
-            Fill your CV with achievements! Here are a list of themes that
-            relate to your experience – click on each one and write about your
-            successes. Don't forget to use CV Wizard to make it perfect!
-          </Typography.Text>
+        </Row> */}
+            <Row
+              style={{
+                marginBottom: "0.5rem",
+              }}
+            >
+              <Typography.Text type="secondary">
+                Fill your CV with achievements! Here are a list of themes that
+                relate to your experience – click on each one and write about
+                your successes. Don't forget to use CV Wizard to make it
+                perfect!
+              </Typography.Text>
+            </Row>
+          </Row>
+          <Row style={{ paddingBottom: "1rem" }}>
+            {value && value.length > 0 && (
+              <>
+                <Row
+                  style={{
+                    width: "100%",
+                  }}
+                >
+                  <Typography.Text type="secondary">
+                    Added achievements
+                  </Typography.Text>{" "}
+                </Row>
 
+                {value.map((item: any, index: number) => (
+                  <AchievementCard
+                    key={index}
+                    item={item}
+                    index={index}
+                    onEditAchievement={onEditAchievement}
+                    onDelete={(index) => {
+                      let newValue = [...value];
+                      newValue.splice(index, 1);
+                      if (onChange) {
+                        onChange(newValue);
+                      }
+                    }}
+                  />
+                ))}
+              </>
+            )}
+          </Row>
+        </div>
+        <div className="ai-wizard-area">
           <AchievementThemeWizard
             jobTitle={jobTitle}
             showAIWizard={state.showAIWizard}
@@ -723,75 +754,8 @@ const Achievements = ({
               }));
             }}
           />
-        </Row>
-      </Row>
-      <Row style={{ paddingBottom: "1rem" }}>
-        {value && value.length > 0 && (
-          <>
-            <Row
-              style={{
-                width: "100%",
-              }}
-            >
-              <Typography.Text type="secondary">
-                Added achievements
-              </Typography.Text>{" "}
-            </Row>
-
-            {value.map((item: any, index: number) => (
-              // <div className="achievement-item" key={index}>
-              //   <div className="achievement-item-header">
-              //     <Typography.Text type="secondary">
-              //       {item.theme}
-              //     </Typography.Text>
-              //     <div>
-              //       <Button type="link" size="small">
-              //         <MagicWandIcon />
-              //       </Button>
-              //       <Button
-              //         type="link"
-              //         size="small"
-              //         onClick={() => {
-              //           onEditAchievement(index);
-              //         }}
-              //       >
-              //         <EditOutlined />
-              //       </Button>
-              //       <Button
-              //         type="link"
-              //         size="small"
-              //         danger
-              //         onClick={() => {
-              //           let newValue = [...value];
-              //           newValue.splice(index, 1);
-              //           if (onChange) {
-              //             onChange(newValue);
-              //           }
-              //         }}
-              //       >
-              //         <DeleteOutlined />
-              //       </Button>
-              //     </div>
-              //   </div>
-              //   <Typography.Text>{item.description}</Typography.Text>
-              // </div>
-              <AchievementCard
-                key={index}
-                item={item}
-                index={index}
-                onEditAchievement={onEditAchievement}
-                onDelete={(index) => {
-                  let newValue = [...value];
-                  newValue.splice(index, 1);
-                  if (onChange) {
-                    onChange(newValue);
-                  }
-                }}
-              />
-            ))}
-          </>
-        )}
-      </Row>
+        </div>
+      </div>
     </>
   );
 };

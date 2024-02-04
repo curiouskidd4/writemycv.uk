@@ -30,12 +30,13 @@ export const DetailForm = ({ initialValues, onFinish }: DetailFormProps) => {
     });
   }, [initialValues]);
   return (
+    <div className="user-input-area">
     <Form
       name="basic"
       layout="vertical"
       form={form}
       style={{
-        maxWidth: "600px",
+        // maxWidth: "600px",
       }}
       initialValues={initialValues}
       onFinish={onFinish}
@@ -96,9 +97,10 @@ export const DetailForm = ({ initialValues, onFinish }: DetailFormProps) => {
         </Col>
       </Row>
 
-      <Button type="primary" htmlType="submit">
+      {/* <Button type="primary" htmlType="submit">
         Save
-      </Button>
+      </Button> */}
     </Form>
+    </div>
   );
 };

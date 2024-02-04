@@ -1,4 +1,14 @@
-import { Button, Col, Form, Input, Menu, Row, Select, Typography, message } from "antd";
+import {
+  Button,
+  Col,
+  Form,
+  Input,
+  Menu,
+  Row,
+  Select,
+  Typography,
+  message,
+} from "antd";
 import React from "react";
 import EditorJsInput from "../../../components/editor";
 import CustomDateRange from "../../../components/dateRange";
@@ -25,7 +35,9 @@ const ExperienceCard = ({
 }) => {
   return (
     <>
-      <div className="title">{experience.employerName || "(New Experience)"}</div>
+      <div className="title">
+        {experience.employerName || "(New Experience)"}
+      </div>
       <div className="subtitle">{experience.position}</div>
       {/* <div className="date-range">
             {experience.dateRange[0]} - {experience.dateRange[1]}
@@ -55,7 +67,8 @@ const ExperienceForm = ({
   showTitle = true,
 }: ExperienceProps) => {
   const [state, setState] = React.useState<ExperienceState>({
-    selectedExperience: experienceList && experienceList.length > 0 ? experienceList[0] : null,
+    selectedExperience:
+      experienceList && experienceList.length > 0 ? experienceList[0] : null,
     selectedExperienceIdx: 0,
   });
 
@@ -79,7 +92,7 @@ const ExperienceForm = ({
       achievements: [],
       aiSuggestions: null,
     };
-    setState(prev => ({
+    setState((prev) => ({
       selectedExperience: newExperience,
       selectedExperienceIdx: experienceList.length,
     }));
@@ -90,12 +103,8 @@ const ExperienceForm = ({
       {showTitle ? (
         <Typography.Title level={4}>Experience</Typography.Title>
       ) : null}
-      <Row gutter={24} style={{"height": "70vh"}}>
-        <Col span={8} className="experience-history-selector" 
-         style={{"height": "100%"}}>
-          {/* <Typography.Title level={5}>Experience Items</Typography.Title> */}
-          <Typography.Text type="secondary">Your history</Typography.Text>
-
+      <Row gutter={24} style={{ height: "100%" }}>
+        <Col span={4} className="education-history-selector selector-col">
           <Menu
             className="experience-menu"
             defaultSelectedKeys={[state.selectedExperienceIdx.toString()]}
@@ -118,20 +127,22 @@ const ExperienceForm = ({
               };
             })}
           ></Menu>
-          
-          <Row justify="center">
-          <Button style={{ width: "90%", margin: "8px auto" }} onClick={addNewExperience}>
-            <PlusOutlined /> Add Experience
-          </Button>
+
+          <Row justify="start">
+            <Button style={{ margin: "8px 24px" }} onClick={addNewExperience}>
+              <PlusOutlined /> Add Experience
+            </Button>
           </Row>
         </Col>
-        <Col span={16} style={{
-          paddingLeft: "24px",
-          overflowY: "scroll",
-          height: "100%",
-          paddingBottom: "12px",
-          
-        }}>
+        <Col
+          span={20}
+          style={{
+            paddingLeft: "24px",
+            overflowY: "scroll",
+            height: "100%",
+            paddingBottom: "12px",
+          }}
+        >
           <div>
             <Typography.Title level={5}>
               Experience #{state.selectedExperienceIdx + 1}

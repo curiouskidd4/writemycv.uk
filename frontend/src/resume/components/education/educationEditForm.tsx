@@ -10,9 +10,7 @@ import {
   message,
 } from "antd";
 import React from "react";
-import {
-  PlusOutlined,
-} from "@ant-design/icons";
+import { PlusOutlined } from "@ant-design/icons";
 import { Education, EducationList } from "../../../types/resume";
 import "./index.css";
 import SingleEducationForm from "./components/educationEditForm";
@@ -95,10 +93,10 @@ const EducationForm = ({
       {showTitle ? (
         <Typography.Title level={4}>Education</Typography.Title>
       ) : null}
-      <Row gutter={24} style={{ height: "70vh" }}>
-        <Col span={8} className="education-history-selector">
+      <Row gutter={24} style={{ height: "100%" }}>
+        <Col span={4} className="education-history-selector selector-col">
           {/* <Typography.Title level={5}>Education Items</Typography.Title> */}
-          <Typography.Text type="secondary">Your history</Typography.Text>
+          {/* <Typography.Text type="secondary">Your history</Typography.Text> */}
 
           <Menu
             className="education-menu"
@@ -126,24 +124,16 @@ const EducationForm = ({
               };
             })}
           ></Menu>
-          <Row justify="center">
+          <Row justify="start">
             <Button
-              style={{ width: "90%", margin: "8px auto" }}
+              style={{ margin: "8px 24px" }}
               onClick={addNew}
             >
               <PlusOutlined /> Add Education
             </Button>
           </Row>
         </Col>
-        <Col span={16} style={{ paddingLeft: "24px" }}>
-          {/* {state.selectedEducation && (
-            <SingleEducationForm
-              initialValues={state.selectedEducation}
-              onFinish={onFinish}
-              saveLoading={saveLoading}
-            />
-          )} */}
-
+        <Col span={20} style={{ paddingLeft: "24px" }}>
           {state.selectedEducation != null &&
           state.selectedEducationIdx != null ? (
             <>

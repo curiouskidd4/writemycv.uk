@@ -1,7 +1,11 @@
 .education-history-selector {
     background-color: white;
-    border-radius: 12px;
-    padding: 12px;
+    /* border-radius: 12px; */
+    /* padding: 12px; */
+    padding: 0px 0px !important;
+    margin-left: -44px;
+    margin-top: -32px;
+    height: 100%;
 }
 
 .education-menu .ant-menu-title-content {
@@ -12,6 +16,7 @@
 .education-menu .ant-menu-item{
     height: auto;
     line-height: normal;
+    width: unset;
 }
 
 
@@ -39,12 +44,15 @@
     white-space: normal;
     color: #256763b6;
 
+   
 }
 
 .education-menu .ant-menu-item-selected{
     background-color: #25676320 !important;
     height: auto;
     /* color: #fff !important; */
+    margin-right: 0px !important ;
+    
 }
 
 

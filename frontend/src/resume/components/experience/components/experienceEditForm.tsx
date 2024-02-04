@@ -1,9 +1,4 @@
-import {
-  Menu,
-  Row,
-  Select,
-  Steps,
-} from "antd";
+import { Divider, Menu, Row, Select, Steps } from "antd";
 import React, { useEffect } from "react";
 import {
   MinusCircleOutlined,
@@ -119,7 +114,7 @@ const SingleExperienceForm = ({
 
   return (
     <div>
-      <Steps
+      {/* <Steps
         style={{
           marginTop: "12px",
         }}
@@ -140,7 +135,7 @@ const SingleExperienceForm = ({
             // description,
           },
         ]}
-      />
+      /> */}
 
       <Row
         style={{
@@ -148,7 +143,7 @@ const SingleExperienceForm = ({
           width: "100%",
         }}
       >
-        {experienceData?
+        {/* {experienceData?
           {
             0: (
               <DetailForm
@@ -173,7 +168,27 @@ const SingleExperienceForm = ({
               />
             ),
           }[state.current]
-        : null}
+        : null} */}
+        <>
+          <DetailForm
+            initialValues={experienceData}
+            onFinish={(details) => onSave("details", details)}
+            saveLoading={saveLoading}
+          />
+          <Divider className="profile-input-section-divider" />
+          <DescriptionForm
+            initialValues={experienceData}
+            onFinish={(details) => onSave("description", details)}
+            saveLoading={saveLoading}
+          />
+          <Divider className="profile-input-section-divider" />
+          <AchievementForm
+            position={experienceData.position}
+            initialValues={experienceData}
+            onFinish={(details) => onSave("achievements", details)}
+            saveLoading={saveLoading}
+          />
+        </>
       </Row>
     </div>
   );
