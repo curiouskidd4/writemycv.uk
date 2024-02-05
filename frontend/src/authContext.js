@@ -14,11 +14,23 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
 } from "firebase/auth";
+import mixpanel from "mixpanel-browser";
+
 import { addDoc, collection, doc, getDoc, setDoc } from "firebase/firestore";
 const gauthProvider = new GoogleAuthProvider();
-const baseUrl = process.env.REACT_APP_BASE_URL || "http://127.0.0.1:5001/resu-me-a5cff/us-central1/api";
+const baseUrl =
+  process.env.REACT_APP_BASE_URL ||
+  "http://127.0.0.1:5001/resu-me-a5cff/us-central1/api";
 
 const authContext = createContext();
+
+mixpanel.init("f337c77cbbc6ce34f0e8de32d939b3c9", {
+  debug: true,
+  ignore_dnt: true,
+  track_pageview: true,
+  persistence: "localStorage",
+});
+console.log("Mixpanel initialized");
 
 const ProviderAuth = ({ children }) => {
   const auth = useProvideAuth();
@@ -47,7 +59,6 @@ const useProvideAuth = () => {
       //
       if (user) {
         saveUserToFirebase(user);
-
       } else {
         setState({
           loading: false,
@@ -70,7 +81,6 @@ const useProvideAuth = () => {
     const userRef = doc(db, "users", user.uid);
     let firstName = user.displayName?.split(" ")[0];
     let lastName = user.displayName?.split(" ")[1];
-
     const userDoc = await getDoc(userRef);
     if (userDoc.exists()) {
       let userData = userDoc.data();
@@ -122,6 +132,15 @@ const useProvideAuth = () => {
           name: userData.firstName + " " + userData.lastName,
           is_paying: false,
         },
+      });
+
+      // Set this to a unique identifier for the user performing the event.
+
+      // Mixpanel initialized
+      mixpanel.track("USER_LOGGED_IN", {
+        distinct_id: userData.firebaseId,
+        email: userData.email,
+        full_name: userData.firstName + " " + userData.lastName,
       });
 
       setState({
@@ -192,8 +211,7 @@ const useProvideAuth = () => {
       return {
         error: false,
         message: "User created successfully",
-      
-      }
+      };
     } catch (err) {
       return {
         error: true,
@@ -211,7 +229,7 @@ const useProvideAuth = () => {
       return {
         error: false,
         message: "User logged in successfully",
-      }
+      };
     } catch (err) {
       return {
         error: true,
@@ -307,7 +325,7 @@ const useProvideAuth = () => {
       { merge: true }
     );
 
-    // Update state 
+    // Update state
     // setState((prev) => ({
     //   ...prev,
     //   isRepoCompleted: true,
@@ -346,8 +364,8 @@ const useProvideAuth = () => {
     resetPassword,
     reautheticate,
     signInWithGoogle,
-    overrideCVImport, 
-    sendVerificationEmailCustom
+    overrideCVImport,
+    sendVerificationEmailCustom,
   };
 };
 

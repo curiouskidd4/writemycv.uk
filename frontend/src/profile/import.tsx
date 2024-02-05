@@ -24,7 +24,6 @@ const ImportResumeModal = ({ visible, onCancel, onConfirm }: ImportResumeModalPr
     });
     const openai = useOpenAI();
   
-    console.log("openai", openai);
     const handleFileChange = (e:any) => {
       const file = e.file;
   
