@@ -18,48 +18,64 @@ import {
 } from "../../../../components/faIcons";
 import CVWizardBox from "../../../../components/cvWizardBoxV2";
 import "./educationEditForm.css";
-const CourseCard = ({ course }: { course: string }) => {
+
+const CourseCard = ({
+  course,
+  onDelete,
+}: {
+  course: string;
+  onDelete: () => void;
+}) => {
   return (
     <Row className="course-card">
       <div className="title">{course}</div>
-      <div className="actions">
-        <DeleteIcon />
+      <div className="actions large">
+        <Button
+          type="link"
+          style={
+            {
+              // fontSize: "16x",
+            }
+          }
+          onClick={onDelete}
+        >
+          <i
+            className="fa-solid fa-trash-can"
+            style={{
+              height: "16px",
+            }}
+          ></i>
+        </Button>
       </div>
     </Row>
   );
 };
 
 type CourseFormProps = {
-  initialValues?: any;
-  onFinish?: (values: any) => void;
+  value?: any;
+  onChange: (values: any) => void;
   saveLoading?: boolean;
+  courseSuggestions: any;
+  suggestionsLoading: boolean;
 };
-export const CourseForm = ({ initialValues, onFinish }: CourseFormProps) => {
-  if (typeof initialValues?.modules === "string") {
-    initialValues.modules = initialValues.modules.replace("and", "").split(",");
+export const CourseForm = ({
+  value,
+  courseSuggestions,
+  suggestionsLoading,
+  onChange,
+}: CourseFormProps) => {
+  if (typeof value?.modules === "string") {
+    value.modules = value.modules.replace("and", "").split(",");
   }
   // const [form] = Form.useForm();
   const [state, setState] = React.useState({
     loadingSuggestions: false,
     moduleText: "",
-    existinModules: initialValues?.modules || [],
+    existinModules: value?.modules || [],
     newItemFlag: false,
   });
 
   const educationHelper = openAI.useEducationHelper();
-
-  useEffect(() => {
-    setState((prev) => ({
-      ...prev,
-      existinModules: initialValues?.modules || [],
-    }));
-    if (initialValues?.school && initialValues?.degree) {
-      loadSuggestions({
-        school: initialValues?.school,
-        degree: initialValues?.degree,
-      });
-    }
-  }, [initialValues]);
 
   const onAddCourses = (value: string) => {
     // form.setFieldsValue({
@@ -70,14 +86,9 @@ export const CourseForm = ({ initialValues, onFinish }: CourseFormProps) => {
       existinModules: [...prev.existinModules, value],
       newItemFlag: false,
     }));
-  };
-
-  const onSave = () => {
-    if (onFinish) {
-      onFinish({
-        modules: state.existinModules,
-      });
-    }
+    onChange({
+      modules: [...state.existinModules, value],
+    });
   };
 
   const loadSuggestions = async ({
@@ -102,6 +113,23 @@ export const CourseForm = ({ initialValues, onFinish }: CourseFormProps) => {
     }));
   };
 
+  const onDelete = (index: number) => {
+    let newModules = state.existinModules;
+    newModules.splice(index, 1);
+    setState((prev) => ({
+      ...prev,
+      existinModules: newModules,
+    }));
+    onChange({
+      modules: newModules,
+    });
+  };
+
+  let finalSuggestions =
+    educationHelper.courseSuggestions?.results ||
+    courseSuggestions?.results ||
+    [];
+  let loading = educationHelper.loading || suggestionsLoading;
   return (
     <div className="profile-tab-detail">
       <div className="user-input-area">
@@ -119,52 +147,12 @@ export const CourseForm = ({ initialValues, onFinish }: CourseFormProps) => {
             width: "100%",
           }}
         >
-          {/* <Row>
-            <Input
-              size="large"
-              placeholder="Add your courses"
-              style={{
-                width: "300px",
-              }}
-              value={state.moduleText}
-              onChange={(e) => {
-                setState((prev) => ({
-                  ...prev,
-                  moduleText: e.target.value,
-                }));
-              }}
-              suffix={<ArrowRightOutlined />}
-              onPressEnter={(e) => {
-                onAddCourses(e.currentTarget.value);
-                setState((prev) => ({
-                  ...prev,
-                  moduleText: "",
-                }));
-              }}
-            />
-          </Row> */}
-
           {state.existinModules.map((module: string, index: number) => (
-            // <Col key={index}>
-
-            <CourseCard course={module} key={index} />
-            // </Col>
-            // <div
-            //   key={index}
-            //   style={{
-            //     display: "flex",
-            //     alignItems: "center",
-            //     justifyContent: "space-between",
-            //     marginBottom: "12px",
-            //   }}
-            // >
-            //   <div>
-            //     <Typography.Text>{module}</Typography.Text>
-            //   </div>
-            //   <div>
-            //     <DeleteOutlined />
-            //   </div>
-            // </div>
+            <CourseCard
+              course={module}
+              key={index}
+              onDelete={() => onDelete(index)}
+            />
           ))}
           {!state.newItemFlag && (
             <Button
@@ -208,39 +196,38 @@ export const CourseForm = ({ initialValues, onFinish }: CourseFormProps) => {
         </Space>
       </div>
       <div className="ai-wizard-area">
-        <CVWizardBox title="Add modules" subtitle="Highlighting relevant courses in your ‘Education’ section.">
+        <CVWizardBox
+          title="Add modules"
+          subtitle="Highlighting relevant courses in your ‘Education’ section."
+        >
           <Typography.Text type="secondary">
             CV Wizard Suggestions:
           </Typography.Text>
-          {educationHelper.loading && <Skeleton active></Skeleton>}
+          {loading && <Skeleton active></Skeleton>}
 
-          {educationHelper.courseSuggestions &&
-            educationHelper.courseSuggestions!.results.length > 0 && (
-              <Row
-                style={{
-                  marginTop: "12px",
-                }}
-                gutter={[6, 6]}
-              >
-                {educationHelper
-                  .courseSuggestions!.results.filter(
-                    (s) => !state.existinModules.includes(s)
-                  )
-                  .map((item: any, idx: number) => (
-                    <Col key={idx}>
-                      <Button
-                        size="small"
-                        onClick={() => {
-                          onAddCourses(item);
-                        }}
-                      >
-                        {/* <PlusOutlined /> */}
-                        {item}
-                      </Button>
-                    </Col>
-                  ))}
-              </Row>
-            )}
+          {!loading && <Row
+            style={{
+              marginTop: "12px",
+            }}
+            gutter={[6, 6]}
+          >
+            {finalSuggestions
+              .filter((s: any) => !state.existinModules.includes(s))
+              .map((item: any, idx: number) => (
+                <Col key={idx}>
+                  <Button
+                    size="small"
+                    onClick={() => {
+                      onAddCourses(item);
+                    }}
+                  >
+                    {/* <PlusOutlined /> */}
+                    {item}
+                  </Button>
+                </Col>
+              ))}
+          </Row>
+          }
         </CVWizardBox>
       </div>
     </div>

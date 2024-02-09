@@ -31,10 +31,9 @@ const AwardFlow = ({ awardList, onFinish, syncAward }: AwardFlowProps) => {
 
   return (
     <>
-      <div className="detail-form-header">
-        <Typography.Title level={4}>Award</Typography.Title>
-      </div>
-      <Row style={{ width: "100%" }}>
+      {/* <div className="detail-form-header">
+      </div> */}
+      <Row style={{ width: "100%", height: "100%" }}>
         <AwardIterator
           awardList={awardList}
           syncAward={syncAward}

@@ -70,7 +70,8 @@ a {
 .ant-btn-default:hover {
   color: var(--dark-grey) !important;
   border-color: var(--dark-grey) !important;
-  opacity: 0.8;
+  /* opacity: 0.8; */
+  background-color: var(--white) !important;
 }
 
 .black-button {

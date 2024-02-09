@@ -217,7 +217,7 @@ const useResumeProvider = () => {
     let educationsFixed = educations.map((edu) => {
       return _fixUndefined(edu);
     });
-    debugger;
+    // debugger;
 
     if (resumeId) {
       const docRef = doc(db, RESUME_COLLECTION, resumeId);

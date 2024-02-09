@@ -47,6 +47,7 @@ interface Education {
   dissertation: EducationDisseration | null;
   description: string | null;
   aiSuggestions: AIEducationSuggestion[] | null;
+  isNew?: boolean;
 }
 
 

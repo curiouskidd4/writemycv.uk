@@ -1,7 +1,7 @@
 import React from "react";
 
 import "./App.css";
-import { ConfigProvider, Row,  Spin } from "antd";
+import { ConfigProvider, Row, Spin } from "antd";
 import { QueryClient, QueryClientProvider } from "react-query";
 
 import {
@@ -27,9 +27,9 @@ import { UserContext } from "./customContext.js";
 import { useAuth, ProviderAuth } from "./authContext.js";
 
 import moment from "moment";
-import Resume from "./pages/resume/index.js";
+import Resume from "./pages/allResume/index";
 import Profile from "./pages/profile/index.js";
-import EditResume from "./pages/resume/editor/index.js";
+import EditResume from "./pages/allResume/editor/index.js";
 import ResumePreview from "./pages/publicResume/index.js";
 import LandingPage from "./pages/landing/index.js";
 import CoolForm from "./pages/coolForm/index.js";
@@ -59,24 +59,22 @@ const GenLayout = ({}) => {
     match.pathname.search(/\/public-resume\/[a-zA-Z0-9]+/) == 0;
 
   return (
-    <>
+    <div className="body">
       {publicResume ? null : <CustomHeader />}
       <div className="layout">
         {/* <Sider /> */}
         <div id={isResumeEdit ? "detail-large" : "detail"}>
           <div className="outlet">
-          <Outlet />
-
+            <Outlet />
           </div>
-          <Footer />
-
+          {/* <Footer /> */}
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
-const GenPublicLayout = ({showSigninButtons=true}) => {
+const GenPublicLayout = ({ showSigninButtons = true }) => {
   // debugger
   const match = useLocation();
 
@@ -90,7 +88,9 @@ const GenPublicLayout = ({showSigninButtons=true}) => {
 
   return (
     <>
-      {hideNavBar ? null : <PublicHeader showSignInButtons={showSigninButtons} />}
+      {hideNavBar ? null : (
+        <PublicHeader showSignInButtons={showSigninButtons} />
+      )}
       <div id="public-detail">
         <Outlet />
       </div>
@@ -197,13 +197,13 @@ const verificationRouter = createBrowserRouter([
       {
         path: "usermgmt",
         // element: <AccountSettings />,
-        element:  <FirebaseUserMangement />
+        element: <FirebaseUserMangement />,
       },
-      
+
       {
         path: "verification",
         // element: <AccountSettings />,
-        element:  <EmailVerification />
+        element: <EmailVerification />,
       },
       {
         path: "/*",
@@ -321,18 +321,19 @@ const baseRouter = createBrowserRouter([
   },
 ]);
 
-const importRouter = createBrowserRouter([{
-  path: "/",
-  element: <GenLayout />,
+const importRouter = createBrowserRouter([
+  {
+    path: "/",
+    element: <GenLayout />,
 
-  children: [
-    {
-      path: "*",
-      element: <ImportCVToProfile />,
-    },
-  ]
-}])
-
+    children: [
+      {
+        path: "*",
+        element: <ImportCVToProfile />,
+      },
+    ],
+  },
+]);
 
 const queryClient = new QueryClient();
 
@@ -356,8 +357,8 @@ const BaseApp = () => {
         <>
           {auth.isAuthenticated &&
             auth.user &&
-            ( auth.isEmailVerified && auth.isRepoCompleted  ? (
-            // (auth.isProfileComplete && auth.isEmailVerified  ? (
+            (auth.isEmailVerified && auth.isRepoCompleted ? (
+              // (auth.isProfileComplete && auth.isEmailVerified  ? (
 
               <>
                 <RouterProvider router={protectedRouter} />
@@ -366,11 +367,12 @@ const BaseApp = () => {
               <>
                 <RouterProvider router={verificationRouter} />
               </>
-            ) 
-            // : !auth.isProfileComplete ? (
+            ) : // : !auth.isProfileComplete ? (
             //   <CustomerOnboarding />
-            // )  
-            : !auth.isRepoCompleted ? (<RouterProvider router={importRouter} />): null)}
+            // )
+            !auth.isRepoCompleted ? (
+              <RouterProvider router={importRouter} />
+            ) : null)}
           {!auth.isAuthenticated && <RouterProvider router={baseRouter} />}
         </>
       )}

@@ -35,10 +35,7 @@ const VolunteerFlow = ({
 
   return (
     <div className="resume-edit-detail">
-      <div className="detail-form-header">
-        <Typography.Title level={4}>Volunteer</Typography.Title>
-      </div>
-      <Row>
+      <Row style={{ width: "100%", height: "100%" }}>
         <VolunteerIterator
           volunteerList={volunteerList}
           syncVolunteer={syncVolunteer}

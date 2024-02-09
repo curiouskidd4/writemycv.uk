@@ -54,9 +54,7 @@ const PublicationForm = ({
   });
 
   const onSave = async (publication: Publication) => {
-    publication.date = Timestamp.fromDate(
-        publication.date.toDate()
-      );
+    publication.date = Timestamp.fromDate(publication.date.toDate());
     publicationList[state.selectedPublicationIdx!] = publication;
 
     await syncPublications(publicationList);
@@ -80,14 +78,25 @@ const PublicationForm = ({
     }));
   };
 
-
   return (
     <>
-      {showTitle ? <Typography.Title level={4}>Publication</Typography.Title> : null}
-      <Row gutter={24} style={{ height: "70vh" }}>
-        <Col span={8} className="publication-history-selector">
+      {showTitle ? (
+        <Typography.Title level={4}>Publication</Typography.Title>
+      ) : null}
+      <Row
+        style={{
+          height: "100%",
+        }}
+      >
+        <Col
+          style={{
+            minWidth: "250px",
+            width: "250px",
+          }}
+          className="publication-history-selector  selector-col"
+        >
           {/* <Typography.Title level={5}>Publication Items</Typography.Title> */}
-          <Typography.Text type="secondary">Your history</Typography.Text>
+          {/* <Typography.Text type="secondary">Your history</Typography.Text> */}
 
           <Menu
             className="publication-menu"
@@ -115,16 +124,20 @@ const PublicationForm = ({
               };
             })}
           ></Menu>
-          <Row justify="center">
-            <Button
-              style={{ width: "90%", margin: "8px auto" }}
-              onClick={addNew}
-            >
+           <Row justify="start">
+            <Button style={{ margin: "8px 24px" }} onClick={addNew}>
               <PlusOutlined /> Add Publication
             </Button>
           </Row>
         </Col>
-        <Col span={16} style={{ paddingLeft: "24px" }}>
+        <Col span={16} style={{
+            paddingLeft: "24px",
+            paddingTop: "24px",
+            height: "100%",
+            overflowY: "auto",
+            overflowX: "hidden",
+            paddingBottom: "2rem",
+          }}>
           {/* {state.selectedPublication && (
               <SinglePublicationForm
                 initialValues={state.selectedPublication}
@@ -133,7 +146,8 @@ const PublicationForm = ({
               />
             )} */}
 
-          {state.selectedPublication != null && state.selectedPublicationIdx != null ? (
+          {state.selectedPublication != null &&
+          state.selectedPublicationIdx != null ? (
             <>
               <div>
                 <Typography.Title level={5}>

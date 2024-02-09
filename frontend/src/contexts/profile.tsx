@@ -29,7 +29,6 @@ import {
 } from "firebase/firestore";
 // import { Education, Experience, PersonalInfo, Resume, Skill } from "../types/resume";
 import {
-
   Profile,
   ProfilePersonalInfo,
   ProfileEducationList,
@@ -37,7 +36,20 @@ import {
   ProfileSkillList,
   ProfileProfessionalSummary,
 } from "../types/profile";
-import { Award, AwardList, Education, Experience, Skill, Language, LanguageList, PublicationList, VolunteeringList, Publication, Volunteering,  } from "../types/resume";
+import {
+  Award,
+  AwardList,
+  Education,
+  Experience,
+  Skill,
+  Language,
+  LanguageList,
+  PublicationList,
+  VolunteeringList,
+  Publication,
+  Volunteering,
+} from "../types/resume";
+import ObjectID from "bson-objectid";
 
 type ProfileContextType = {
   saveEducation: (educationList: Education[]) => Promise<void>;
@@ -60,8 +72,6 @@ type ProfileStateType = {
   profile: Profile | null;
 };
 
-
-
 const ProfileContext = createContext<ProfileContextType>({
   profile: null,
   loading: true,
@@ -75,7 +85,6 @@ const ProfileContext = createContext<ProfileContextType>({
   savePublications: async () => {},
   saveLanguages: async () => {},
   saveVolunteering: async () => {},
-
 });
 
 const useProfileContext = () => {
@@ -90,7 +99,7 @@ const useProfileContext = () => {
   //
 
   useEffect(() => {
-      loadResume();
+    loadResume();
   }, []);
 
   const _fixUndefined = (data: any): any => {
@@ -129,70 +138,128 @@ const useProfileContext = () => {
       userId
     );
 
-    try {
-      const [
-        personalInfoDoc,
-        educationDoc,
-        experienceDoc,
-        skillDoc,
-        professionalSummaryDoc,
-        awardsDoc, 
-        publicationsDoc, 
-        languagesDoc,
-        volunteeringDoc,
-      ] = await Promise.all(
-        [
-          personalInfoRef,
-          educationRef,
-          experienceRef,
-          skillRef,
-          professionalSummaryRef,
-          awardsRef, 
-          publicationRef,
-          languageRef,
-          volunteeringRef,
+    // try {
+    const [
+      personalInfoDoc,
+      educationDoc,
+      experienceDoc,
+      skillDoc,
+      professionalSummaryDoc,
+      awardsDoc,
+      publicationsDoc,
+      languagesDoc,
+      volunteeringDoc,
+    ] = await Promise.all(
+      [
+        personalInfoRef,
+        educationRef,
+        experienceRef,
+        skillRef,
+        professionalSummaryRef,
+        awardsRef,
+        publicationRef,
+        languageRef,
+        volunteeringRef,
+      ].map((ref) => getDoc(ref))
+    );
+    let personalInfo = personalInfoDoc.exists()
+      ? (personalInfoDoc.data() as ProfilePersonalInfo)
+      : null;
+    let education = educationDoc.exists()
+      ? (educationDoc.data() as ProfileEducationList)
+      : null;
+    let experience = experienceDoc.exists()
+      ? (experienceDoc.data() as ProfileExperienceList)
+      : null;
+    let skills = skillDoc.exists()
+      ? (skillDoc.data() as ProfileSkillList)
+      : null;
+    let professionalSummary = professionalSummaryDoc.exists()
+      ? (professionalSummaryDoc.data() as ProfileProfessionalSummary)
+      : null;
 
-        ].map((ref) => getDoc(ref))
-      );
-      let personalInfo = personalInfoDoc.exists()
-        ? (personalInfoDoc.data() as ProfilePersonalInfo)
-        : null;
-      let education = educationDoc.exists()
-        ? (educationDoc.data() as ProfileEducationList)
-        : null;
-      let experience = experienceDoc.exists()
-        ? (experienceDoc.data() as ProfileExperienceList)
-        : null;
-      let skills = skillDoc.exists()
-        ? (skillDoc.data() as ProfileSkillList)
-        : null;
-      let professionalSummary = professionalSummaryDoc.exists()
-        ? (professionalSummaryDoc.data() as ProfileProfessionalSummary)
-        : null;
-      
-      let awards = awardsDoc.exists() ? (awardsDoc.data() as AwardList) : null;
-      let publications = publicationsDoc.exists() ? (publicationsDoc.data() as PublicationList) : null;
-      let languages = languagesDoc.exists() ? (languagesDoc.data() as LanguageList) : null;
-      let volunteering = volunteeringDoc.exists() ? (volunteeringDoc.data() as VolunteeringList) : null;
+    let awards = awardsDoc.exists() ? (awardsDoc.data() as AwardList) : null;
+    let publications = publicationsDoc.exists()
+      ? (publicationsDoc.data() as PublicationList)
+      : null;
+    let languages = languagesDoc.exists()
+      ? (languagesDoc.data() as LanguageList)
+      : null;
+    let volunteering = volunteeringDoc.exists()
+      ? (volunteeringDoc.data() as VolunteeringList)
+      : null;
 
-      const profileData: Profile = {
-        userId: auth.user.uid,
-        personalInfo,
-        education,
-        experience,
-        skills,
-        professionalSummary,
-        awards,
-        publications,
-        languages,
-        volunteering,
-      };
-      setState((prev) => ({ ...prev, loading: false, profile: profileData }));
-    } catch (err) {
-      debugger;
-      console.log(err);
-      setState((prev) => ({ ...prev, loading: false, profile: null }));
+    // Add id in experience
+    if (experience) {
+      experience.experienceList = experience.experienceList.map((item, idx) => {
+        return {
+          ...item,
+          id: item.id || ObjectID().toHexString(),
+        };
+      });
     }
+
+    // Add id in education
+    if (education) {
+      education.educationList = education.educationList.map((item, idx) => {
+        return {
+          ...item,
+          id: item.id || ObjectID().toHexString(),
+        };
+      });
+    }
+
+    // Add id in awards
+    if (awards) {
+      awards.awardList = awards.awardList.map((item, idx) => {
+        return {
+          ...item,
+          id: item.id || ObjectID().toHexString(),
+        };
+      });
+    }
+
+    // Add id in publications
+    if (publications) {
+      publications.publicationList = publications.publicationList.map(
+        (item, idx) => {
+          return {
+            ...item,
+            id: item.id || ObjectID().toHexString(),
+          };
+        }
+      );
+    }
+
+    // Add id in volunteering
+    if (volunteering) {
+      volunteering.volunteeringList = volunteering.volunteeringList.map(
+        (item, idx) => {
+          return {
+            ...item,
+            id: item.id || ObjectID().toHexString(),
+          };
+        }
+      );
+    }
+    const profileData: Profile = {
+      userId: auth.user.uid,
+      personalInfo,
+      education,
+      experience,
+      skills,
+      professionalSummary,
+      awards,
+      publications,
+      languages,
+      volunteering,
+    };
+    setState((prev) => ({ ...prev, loading: false, profile: profileData }));
+    // } catch (err) {
+    //   // debugger;
+    //   console.log(err);
+    //   setState((prev) => ({ ...prev, loading: false, profile: null }));
+    // }
   };
 
   const saveEducation = async (educations: Education[]) => {
@@ -206,7 +273,6 @@ const useProfileContext = () => {
         educationList: educationsFixed,
         updatedAt: Timestamp.now(),
       });
-
 
       // Update the local state
       setState((prev) => ({
@@ -225,8 +291,7 @@ const useProfileContext = () => {
   const saveExperience = async (experiences: Experience[]) => {
     let experiencesFixed = experiences.map((exp) => {
       return _fixUndefined(exp);
-    }
-    );
+    });
     if (userId) {
       const docRef = doc(db, EXPERIENCE_COLLECTION, userId);
       await setDoc(docRef, {
@@ -268,7 +333,7 @@ const useProfileContext = () => {
         },
       }));
     }
-  }
+  };
 
   const savePublications = async (publications: Publication[]) => {
     if (userId) {
@@ -290,7 +355,7 @@ const useProfileContext = () => {
         },
       }));
     }
-  }
+  };
 
   const saveVolunteering = async (volunteering: Volunteering[]) => {
     if (userId) {
@@ -312,7 +377,7 @@ const useProfileContext = () => {
         },
       }));
     }
-  }
+  };
 
   const saveLanguages = async (languages: Language[]) => {
     if (userId) {
@@ -334,7 +399,7 @@ const useProfileContext = () => {
         },
       }));
     }
-  } 
+  };
   const saveSkills = async (skills: Skill[]) => {
     if (userId) {
       const docRef = doc(db, SKILLS_COLLECTION, userId);
@@ -395,7 +460,7 @@ const useProfileContext = () => {
         profile: {
           ...prev.profile!,
           personalInfo: {
-            ...prev.profile!.personalInfo!,
+            ...prev.profile?.personalInfo!,
             ...personalInfoFixed,
           },
           updatedAt: Timestamp.now(),
@@ -412,13 +477,21 @@ const useProfileContext = () => {
     if (!personalInfo) {
       return false;
     }
-    if (!personalInfo.firstName || !personalInfo.lastName || !personalInfo.email
-      || !personalInfo.phone?.countryCode || !personalInfo.phone?.number || !personalInfo.currentRole ) {
+    if (
+      !personalInfo.firstName ||
+      !personalInfo.lastName ||
+      !personalInfo.email ||
+      !personalInfo.phone?.countryCode ||
+      !personalInfo.phone?.number ||
+      !personalInfo.currentRole
+    ) {
       return false;
     }
     return true;
-  }
+  };
 
+
+  
   return {
     saveEducation,
     saveExperience,

@@ -1,17 +1,18 @@
-import { Button, Form, Modal, Input, Select, message, Checkbox } from "antd";
+import { Button, Form, Modal, Input, Select, message, Typography } from "antd";
 import React from "react";
 import { doc, setDoc } from "firebase/firestore";
 import { db } from "../../services/firebase";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../authContext";
-import useResumeAPI from "../../api/resume"
+import useResumeAPI from "../../api/resume";
+import { AIWizardIcon, MagicWandIcon } from "../../components/faIcons";
 
 const ObjectId = require("bson-objectid");
 export const NewResumeModal = ({ visible, onCancel, onConfirm }) => {
   const [form] = Form.useForm();
   const auth = useAuth();
   const userId = auth.user.uid;
-  const { copyProfileToResume } = useResumeAPI()
+  const { copyProfileToResume } = useResumeAPI();
   const onReset = () => {
     form.resetFields();
   };
@@ -31,7 +32,7 @@ export const NewResumeModal = ({ visible, onCancel, onConfirm }) => {
     Object.keys(data).forEach((key) => data[key] == null && delete data[key]);
     try {
       await setDoc(doc(db, "resumes", data.id), data);
-      await copyProfileToResume(data.id)
+      await copyProfileToResume(data.id);
       // Copy data from profile
       onConfirm(data.id);
       message.success("Resume created successfully");
@@ -43,11 +44,23 @@ export const NewResumeModal = ({ visible, onCancel, onConfirm }) => {
 
   return (
     <Modal
-      title="Give a name to your resume"
+      // title="Give a name to your resume"
       visible={visible}
+      width={620}
       footer={null}
       onCancel={onCancel}
+      className="new-resume-modal"
     >
+      <div className="header">
+        <div className="wizard-logo">
+          <MagicWandIcon /> CV Wizard
+        </div>
+        <Typography.Title level={4}>Create a new resume</Typography.Title>
+        <div className="subtitle">
+          Provide details to create a CV that aligns with your career goals. The
+          more specific you are, the better we can tailor your CV.
+        </div>
+      </div>
       <Form
         name="basic"
         layout="vertical"
@@ -59,7 +72,7 @@ export const NewResumeModal = ({ visible, onCancel, onConfirm }) => {
         onFinish={onFinish}
       >
         <Form.Item
-          // label="Resume Name"
+          label="Resume Name"
           name="name"
           rules={[
             {
@@ -71,15 +84,27 @@ export const NewResumeModal = ({ visible, onCancel, onConfirm }) => {
           <Input size="large" placeholder="Resume Name" />
         </Form.Item>
 
+        <Form.Item label="Job Title (optional)" name="jobTitle">
+          <Input size="large" placeholder="Paste the job description of a position you aspire to" />
+        </Form.Item>
+
+        <Form.Item label="Job Description (optional)" name="jobDescription">
+          <Input.TextArea style={{
+            minHeight: "200px"
+          }} size="large" placeholder="Paste the job description of a position you aspire to" />
+        </Form.Item>
+
+        <div className="submit-btn">
         <Form.Item>
           <Button
             type="primary"
             htmlType="submit"
-            style={{ marginRight: "20px" }}
+            style={{ margin: "0px auto", width: "200px" }}
           >
-            Submit
+            Create CV
           </Button>
         </Form.Item>
+        </div>
       </Form>
     </Modal>
   );

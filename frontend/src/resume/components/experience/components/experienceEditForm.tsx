@@ -114,28 +114,6 @@ const SingleExperienceForm = ({
 
   return (
     <div>
-      {/* <Steps
-        style={{
-          marginTop: "12px",
-        }}
-        onChange={(current) => {
-          setState({ ...state, current });
-        }}
-        direction="horizontal"
-        size="small"
-        current={state.current}
-        items={[
-          { title: "Basic Details" },
-          {
-            title: "Description",
-            // description,
-          },
-          {
-            title: "Achievements",
-            // description,
-          },
-        ]}
-      /> */}
 
       <Row
         style={{
@@ -143,32 +121,7 @@ const SingleExperienceForm = ({
           width: "100%",
         }}
       >
-        {/* {experienceData?
-          {
-            0: (
-              <DetailForm
-                initialValues={experienceData}
-                onFinish={(details) => onSave("details", details)}
-                saveLoading={saveLoading}
-              />
-            ),
-            1: (
-              <DescriptionForm
-                initialValues={experienceData}
-                onFinish={(details) => onSave("description", details)}
-                saveLoading={saveLoading}
-              />
-            ),
-            2: (
-              <AchievementForm
-                position={experienceData.position}
-                initialValues={experienceData}
-                onFinish={(details) => onSave("achievements", details)}
-                saveLoading={saveLoading}
-              />
-            ),
-          }[state.current]
-        : null} */}
+
         <>
           <DetailForm
             initialValues={experienceData}

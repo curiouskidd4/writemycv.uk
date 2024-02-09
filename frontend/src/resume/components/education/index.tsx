@@ -5,7 +5,7 @@ import { Button, Col, Menu, Row, Typography } from "antd";
 import EducationIterator from "./components/educationIterator";
 import { PlusOutlined } from "@ant-design/icons";
 import "./index.css";
-
+import EducationForm from "./educationEditForm";
 
 type EducationFlowProps = {
   editMode: boolean;
@@ -37,63 +37,45 @@ const EducationFlow = ({
     };
   });
 
-  if (editMode) {
+  // if (editMode) {
+  //   return (
+  //     <>
+  //       <Typography.Title level={4}>Education</Typography.Title>
+  //       <div>Not implemented yet</div>
+  //     </>
+  //   );
+  // } else {
+  //   return (
+  //     <>
+  //       <div className="detail-form-header">
+  //         <Typography.Title level={4}>Education</Typography.Title>
+  //       </div>
+  //       <EducationSelector
+  //         educationList={educationList}
+  //         onSave={(educationList) => {
+  //           setState((prev) => ({
+  //             ...prev,
+  //             selectedEducationItems: educationList,
+  //           }));
+  //         }}
+  //       />
+  //     </>
+  //   );
+  // // }
+
+  // } else {
     return (
       <>
-        <Typography.Title level={4}>Education</Typography.Title>
-        <div>Not implemented yet</div>
+        {/* <EducationIterator
+          educationList={educationList}
+          syncEducation={syncEducation}
+          onFinish={onFinish}
+        /> */}
+        <EducationForm educationList={educationList} syncEducation={syncEducation} showTitle={false} />
       </>
     );
-  } else {
-    if (state.selectedEducationItems == null) {
-      // Means show the selector
-      return (
-        <>
-          {" "}
-          <div className="detail-form-header">
-            <Typography.Title level={4}>Education</Typography.Title>
-          </div>
-          <EducationSelector
-            educationList={educationList}
-            onSave={(educationList) => {
-              setState((prev) => ({
-                ...prev,
-                selectedEducationItems: educationList,
-              }));
-            }}
-          />
-        </>
-      );
-    } else {
-      return (
-        <>
-          <div className="detail-form-header">
-            <Typography.Title level={4}>Education</Typography.Title>
-          </div>
-          <Row>
-            {/* <Col span={8}>
-              <EducationMenu
-                educationList={educationList}
-                addNew={() => {
-                  setState((prev) => ({
-                    ...prev,
-                    selectedEducationItems: null,
-                  }));
-                }}
-              />
-            </Col>
-            <Col span={16}> */}
-              <EducationIterator
-                educationList={educationList}
-                syncEducation={syncEducation}
-                onFinish={onFinish}
-              />
-            {/* </Col> */}
-          </Row>
-        </>
-      );
-    }
-  }
+  // }
+  // }
 };
 
 export default EducationFlow;

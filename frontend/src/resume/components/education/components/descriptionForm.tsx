@@ -11,18 +11,16 @@ import {
 } from "../../../../components/faIcons";
 import CVWizardBox from "../../../../components/cvWizardBoxV2";
 import CustomCarousel from "../../../../components/suggestionCarousel";
+import { on } from "events";
 
 type DescriptionFormProps = {
-  initialValues?: any;
-  onFinish?: (values: any) => void;
+  value?: any;
+  onChange: (values: any) => void;
   saveLoading?: boolean;
 };
-export const DescriptionForm = ({
-  initialValues,
-  onFinish,
-}: DescriptionFormProps) => {
+export const DescriptionForm = ({ value, onChange }: DescriptionFormProps) => {
   const [description, setDescription] = React.useState(
-    initialValues?.description || ""
+    value?.description || ""
   );
 
   const [showAIWizard, setShowAIWizard] = React.useState(false);
@@ -49,22 +47,21 @@ export const DescriptionForm = ({
     });
   };
 
+  // useEffect(() => {
+  //   // console.log(initialValues);
+  //   setDescription(value?.description || "");
+  // }, [value]);
+
   useEffect(() => {
-    // console.log(initialValues);
-    setDescription(initialValues?.description || "");
-  }, [initialValues]);
+    onChange({
+      description: description,
+    });
+  }, [description]);
 
   const onAddDescription = (value: string) => {
     setDescription(value);
   };
 
-  const onSave = () => {
-    if (onFinish) {
-      onFinish({
-        description: description,
-      });
-    }
-  };
 
   return (
     <div className="profile-tab-detail">
@@ -87,8 +84,8 @@ export const DescriptionForm = ({
                   }
                   onClick={() => {
                     loadSuggestions({
-                      school: initialValues?.school,
-                      degree: initialValues?.degree,
+                      school: value?.school,
+                      degree: value?.degree,
                       rewrite: true,
                       existingDesscription: description,
                     });
@@ -112,8 +109,8 @@ export const DescriptionForm = ({
                   }}
                   onClick={() => {
                     loadSuggestions({
-                      school: initialValues?.school,
-                      degree: initialValues?.degree,
+                      school: value?.school,
+                      degree: value?.degree,
                       rewrite: false,
                     });
                   }}
@@ -175,9 +172,12 @@ export const DescriptionForm = ({
       <div className="ai-wizard-area">
         <Row>
           {showAIWizard ? (
-            <CVWizardBox title="Description Tip" subtitle="Highlighting your key achievements here, like awards, dissertations or projects">
+            <CVWizardBox
+              title="Description Tip"
+              subtitle="Highlighting your key achievements here, like awards, dissertations or projects"
+            >
               <Typography.Text type="secondary">
-                 CV Wizard Suggestions:
+                CV Wizard Suggestions:
               </Typography.Text>
               {descriptionHelper.loading && <Skeleton active></Skeleton>}
               {descriptionHelper.loading === false &&

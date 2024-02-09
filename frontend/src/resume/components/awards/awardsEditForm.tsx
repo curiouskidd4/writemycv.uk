@@ -54,9 +54,7 @@ const AwardForm = ({
   });
 
   const onSave = async (award: Award) => {
-    award.date = Timestamp.fromDate(
-        award.date.toDate()
-      );
+    award.date = Timestamp.fromDate(award.date.toDate());
     awardList[state.selectedAwardIdx!] = award;
 
     await syncAwards(awardList);
@@ -80,14 +78,23 @@ const AwardForm = ({
     }));
   };
 
-
   return (
     <>
       {showTitle ? <Typography.Title level={4}>Award</Typography.Title> : null}
-      <Row gutter={24} style={{ height: "70vh" }}>
-        <Col span={8} className="award-history-selector">
+      <Row
+        style={{
+          height: "100%",
+        }}
+      >
+        <Col
+          style={{
+            minWidth: "250px",
+            width: "250px",
+          }}
+          className="award-history-selector selector-col"
+        >
           {/* <Typography.Title level={5}>Award Items</Typography.Title> */}
-          <Typography.Text type="secondary">Your history</Typography.Text>
+          {/* <Typography.Text type="secondary">Your history</Typography.Text> */}
 
           <Menu
             className="award-menu"
@@ -115,16 +122,23 @@ const AwardForm = ({
               };
             })}
           ></Menu>
-          <Row justify="center">
-            <Button
-              style={{ width: "90%", margin: "8px auto" }}
-              onClick={addNew}
-            >
+          <Row justify="start">
+            <Button style={{ margin: "8px 24px" }} onClick={addNew}>
               <PlusOutlined /> Add Award
             </Button>
           </Row>
         </Col>
-        <Col span={16} style={{ paddingLeft: "24px" }}>
+        <Col
+          flex="auto"
+          style={{
+            paddingLeft: "24px",
+            paddingTop: "24px",
+            height: "100%",
+            overflowY: "auto",
+            overflowX: "hidden",
+            paddingBottom: "2rem",
+          }}
+        >
           {/* {state.selectedAward && (
               <SingleAwardForm
                 initialValues={state.selectedAward}

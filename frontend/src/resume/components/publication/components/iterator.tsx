@@ -54,9 +54,9 @@ const PublicationMenu = ({
   });
 
   return (
-    <div className="publication-history-selector menu-selector">
+    <div className="publication-history-selector  selector-col">
       {/* <Typography.Title level={5}>Publication Items</Typography.Title> */}
-      <Typography.Text type="secondary">Your history</Typography.Text>
+      {/* <Typography.Text type="secondary">Your history</Typography.Text> */}
       {publicationList.length == 0 ? (
         <Empty
           className="empty-content"
@@ -99,8 +99,8 @@ const PublicationMenu = ({
           })}
         ></Menu>
       )}
-      <Row justify="center">
-        <Button style={{ width: "90%", margin: "8px auto" }} onClick={addNew}>
+      <Row justify="start" className="menu-action">
+      <Button style={{  margin: "8px 24px" }} onClick={addNew}>
           <PlusOutlined /> Add Publication
         </Button>
       </Row>
@@ -164,8 +164,8 @@ const PublicationIterator = ({
   };
 
   return (
-    <Row gutter={16}>
-      <Col span={8}>
+    <Row>
+      <Col span={4}>
         <PublicationMenu
           selectedIdx={state.currentEditIdx}
           publicationList={publicationList}
@@ -183,7 +183,14 @@ const PublicationIterator = ({
           }}
         />
       </Col>
-      <Col span={16}>
+      <Col span={20}  style={{
+            paddingLeft: "24px",
+            // paddingTop: "24px",
+            height: "100%",
+            overflowY: "auto",
+            overflowX: "hidden",
+            paddingBottom: "2rem",
+          }}>
         {state.currentEditIdx != null ? (
           <div className="detail-form-body">
             <div className="cv-input">

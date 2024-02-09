@@ -88,7 +88,34 @@ code {
 .space {
   width: 100%;
 }
+.resume-edit-detail.padding{
+  margin: 2rem 2rem;
+  margin-bottom: 0px;
+  /* height: 100%; */
+  /* overflow-y: scroll; */
+}
 
+.resume-edit-detail {
+  height: 100%;
+}
 .resume-edit-detail .ant-row {
   width: 100%;
+}
+
+
+
+.body {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  /* overflow: hidden; */
+  header {
+    height: 64px;
+  }
+
+  .layout {
+    flex: 1;
+
+
+  }
 }

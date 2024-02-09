@@ -1,5 +1,5 @@
-import { Divider, Row, Steps } from "antd";
-import React, { useEffect } from "react";
+import { Button, Divider, Row, Steps, Tag, Typography } from "antd";
+import React, { useCallback, useEffect } from "react";
 import { Education, EducationList } from "../../../../types/resume";
 // import "./index.css";
 import dayjs from "dayjs";
@@ -8,10 +8,12 @@ import { Timestamp } from "firebase/firestore";
 import { DetailForm } from "./detailForm";
 import { CourseForm } from "./courseForm";
 import { DescriptionForm } from "./descriptionForm";
+import _ from "lodash";
+import openAI from "../../../../hooks/openai";
 
 type SingleEducationFormProps = {
   initialValues?: any;
-  onFinish?: (values: any) => Promise<void>;
+  onFinish: (values: any) => Promise<void>;
   saveLoading?: boolean;
 };
 
@@ -20,22 +22,6 @@ const SingleEducationForm = ({
   onFinish,
   saveLoading,
 }: SingleEducationFormProps) => {
-  const [educationData, setEducationData] = React.useState<any>(
-    initialValues || {}
-  );
-
-  useEffect(() => {
-    if (initialValues?.id === educationData?.id) {
-      setState((prev) => ({
-        ...prev,
-        current: 0,
-        finished: false,
-      }));
-    }
-
-    setEducationData(initialValues || {});
-  }, [initialValues]);
-
   let startDate = initialValues.startDate
     ? dayjs(initialValues.startDate.toDate())
     : null;
@@ -46,137 +32,167 @@ const SingleEducationForm = ({
     ...initialValues,
     dateRange: [startDate, endDate],
   };
+  const [educationData, setEducationData] = React.useState<any>(
+    initialValues || {}
+  );
+
   const [state, setState] = React.useState({
     current: 0,
     finished: false,
     loading: false,
+    showSaved: false,
   });
 
-  const onSave = async (
-    key: "description" | "modules" | "details",
-    details: any
-  ) => {
+  const educationHelper = openAI.useEducationHelper();
+
+  const checkAISuggestions = async ({
+    prevVal,
+    newVal,
+  }: {
+    prevVal: Education;
+    newVal: Education;
+  }) => {
+    console.log("Checking AI suggestions");
+    // Check if the new value is different from the previous value
+    if (newVal.school && newVal.degree && (prevVal.degree != newVal.degree)) {
+      // Run Modules suggestion and show it to the user
+      await educationHelper.suggestCourses({
+        school: newVal.school,
+        degree: newVal.degree,
+      });
+    }
+  };
+
+  const debounceSave = useCallback(
+    _.debounce(async (details: any) => {
+      await onFinish(details);
+      console.log("Saving....");
+      setState((prev) => ({
+        ...prev,
+        loading: false,
+      }));
+    }, 1000),
+    []
+  );
+
+  const debouceCheckAI = useCallback(
+    _.debounce(async (details: any) => checkAISuggestions(details), 3000),
+    []
+  );
+
+  const onSave = async (details: any) => {
     setEducationData((prev: any) => ({
       ...prev,
       ...details,
     }));
-    if (key === "details") {
-      setState((prev) => ({
-        ...prev,
-        current: 1,
-      }));
-    } else if (key === "modules") {
-      setState((prev) => ({
-        ...prev,
-        current: 2,
-      }));
-    } else if (key === "description") {
-      // Complete and move to next
-      if (onFinish) {
-        let finalData = {
-          ...educationData,
-          ...details,
-        };
-        setState((prev) => ({
-          ...prev,
-          loading: true,
-        }));
-        finalData.startDate = Timestamp.fromDate(
-          finalData.dateRange[0].toDate()
-        );
-        finalData.endDate = finalData.dateRange[1]
-          ? Timestamp.fromDate(finalData.dateRange[1].toDate())
-          : null;
 
-        delete finalData.dateRange;
-        await onFinish(finalData);
-        setState((prev) => ({
-          ...prev,
-          finished: true,
-          loading: false,
-        }));
-      }
+    // Complete and move to next
+    let finalData = {
+      ...educationData,
+      ...details,
+    };
+
+    // Dont save if mandatory fields are not filled
+    if (!finalData.degree || !finalData.school || !finalData.dateRange) {
+      return;
     }
+
+    if (JSON.stringify(finalData) === JSON.stringify(initialValues)) {
+      setState((prev) => ({
+        ...prev,
+        loading: false,
+      }));
+      return;
+    }
+
+    setState((prev) => ({
+      ...prev,
+      loading: true,
+    }));
+    if (finalData.dateRange) {
+      finalData.startDate = Timestamp.fromDate(finalData.dateRange[0].toDate());
+      finalData.endDate = finalData.dateRange[1]
+        ? Timestamp.fromDate(finalData.dateRange[1].toDate())
+        : null;
+
+      delete finalData.dateRange;
+    }
+
+    // await onFinish(finalData);
+
+    setState((prev) => ({
+      ...prev,
+      loading: true,
+      showSaved: true,
+    }));
+
+    await debounceSave(finalData);
+    await debouceCheckAI({
+      prevVal: educationData,
+      newVal: finalData,
+    });
+
+    // setState((prev) => ({
+    //   ...prev,
+    //   finished: true,
+    //   loading: false,
+    // }));
   };
 
   return (
     <div>
-      {/* <Steps
-        style={{
-          marginTop: "12px",
-        }}
-        onChange={(current) => {
-          setState({ ...state, current });
-        }}
-        direction="horizontal"
-        size="small"
-        current={state.current}
-        items={[
-          { title: "Basic Details" },
-          {
-            title: "Courses",
-            // description,
-          },
-          {
-            title: "Description",
-            // description,
-          },
-        ]}
-      /> */}
-
+      {/* <div>
+          <Typography.Title level={5}>
+            {educationData?.degree || "New Degree"}
+          </Typography.Title>
+        </div> */}
       <Row
         style={{
-          marginTop: "24px",
+          marginTop: "12px",
+          width: "100%",
         }}
       >
-        {/* {
-          {
-            0: (
-              <DetailForm
-                initialValues={educationData}
-                onFinish={(details) => onSave("details", details)}
-                saveLoading={saveLoading}
-              />
-            ),
-            1: (
-              <CourseForm
-                initialValues={educationData}
-                onFinish={(details) => onSave("modules", details)}
-                saveLoading={saveLoading}
-              />
-            ),
-            2: (
-              <DescriptionForm
-                initialValues={educationData}
-                onFinish={(details) => onSave("description", details)}
-                saveLoading={saveLoading}
-              />
-            ),
-          }[state.current]
-        } */}
-        <>
+        <Row align="middle" justify="space-between" style={{ width: "70%" }}>
+          <div className="profile-input-section-title">
+            <Typography.Text strong>Basic Details</Typography.Text>
+          </div>
+          {state.loading && state.showSaved ? (
+            <div className="auto-save-label-loading">
+              Saving changes <i className="fa-solid fa-cloud fa-beat"></i>
+            </div>
+          ) : state.showSaved ? (
+            <div className="auto-save-label-success">
+              Saved <i className="fa-solid fa-cloud"></i>
+            </div>
+          ) : null}
+        </Row>
+
+        <div>
           <DetailForm
-            initialValues={educationData}
-            onFinish={(details) => onSave("details", details)}
+            value={educationData}
+            onChange={(details) => onSave(details)}
+            // onFinish={(details) => onSave("details", details)}
             saveLoading={saveLoading}
           />
-          <Divider
-            className="profile-input-section-divider"
-          />
+          <Divider className="profile-input-section-divider" />
           <CourseForm
-            initialValues={educationData}
-            onFinish={(details) => onSave("modules", details)}
+            value={educationData}
+            onChange={(details) => onSave(details)}
             saveLoading={saveLoading}
+            courseSuggestions={
+              educationHelper.courseSuggestions
+                ? educationHelper.courseSuggestions
+                : null
+            }
+            suggestionsLoading={educationHelper.loading}
           />
-          <Divider
-                        className="profile-input-section-divider"
-          />
+          <Divider className="profile-input-section-divider" />
           <DescriptionForm
-            initialValues={educationData}
-            onFinish={(details) => onSave("description", details)}
+            value={educationData}
+            onChange={(details) => onSave(details)}
             saveLoading={saveLoading}
           />
-        </>
+        </div>
       </Row>
     </div>
   );

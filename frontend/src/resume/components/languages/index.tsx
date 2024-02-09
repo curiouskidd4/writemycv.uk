@@ -47,11 +47,13 @@ const LanguageItem = ({
   onChange: (value: Language) => void;
 }) => {
   return (
-    <Row>
-      <Col span={8}>
-        <Typography.Text>{language.name}</Typography.Text>
-      </Col>
-      <Col>
+    <Row className="skill-item-wrapper" align="middle">
+      <Row className="skill-item">
+        <Col span={8}>
+          <Typography.Text>{language.name}</Typography.Text>
+        </Col>
+
+        {/* <Col>
         <Select
           placeholder="Select Level"
           value={language.fluency}
@@ -80,7 +82,19 @@ const LanguageItem = ({
         >
           <DeleteOutlined />
         </Button>
-      </Col>
+      </Col> */}
+      </Row>
+      <Button
+        type="link"
+        style={{
+          color: "var(--black)",
+        }}
+        onClick={() => {
+          onRemove();
+        }}
+      >
+        <i className="fa-solid fa-trash-can"></i>
+      </Button>
     </Row>
   );
 };
@@ -141,6 +155,7 @@ const LanguageFlow = ({
   showTitle?: boolean;
 }) => {
   const [loading, setLoading] = React.useState(false);
+  const [showAdd, setShowAdd] = React.useState(false);
   const [languageListState, setLanguageListState] =
     React.useState<Language[]>(languageList);
 
@@ -190,7 +205,7 @@ const LanguageFlow = ({
   };
 
   return (
-    <div>
+    <div className="resume-edit-detail padding">
       {showTitle && (
         <Row>
           <Col span={24}>
@@ -199,12 +214,12 @@ const LanguageFlow = ({
         </Row>
       )}
 
-      <NewLanguageInput
+      {/* <NewLanguageInput
         selectedLanguages={
           languageListState.map((language) => language.name) || []
         }
         onAdd={handleAddLanguage}
-      />
+      /> */}
 
       <Row
         style={{
@@ -216,8 +231,9 @@ const LanguageFlow = ({
           style={{
             width: "100%",
           }}
+          size="large"
         >
-          <Typography.Text strong>Added Languages</Typography.Text>
+          {/* <Typography.Text strong>Added Languages</Typography.Text> */}
           {languageListState.map((language) => (
             <LanguageItem
               key={language.name}
@@ -230,6 +246,37 @@ const LanguageFlow = ({
               }}
             />
           ))}
+          {showAdd ? (
+            <Row align="middle">
+              <Input
+                className="skill-input"
+                suffix={
+                  <i className="fa-solid fa-arrow-right"></i>
+                }
+                onPressEnter={(e) => {
+                  handleAddLanguage(e.currentTarget.value);
+                  setShowAdd(false);
+                }}
+              />
+              <Button
+                type="link"
+                style={{
+                  color: "var(--black)",
+                }}
+                onClick={() => setShowAdd(false)}
+              >
+                <i className="fa-solid fa-trash-can"></i>
+              </Button>
+            </Row>
+          ) : (
+            <Button
+              type="link"
+              className="small-link-btn"
+              onClick={() => setShowAdd(true)}
+            >
+              <i className="fa-solid fa-plus"></i> Add Language
+            </Button>
+          )}
         </Space>
       </Row>
       <Row style={{ marginTop: "24px" }}>

@@ -25,6 +25,8 @@ import { Experience, ExperienceList } from "../../../types/resume";
 import "./index.css";
 import SingleExperienceForm from "./components/experienceEditForm";
 import { Timestamp } from "firebase/firestore";
+import SelectorSidebar from "../../../components/selectorSidebar";
+import ObjectID from "bson-objectid";
 
 const ExperienceCard = ({
   experience,
@@ -56,7 +58,7 @@ type ExperienceProps = {
 
 type ExperienceState = {
   selectedExperience: Experience | null;
-  selectedExperienceIdx: number;
+  selectedId: string | null;
 };
 
 const ExperienceForm = ({
@@ -69,11 +71,17 @@ const ExperienceForm = ({
   const [state, setState] = React.useState<ExperienceState>({
     selectedExperience:
       experienceList && experienceList.length > 0 ? experienceList[0] : null,
-    selectedExperienceIdx: 0,
+    selectedId:
+      experienceList && experienceList.length > 0 ? experienceList[0].id : null,
   });
 
   const onSave = async (experience: Experience) => {
-    experienceList[state.selectedExperienceIdx] = experience;
+    experienceList = experienceList.map((item) => {
+      if (item.id === experience.id) {
+        return { ...experience };
+      }
+      return item;
+    });
     await syncExperience(experienceList);
     if (onFinish) {
       await onFinish(experience);
@@ -83,7 +91,7 @@ const ExperienceForm = ({
 
   const addNewExperience = () => {
     const newExperience: Experience = {
-      id: (experienceList.length + 1).toString(),
+      id: ObjectID().toHexString(),
       employerName: "",
       position: "",
       description: "",
@@ -94,8 +102,12 @@ const ExperienceForm = ({
     };
     setState((prev) => ({
       selectedExperience: newExperience,
-      selectedExperienceIdx: experienceList.length,
+      selectedId: newExperience.id,
     }));
+  };
+
+  const detailExtractor = (education: Experience) => {
+    return { title: education.employerName, subtitle: education.position };
   };
 
   return (
@@ -103,9 +115,15 @@ const ExperienceForm = ({
       {showTitle ? (
         <Typography.Title level={4}>Experience</Typography.Title>
       ) : null}
-      <Row gutter={24} style={{ height: "100%" }}>
-        <Col span={4} className="education-history-selector selector-col">
-          <Menu
+      <Row style={{ height: "100%", flexWrap: "nowrap" }}>
+        <Col
+          style={{
+            width: "250px",
+            minWidth: "250px",
+          }}
+          className="education-history-selector selector-col"
+        >
+          {/* <Menu
             className="experience-menu"
             defaultSelectedKeys={[state.selectedExperienceIdx.toString()]}
             style={{
@@ -132,11 +150,33 @@ const ExperienceForm = ({
             <Button style={{ margin: "8px 24px" }} onClick={addNewExperience}>
               <PlusOutlined /> Add Experience
             </Button>
-          </Row>
+          </Row> */}
+
+          <SelectorSidebar
+            items={experienceList}
+            detailExtractor={detailExtractor}
+            onReorder={(newOrder: Experience[]) => {
+              syncExperience(newOrder);
+            }}
+            addNew={addNewExperience}
+            entityTitle="Education"
+            selectedKey={state.selectedId}
+            onSelect={(key: string) => {
+              setState((prev) => ({
+                ...prev,
+                selectedExperience: experienceList.filter(
+                  (item) => item.id === key
+                )[0],
+                selectedId: key,
+              }));
+            }}
+          />
         </Col>
         <Col
-          span={20}
+          // flex="auto"
           style={{
+            paddingTop: "24px",
+
             paddingLeft: "24px",
             overflowY: "scroll",
             height: "100%",
@@ -145,7 +185,7 @@ const ExperienceForm = ({
         >
           <div>
             <Typography.Title level={5}>
-              Experience #{state.selectedExperienceIdx + 1}
+              {state.selectedExperience?.employerName || "New Experience"}
             </Typography.Title>
           </div>
           {state.selectedExperience && (

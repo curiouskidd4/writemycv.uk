@@ -15,6 +15,8 @@ import { Education, EducationList } from "../../../types/resume";
 import "./index.css";
 import SingleEducationForm from "./components/educationEditForm";
 import { Timestamp } from "firebase/firestore";
+import SelectorSidebar from "../../../components/selectorSidebar";
+import ObjectID from "bson-objectid";
 
 const EducationCard = ({
   education,
@@ -45,6 +47,7 @@ type EducationProps = {
 type EducationState = {
   selectedEducation: Education | null;
   selectedEducationIdx: number | null;
+  selectedId: string | null;
 };
 
 const EducationForm = ({
@@ -58,20 +61,34 @@ const EducationForm = ({
   const [state, setState] = React.useState<EducationState>({
     selectedEducation: educationList.length > 0 ? educationList[0] : null,
     selectedEducationIdx: educationList.length > 0 ? 0 : null,
+    selectedId: educationList.length > 0 ? educationList[0].id : null,
   });
 
   const onSave = async (experience: Education) => {
-    educationList[state.selectedEducationIdx!] = experience;
-    await syncEducation(educationList);
-    message.success("Education saved!");
-    if (onFinish) {
-      await onFinish(educationList);
+    // educationList[state.selectedEducationIdx!] = experience;
+    // await syncEducation(educationList);
+    // message.success("Education saved!");
+    // if (onFinish) {
+    //   await onFinish(educationList);
+    // }
+
+    // Update based on id
+    let newEducationList = [...educationList];
+    const idx = newEducationList.findIndex((item) => item.id === experience.id);
+    if (idx === -1) {
+      // Delete isNew flag
+      delete experience.isNew;
+      newEducationList.push(experience);
+    } else {
+      newEducationList[idx] = experience;
     }
+
+    await syncEducation(newEducationList);
   };
 
   const addNew = () => {
     const newItem: Education = {
-      id: (educationList.length + 1).toString(),
+      id: ObjectID().toHexString(),
       school: "",
       degree: "",
       description: "",
@@ -81,11 +98,17 @@ const EducationForm = ({
       aiSuggestions: null,
       grade: "",
       modules: [],
+      isNew: true,
     };
     setState((prev) => ({
       selectedEducation: newItem,
       selectedEducationIdx: educationList.length,
+      selectedId: newItem.id,
     }));
+  };
+
+  const detailExtractor = (education: Education) => {
+    return { title: education.degree, subtitle: education.school };
   };
 
   return (
@@ -93,56 +116,49 @@ const EducationForm = ({
       {showTitle ? (
         <Typography.Title level={4}>Education</Typography.Title>
       ) : null}
-      <Row gutter={24} style={{ height: "100%" }}>
-        <Col span={4} className="education-history-selector selector-col">
-          {/* <Typography.Title level={5}>Education Items</Typography.Title> */}
-          {/* <Typography.Text type="secondary">Your history</Typography.Text> */}
-
-          <Menu
-            className="education-menu"
-            defaultSelectedKeys={
-              state.selectedEducationIdx != null
-                ? [state.selectedEducationIdx.toString()]
-                : []
-            }
-            style={{
-              //   height: "100%",
-              borderRight: 0,
-              background: "transparent",
+      <Row style={{ height: "100%", flexWrap: "nowrap" }}>
+        <Col
+          style={{
+            minWidth: "250px",
+            width: "250px",
+          }}
+          className="education-history-selector selector-col"
+        >
+          <SelectorSidebar
+            items={educationList}
+            detailExtractor={detailExtractor}
+            onReorder={(newOrder: Education[]) => {
+              syncEducation(newOrder);
             }}
-            onSelect={(item) => {
+            addNew={addNew}
+            entityTitle="Education"
+            selectedKey={state.selectedId}
+            onSelect={(key: string) => {
               setState({
-                selectedEducation: educationList[parseInt(item.key)],
-                selectedEducationIdx: parseInt(item.key),
+                selectedEducation: educationList.filter(
+                  (item) => item.id === key
+                )[0],
+                selectedEducationIdx: parseInt(key),
+                selectedId: key,
               });
             }}
-            items={educationList.map((edu, idx) => {
-              return {
-                key: idx.toString(),
-                label: <EducationCard education={edu} />,
-                //   label: edu.degree,
-              };
-            })}
-          ></Menu>
-          <Row justify="start">
-            <Button
-              style={{ margin: "8px 24px" }}
-              onClick={addNew}
-            >
-              <PlusOutlined /> Add Education
-            </Button>
-          </Row>
+          />
         </Col>
-        <Col span={20} style={{ paddingLeft: "24px" }}>
-          {state.selectedEducation != null &&
-          state.selectedEducationIdx != null ? (
+        <Col
+          flex="auto"
+          style={{
+            paddingLeft: "24px",
+            paddingTop: "24px",
+            height: "100%",
+            overflowY: "auto",
+            overflowX: "hidden",
+            paddingBottom: "2rem",
+          }}
+        >
+          {state.selectedEducation != null ? (
             <>
-              <div>
-                <Typography.Title level={5}>
-                  Education #{state.selectedEducationIdx + 1}
-                </Typography.Title>
-              </div>
               <SingleEducationForm
+                key={state.selectedEducation.id}
                 initialValues={state.selectedEducation}
                 onFinish={onSave}
                 saveLoading={saveLoading}

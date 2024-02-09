@@ -33,7 +33,11 @@ const EducationMenu = ({
   addNew: () => void;
 }) => {
   useEffect(() => {
-    if (selectedIdx === null || selectedIdx === undefined || selectedIdx == state.selectedEducationIdx) {
+    if (
+      selectedIdx === null ||
+      selectedIdx === undefined ||
+      selectedIdx == state.selectedEducationIdx
+    ) {
       return;
     }
     if (selectedIdx < educationList.length) {
@@ -54,10 +58,7 @@ const EducationMenu = ({
   });
 
   return (
-    <div className="education-history-selector">
-      {/* <Typography.Title level={5}>Education Items</Typography.Title> */}
-      <Typography.Text type="secondary">Your history</Typography.Text>
-
+    <div>
       <Menu
         className="education-menu"
         defaultSelectedKeys={
@@ -76,7 +77,11 @@ const EducationMenu = ({
             selectedEducationIdx: parseInt(item.key),
           });
         }}
-        selectedKeys={state.selectedEducationIdx != undefined? [state.selectedEducationIdx.toString()]: undefined}
+        selectedKeys={
+          state.selectedEducationIdx != undefined
+            ? [state.selectedEducationIdx.toString()]
+            : undefined
+        }
         items={educationList.map((edu, idx) => {
           return {
             key: idx.toString(),
@@ -190,8 +195,10 @@ const EducationIterator = ({
     );
   } else if (state.currentEditIdx !== null) {
     return (
-      <Row gutter={16}>
-        <Col span={8}>
+      <Row style={{
+        height: "100%"
+      }}>
+        <Col span={4} className="education-history-selector selector-col">
           <EducationMenu
             selectedIdx={state.currentEditIdx}
             educationList={educationList}
@@ -203,7 +210,10 @@ const EducationIterator = ({
             }}
           />
         </Col>
-        <Col span={16}>
+        <Col span={20} style={{
+          overflowY: "auto",
+          height: "100%"
+        }}>
           <div className="detail-form-body">
             <div className="cv-input">
               <Space direction="vertical">
@@ -213,11 +223,6 @@ const EducationIterator = ({
                       {educationList[state.currentEditIdx].school}
                     </Typography.Text>
                   </Col>
-                  {/* <Col style={{ marginLeft: "auto" }}>
-                    <Typography.Text strong>
-                      {state.currentEditIdx + 1} / {educationList.length}
-                    </Typography.Text>
-                  </Col> */}
                 </Row>
                 <SingleEducationForm
                   initialValues={educationList[state.currentEditIdx]}

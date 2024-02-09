@@ -12,6 +12,8 @@
 .award-menu .ant-menu-item{
     height: auto;
     line-height: normal;
+    width: unset;
+
 }
 
 
@@ -29,6 +31,7 @@
 
 
 .award-menu .ant-menu-item .subtitle{
+    
     line-height: normal;
     white-space: normal;
     color: #00000097;

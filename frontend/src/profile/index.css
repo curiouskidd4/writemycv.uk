@@ -59,8 +59,9 @@
 }
 
 .ant-tabs-tabpane.ant-tabs-tabpane-active {
-  margin: 0px 32px !important;
-  padding-top: 32px !important;
+  /* margin: 0px 32px !important;
+  padding-top: 32px !important; */
+  padding-left: 0px !important;
 }
 
 .ant-tabs-content.ant-tabs-content-left {
@@ -107,7 +108,7 @@
   border-radius: 10px 0px 0px 10px;
   opacity: 1;
   border-right: none !important;
-  width: calc(100% - 23px) !important;
+  width: calc(100% - 22px) !important;
 }
 
 .ant-menu-item.ant-menu-item-selected::after {
@@ -176,24 +177,24 @@
 }
 
 .profile-input-section-title {
-  font: normal normal bold 16px/21px DM Sans;
-  letter-spacing: 0px;
-  color: #131313;
-  text-transform: uppercase;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-
-  margin-bottom: 1rem;
+  margin-bottom: 12px;
+  span {
+    font: normal normal bold 16px /21px DM Sans !important;
+    letter-spacing: 0px;
+    color: #131313;
+    text-transform: uppercase;
+    /* display: flex; */
+    /* align-items: center; */
+    gap: 12px;
+  }
 }
 
 .actions {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-end;
-    gap: 12px;
-    margin: 8px 0px;
-
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  gap: 12px;
+  margin: 8px 0px;
 }
 .actions .ant-btn-link {
   color: var(--black);
@@ -204,11 +205,15 @@
   opacity: 1;
   margin-left: auto;
   padding: 4px 4px;
-  height: 16px;
+  /* height: 16px; */
+}
+
+.actions.large .ant-btn-link {
+  font: normal normal bold 14px/14px DM Sans !important;
+  
 }
 
 .actions .ant-btn-link:hover {
-    color: var(--black) !important ;
-    opacity: 0.7;
-  }
-  
+  color: var(--black) !important ;
+  opacity: 0.7;
+}

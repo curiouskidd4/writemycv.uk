@@ -1,12 +1,44 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHandshakeAngle, faWandMagicSparkles , faCalendar, faStar, faHouse, faPhone, faCalendarAlt, faEnvelope, faDownload, faShare, faTrash, faPenToSquare, faChevronLeft, faChevronRight, faUpload, faPlus, faUserTie, faGraduationCap, faBriefcase, faScrewdriverWrench, faBullhorn, faLightbulb, faRetweet, faCheck, faCircleMinus, faUser, faEllipsisVertical, faTriangleExclamation, faNewspaper, faLanguage, faAward} from "@fortawesome/free-solid-svg-icons";
+import {
+  faHandshakeAngle,
+  faWandMagicSparkles,
+  faCalendar,
+  faStar,
+  faHouse,
+  faPhone,
+  faCalendarAlt,
+  faEnvelope,
+  faDownload,
+  faShare,
+  faTrash,
+  faPenToSquare,
+  faChevronLeft,
+  faChevronRight,
+  faUpload,
+  faPlus,
+  faUserTie,
+  faGraduationCap,
+  faBriefcase,
+  faScrewdriverWrench,
+  faBullhorn,
+  faLightbulb,
+  faRetweet,
+  faCheck,
+  faCircleMinus,
+  faUser,
+  faEllipsisVertical,
+  faTriangleExclamation,
+  faNewspaper,
+  faLanguage,
+  faAward,
+} from "@fortawesome/free-solid-svg-icons";
 
-export const MagicWandIcon = () => (
+export const MagicWandIcon = ({color = "#E9AFA3"}) => (
   <FontAwesomeIcon
     icon={faWandMagicSparkles}
     style={{
       marginRight: "6px",
-      color: "#E9AFA3",
+      color: color,
     }}
   />
 );
@@ -15,17 +47,16 @@ export const MagicWandLoading = () => (
   <FontAwesomeIcon
     icon={faWandMagicSparkles}
     style={{
-    //   marginRight: "6px",
+      //   marginRight: "6px",
       color: "#E9AFA3",
-      fontSize: "6em", 
+      fontSize: "6em",
       textAlign: "center",
-    //   animation: "spin 2s linear infinite",
+      //   animation: "spin 2s linear infinite",
     }}
-    //  shake 
+    //  shake
     fade
   />
 );
-
 
 export const HomeIcon = () => (
   <FontAwesomeIcon
@@ -97,7 +128,6 @@ export const ShareIcon = () => (
   />
 );
 
-
 export const DeleteIcon = () => (
   <FontAwesomeIcon
     icon={faTrash}
@@ -117,7 +147,6 @@ export const EditIcon = () => (
     }}
   />
 );
-
 
 export const UploadIcon = () => (
   <FontAwesomeIcon
@@ -199,7 +228,6 @@ export const SkillsIcon = () => (
   />
 );
 
-
 export const ReferencesIcon = () => (
   <FontAwesomeIcon
     icon={faBullhorn}
@@ -209,7 +237,6 @@ export const ReferencesIcon = () => (
     }}
   />
 );
-
 
 export const LightBulbIcon = () => (
   <FontAwesomeIcon
@@ -221,7 +248,6 @@ export const LightBulbIcon = () => (
   />
 );
 
-
 export const RepharseIcon = () => (
   <FontAwesomeIcon
     icon={faRetweet}
@@ -231,7 +257,6 @@ export const RepharseIcon = () => (
     }}
   />
 );
-
 
 export const CheckIcon = () => (
   <FontAwesomeIcon
@@ -280,8 +305,6 @@ export const APIErrorIcon = () => (
       marginRight: "6px",
       // color: "#ff4d4f",
       color: "#ca5858",
-
-      
     }}
   />
 );
@@ -327,12 +350,7 @@ export const AwardIcon = () => (
 );
 
 export const AIWizardIcon = () => (
-  <div     className="ai-wizard-icon"
-  >
-  <FontAwesomeIcon
-    icon={faWandMagicSparkles}
-    style={{
-    }}
-  />
+  <div className="ai-wizard-icon">
+    <FontAwesomeIcon icon={faWandMagicSparkles} style={{}} />
   </div>
 );

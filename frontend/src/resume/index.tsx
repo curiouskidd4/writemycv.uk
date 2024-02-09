@@ -2,9 +2,13 @@ import React, { useEffect } from "react";
 import { ResumeProvider, useResume } from "../contexts/resume";
 import { Typography, Steps, Row, Col, Button, Space } from "antd";
 import "./index.css";
-import Navigation from "./components/navigation";
+import Navigation from "./navigation";
 import { useLocation, useNavigate } from "react-router-dom";
-import { CollapseLeft, CollapseRight } from "../components/faIcons";
+import {
+  CollapseLeft,
+  CollapseRight,
+  DownloadIcon,
+} from "../components/faIcons";
 
 type ResumeEditStepsProps = {
   current?: number;
@@ -20,107 +24,38 @@ const ResumeEditSteps = ({
   let orgSteps = [
     {
       title: "CV Goals",
-      description: (
-        <div className="step-description">Why are you creating the CV?</div>
-      ),
     },
     {
       title: "Personal Details",
-      description: (
-        <div className="step-description">
-          Your details needed to optimize the CV
-        </div>
-      ),
     },
     {
       title: "Education",
-      description: (
-        <div className="step-description">Let's add your education details</div>
-      ),
     },
     {
       title: "Work Experience",
-      description: (
-        <div className="step-description">
-          Our AI will help you highlight all achievements here{" "}
-        </div>
-      ),
     },
     {
       title: "Skills",
-      description: (
-        <div className="step-description">Highlight your key skills</div>
-      ),
     },
-    
+
     {
       title: "Professional Summary",
-      description: (
-        <div className="step-description">
-          Let's write a cool summary about you
-        </div>
-      ),
     },
     {
       title: "Awards",
-      description: (
-        <div className="step-description">
-          Showcase your awards
-        </div>
-      ),
     },
     {
       title: "Publications",
-      description: (
-        <div className="step-description">
-          Highlight your publications
-        </div>
-      ),
     },
     {
       title: "Volunteering",
-      description: (
-        <div className="step-description">
-          Let's add your volunteering experience
-        </div>
-      ),
     },
     {
       title: "Languages",
-      description: (
-        <div className="step-description">
-          Let's add your languages
-        </div>
-      ),
     },
-    // {
-    //   title: "Hobbies",
-    //   description: (
-    //     <div className="step-description">
-    //       Let's add your hobbies
-    //     </div>
-    //   ),
-    // },
-    // {
-    //   title: "References",
-    //   description: (
-    //     <div className="step-description">
-    //       Let's add your references
-    //     </div>
-    //   ),
-    // },
     {
-      title: "Preview",
-      description: (
-        <div className="step-description">Preview your CV</div>
-      ),
+      title: "Adjustments",
     },
-   
-    
-    // {
-    //   title: "Finished",
-    //   description: <div className="step-description">You're Done!</div>,
-    // },
   ];
   let steps;
 
@@ -152,61 +87,62 @@ const ResumeEditSteps = ({
   }, [_current]);
 
   return (
-    <Space direction="vertical" >
-      {editMode && !isCollapsed ? (
-        <Row style={{ height: "20px", marginBottom: "12px" }}>
-          <Col>
-            <Typography.Text
-              type="secondary"
-              style={{
-                color: "var(--accent-400)",
-              }}
-            >
-              Select a section to edit
-            </Typography.Text>
-          </Col>
-        </Row>
-      ) : (
-        <Row style={{ height: "20px", marginBottom: "12px" }}>
-          <Col>
-            <Typography.Text
-              type="secondary"
-              style={{
-                color: "var(--accent-400)",
-              }}
-            >
-              {" "}
-            </Typography.Text>
-          </Col>
-        </Row>
-      )}
-      <Space direction="vertical" align="center">
-        <Steps
-          onChange={(current) => {
-            _setCurrent(current);
-          }}
-          className="resume-edit-steps"
-          progressDot
-          current={current}
-          direction="vertical"
-          size="small"
-          items={steps.map((step, idx) => {
-            return {
-              title: step.title,
-              description: step.description,
-              // disabled: editMode ? false : idx > _current,
-              status: editMode
-                ? "finish"
-                : idx === _current
-                ? "process"
-                : idx > _current
-                ? "wait"
-                : "finish",
-              // status: _current === steps.length - 1 ? "finish"  : "process",
-            };
-          })}
-        />
-        {/* 
+    <div>
+      <Space direction="vertical">
+        {editMode && !isCollapsed ? (
+          <Row style={{ height: "20px", marginBottom: "12px" }}>
+            <Col>
+              <Typography.Text
+                type="secondary"
+                style={{
+                  color: "var(--accent-400)",
+                }}
+              >
+                Select a section to edit
+              </Typography.Text>
+            </Col>
+          </Row>
+        ) : (
+          <Row style={{ height: "20px", marginBottom: "12px" }}>
+            <Col>
+              <Typography.Text
+                type="secondary"
+                style={{
+                  color: "var(--accent-400)",
+                }}
+              >
+                {" "}
+              </Typography.Text>
+            </Col>
+          </Row>
+        )}
+        <Space direction="vertical" align="center">
+          <Steps
+            onChange={(current) => {
+              _setCurrent(current);
+            }}
+            className="resume-edit-steps"
+            progressDot
+            current={current}
+            direction="vertical"
+            size="small"
+            items={steps.map((step, idx) => {
+              return {
+                title: step.title,
+                description: "",
+                // disabled: editMode ? false : idx > _current,
+                status: editMode
+                  ? "finish"
+                  : idx === _current
+                  ? "process"
+                  : idx > _current
+                  ? "wait"
+                  : ("finish" as any),
+                // status: _current === steps.length - 1 ? "finish"  : "process",
+              };
+            })}
+          />
+          {/* 
         {isCollapsed ? (
           <Button
             type="text"
@@ -226,8 +162,9 @@ const ResumeEditSteps = ({
             Collapse
           </Button>
         )} */}
+        </Space>
       </Space>
-    </Space>
+    </div>
   );
 };
 
@@ -253,48 +190,57 @@ const ResumeEditV2Loader = () => {
     return <div>Resume not found</div>;
   }
   return (
-    <div className="content">
-      <Row
-        style={{
-          height: "64px",
-          marginBottom: "12px",
-        }}
-        align="middle"
-      >
+    <div className="resume">
+      <Row align="middle" className="title-header">
         <Col>
-          <Typography.Text type="secondary">
-            <Button className="cv-link-button" type="link" onClick={toResumes}>
-              Resumes
-            </Button>{" "}
-            /
-            <Button
-              className="cv-link-button"
-              type="link"
-              onClick={toThisResume}
-            >
-              {resumeData.resume?.name}{" "}
-            </Button>
-            / Edit
-          </Typography.Text>
+          <Typography.Title
+            level={3}
+            style={{
+              marginBottom: "0px",
+            }}
+          >
+            Career Repository
+          </Typography.Title>
         </Col>
-        {editMode && (
-          <Col style={{ marginLeft: "auto" }}>
-            <Button
-              onClick={() => {
-                navigate(`/resumes/${resumeData.resume?.id}`, {
-                  state: {
-                    editMode: true,
-                  },
-                });
-              }}
-            >
-              Preview
-            </Button>
-          </Col>
-        )}
+        <Col
+          style={{
+            marginLeft: "auto",
+            display: "flex",
+            alignItems: "center",
+            gap: "16px",
+          }}
+        >
+          <Button
+            onClick={() => {
+              // setNewResumeModalVisible(true);
+            }}
+          >
+            <i className="fa-solid fa-eye"></i>
+            Preview
+          </Button>
+
+          <Button >
+          <i className="fa-solid fa-download"></i>
+            Download </Button>
+
+          <Button
+            onClick={() => {
+              // setNewResumeModalVisible(true);
+            }}
+          >
+            <i className="fa-solid fa-share-nodes"></i>
+            {/* <PlusIcon /> */}
+            Share
+          </Button>
+        </Col>
       </Row>
-      <Row gutter={48} style={{ margin: "0px 16px" }}>
-        <Col span={6} className="resume-steps-col" style={{height: "80vh", overflowY: "auto"}}>
+
+      <Row gutter={48} style={{ margin: "0px 0px" }} className="resume-body">
+        <Col
+          // span={6}
+          className="resume-steps-col"
+          style={{ height: "100%", overflowY: "auto", minWidth: "220px" }}
+        >
           <ResumeEditSteps
             current={current}
             setCurrent={setCurrent}
@@ -302,9 +248,12 @@ const ResumeEditV2Loader = () => {
           />
         </Col>
         <Col
-          span={18}
+          flex={1}
           style={{
-            paddingLeft: "24px",
+            paddingLeft: current === 0 ? "0px" : "0px",
+            height: "100%",
+            overflowY: "scroll",
+            overflowX: "hidden",
           }}
         >
           <Navigation

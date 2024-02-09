@@ -34,7 +34,7 @@ const PersonalDetails = ({
     xxl: 12,
   };
   return (
-    <div className="personal-info-form">
+    <div className="personal-info-form resume-edit-detail padding">
       {showTitle ? (
         <div className="detail-form-header">
           <Typography.Title level={4}>Personal Info</Typography.Title>

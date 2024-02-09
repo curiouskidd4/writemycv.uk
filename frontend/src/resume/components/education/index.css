@@ -1,66 +1,58 @@
 .education-history-selector {
-    background-color: white;
-    /* border-radius: 12px; */
-    /* padding: 12px; */
-    padding: 0px 0px !important;
-    margin-left: -44px;
-    margin-top: -32px;
-    height: 100%;
+  background-color: white;
+  /* border-radius: 12px; */
+  /* padding: 12px; */
+  padding: 0px 0px !important;
+  /* margin-left: -44px;
+    margin-top: -32px; */
+  height: 100%;
 }
 
 .education-menu .ant-menu-title-content {
-    margin: 12px;
-    /* padding: 4px; */
-
+  margin: 12px;
+  /* padding: 4px; */
 }
-.education-menu .ant-menu-item{
-    height: auto;
-    line-height: normal;
-    width: unset;
+.education-menu .ant-menu-item {
+  height: auto;
+  line-height: normal;
+  width: unset;
 }
 
-
-
-.education-menu .ant-menu-item .title{
-    font-weight: 500;
-    overflow: hidden;
-    width: calc(100% - 8px);
-    text-overflow: ellipsis;
-    /* text-overflow: ellipsis;
+.education-menu .ant-menu-item .title {
+  font-weight: 500;
+  overflow: hidden;
+  width: calc(100% - 8px);
+  text-overflow: ellipsis;
+  /* text-overflow: ellipsis;
     width: calc(100% - 8px);
     overflow: hidden; */
 }
 
-
-
-.education-menu .ant-menu-item .subtitle{
-    line-height: normal;
-    white-space: normal;
-    color: #00000097;
-
+.education-menu .ant-menu-item .subtitle {
+  line-height: normal;
+  white-space: normal;
+  color: #00000097;
 }
-.education-menu  .ant-menu-item-selected .subtitle{
-    line-height: normal;
-    white-space: normal;
-    color: #256763b6;
-
-   
+.education-menu .ant-menu-item-selected .subtitle {
+  line-height: normal;
+  white-space: normal;
+  color: #256763b6;
 }
 
-.education-menu .ant-menu-item-selected{
-    background-color: #25676320 !important;
-    height: auto;
-    /* color: #fff !important; */
-    margin-right: 0px !important ;
-    
+.education-menu .ant-menu-item-selected {
+  background-color: #25676320 !important;
+  height: auto;
+  /* color: #fff !important; */
+  margin-right: 0px !important ;
+}
+
+/* ant-menu-item-selected */
+
+.education-course-tag {
+  background-color: var(--primary-400);
+  color: white;
+  font-size: 14px;
+  padding: 4px 8px;
 }
 
 
- /* ant-menu-item-selected */
-
- .education-course-tag {
-    background-color: var(--primary-400);
-    color: white;
-    font-size: 14px;
-    padding: 4px 8px;
- }

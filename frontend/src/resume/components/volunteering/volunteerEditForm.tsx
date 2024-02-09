@@ -18,12 +18,18 @@ import { Timestamp } from "firebase/firestore";
 import moment from "moment";
 
 const VolunteerCard = ({ volunteer }: { volunteer: Volunteering }) => {
-  let volunteerStart = volunteer.startDate ? moment(volunteer.startDate.toDate()).format("MMM YYYY") : "";
-  let volunteerEnd = volunteer.endDate ? moment(volunteer.endDate.toDate()).format("MMM YYYY") : "Current";
+  let volunteerStart = volunteer.startDate
+    ? moment(volunteer.startDate.toDate()).format("MMM YYYY")
+    : "";
+  let volunteerEnd = volunteer.endDate
+    ? moment(volunteer.endDate.toDate()).format("MMM YYYY")
+    : "Current";
   return (
     <>
       <div className="title">{volunteer.title}</div>
-      <div className="subtitle">{volunteerStart}-{volunteerEnd}</div>
+      <div className="subtitle">
+        {volunteerStart}-{volunteerEnd}
+      </div>
     </>
   );
 };
@@ -55,13 +61,10 @@ const VolunteerForm = ({
   });
 
   const onSave = async (volunteer: Volunteering) => {
-    
-    volunteer.startDate = Timestamp.fromDate(
-      volunteer.startDate.toDate()
-    );
-    volunteer.endDate = volunteer.endDate?  Timestamp.fromDate(
-      volunteer.endDate.toDate()
-    ) : null;
+    volunteer.startDate = Timestamp.fromDate(volunteer.startDate.toDate());
+    volunteer.endDate = volunteer.endDate
+      ? Timestamp.fromDate(volunteer.endDate.toDate())
+      : null;
     volunteerList[state.selectedVolunteerIdx!] = volunteer;
     await syncVolunteers(volunteerList);
     setState((prev) => ({
@@ -88,14 +91,25 @@ const VolunteerForm = ({
     }));
   };
 
-
   return (
     <>
-      {showTitle ? <Typography.Title level={4}>Volunteer</Typography.Title> : null}
-      <Row gutter={24} style={{ height: "70vh" }}>
-        <Col span={8} className="volunteer-history-selector">
+      {showTitle ? (
+        <Typography.Title level={4}>Volunteer</Typography.Title>
+      ) : null}
+       <Row
+        style={{
+          height: "100%",
+        }}
+      >
+        <Col
+          style={{
+            width: "250px",
+            minWidth: "250px",
+          }}
+          className="volunteer-history-selector selector-col"
+          >
           {/* <Typography.Title level={5}>Volunteer Items</Typography.Title> */}
-          <Typography.Text type="secondary">Your history</Typography.Text>
+          {/* <Typography.Text type="secondary">Your history</Typography.Text> */}
 
           <Menu
             className="volunteer-menu"
@@ -123,16 +137,23 @@ const VolunteerForm = ({
               };
             })}
           ></Menu>
-          <Row justify="center">
-            <Button
-              style={{ width: "90%", margin: "8px auto" }}
-              onClick={addNew}
-            >
+           <Row justify="start">
+            <Button style={{ margin: "8px 24px" }} onClick={addNew}>
               <PlusOutlined /> Add Volunteer
             </Button>
           </Row>
         </Col>
-        <Col span={16} style={{ paddingLeft: "24px" }}>
+        <Col
+          flex="auto"
+          style={{
+            paddingLeft: "24px",
+            paddingTop: "24px",
+            height: "100%",
+            overflowY: "auto",
+            overflowX: "hidden",
+            paddingBottom: "2rem",
+          }}
+        >
           {/* {state.selectedVolunteer && (
               <SingleVolunteerForm
                 initialValues={state.selectedVolunteer}
@@ -141,7 +162,8 @@ const VolunteerForm = ({
               />
             )} */}
 
-          {state.selectedVolunteer != null && state.selectedVolunteerIdx != null ? (
+          {state.selectedVolunteer != null &&
+          state.selectedVolunteerIdx != null ? (
             <>
               <div>
                 <Typography.Title level={5}>
@@ -149,7 +171,7 @@ const VolunteerForm = ({
                 </Typography.Title>
               </div>
               <SingleVolunteersFrom
-                initialValues={{...state.selectedVolunteer}}
+                initialValues={{ ...state.selectedVolunteer }}
                 onFinish={onSave}
                 saveLoading={saveLoading}
               />

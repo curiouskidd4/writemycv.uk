@@ -6,16 +6,12 @@ import { PlusOutlined } from "@ant-design/icons";
 import moment from "moment";
 import { Timestamp } from "firebase/firestore";
 
-
 const AwardCard = ({ award }: { award: Award }) => {
   let awardDateStr = moment(award.date.toDate()).format("MMM YYYY");
   return (
     <Row className="menu-card-details">
       <div className="title">{award.title}</div>
       <div className="subtitle">{awardDateStr}</div>
-      <div className="actions">
-        <span>Hide</span>
-      </div>
     </Row>
   );
 };
@@ -64,9 +60,9 @@ const AwardMenu = ({
   });
 
   return (
-    <div className="award-history-selector menu-selector">
+    <div className="award-history-selector selector-col">
       {/* <Typography.Title level={5}>Award Items</Typography.Title> */}
-      <Typography.Text type="secondary">Your history</Typography.Text>
+      {/* <Typography.Text type="secondary">Your history</Typography.Text> */}
 
       {awardList.length == 0 ? (
         <Empty
@@ -104,8 +100,8 @@ const AwardMenu = ({
           })}
         ></Menu>
       )}
-      <Row justify="center" className="menu-action">
-        <Button style={{ width: "90%", margin: "8px auto" }} onClick={addNew}>
+      <Row justify="start" className="menu-action">
+        <Button style={{  margin: "8px 24px" }} onClick={addNew}>
           <PlusOutlined /> Add Award
         </Button>
       </Row>
@@ -153,7 +149,6 @@ const AwardIterator = ({
       }
       return item;
     });
-    console.log(newAwardList);
     setState((prev) => ({
       ...prev,
       loading: true,
@@ -164,16 +159,13 @@ const AwardIterator = ({
       ...prev,
       loading: false,
       finished: prev.currentEditIdx === awardList.length - 1,
-      currentEditIdx:
-        prev.currentEditIdx === null
-          ? null
-          : prev.currentEditIdx ,
+      currentEditIdx: prev.currentEditIdx === null ? null : prev.currentEditIdx,
     }));
   };
 
   return (
-    <Row gutter={16} style={{ width: "100%" }}>
-      <Col span={8}>
+    <Row style={{ width: "100%" }}>
+      <Col span={4}>
         <AwardMenu
           selectedIdx={state.currentEditIdx}
           awardList={awardList}
@@ -191,7 +183,7 @@ const AwardIterator = ({
           }}
         />
       </Col>
-      <Col span={16}>
+      <Col span={20}>
         {state.currentEditIdx != null ? (
           <div className="detail-form-body">
             <div className="cv-input">

@@ -3,6 +3,7 @@ import { Experience } from "../../../types/resume";
 import ExperienceSelector from "./components/selector";
 import { Typography } from "antd";
 import ExperienceIterator from "./components/experienceIterator";
+import ExperienceForm from "./experienceEditForm";
 
 type ExperienceFlowProps = {
   editMode: boolean;
@@ -35,48 +36,44 @@ const ExperienceFlow = ({
     };
   });
 
-  if (editMode) {
-    return (
-      <>
-        <Typography.Title level={4}>Experience</Typography.Title>
-        <div>Not implemented yet</div>
-      </>
-    );
-  } else {
-    if (state.selectedExperienceItems == null) {
-      // Means show the selector
+
+    // if (state.selectedExperienceItems == null) {
+    //   // Means show the selector
+    //   return (
+    //     <div>
+    //       {" "}
+          
+    //       <ExperienceSelector
+    //         experienceList={experienceList}
+    //         onSave={(educationList) => {
+    //           setState((prev) => ({
+    //             ...prev,
+    //             selectedExperienceItems: educationList,
+    //           }));
+    //         }}
+    //       />
+    //     </div>
+    //   );
+    // } else {
       return (
         <>
-          {" "}
-          <div className="detail-form-header">
-            <Typography.Title level={4}>Experience</Typography.Title>
-          </div>
-          <ExperienceSelector
-            experienceList={experienceList}
-            onSave={(educationList) => {
-              setState((prev) => ({
-                ...prev,
-                selectedExperienceItems: educationList,
-              }));
-            }}
-          />
-        </>
-      );
-    } else {
-      return (
-        <>
-          <div className="detail-form-header">
-            <Typography.Title level={4}>Experience</Typography.Title>
-          </div>
-          <ExperienceIterator
+          
+          {/* <ExperienceIterator
             experienceList={experienceList}
             onFinish={onFinish}
             syncExperience={syncExperience}
           />
+           */}
+           <ExperienceForm
+            experienceList={experienceList}
+            syncExperience={syncExperience}
+            // onFinish={onFinish}
+            showTitle={false}
+          />
         </>
       );
-    }
-  }
+    // }
+  
 };
 
 export default ExperienceFlow;

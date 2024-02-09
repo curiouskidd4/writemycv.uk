@@ -10,7 +10,7 @@ import { SkillSection } from "./forms/skills";
 import { OpenAIContext } from "../../customContext";
 import { useAuth } from "../../authContext";
 import { useDoc } from "../../firestoreHooks";
-import { NewResumeModal } from "../resume/newResumeModal";
+import { NewResumeModal } from "../allResume/newResumeModal";
 import { PlusOutlined } from "@ant-design/icons";
 import { useOpenAI } from "../../utils";
 import { MagicWandLoading } from "../../components/faIcons";

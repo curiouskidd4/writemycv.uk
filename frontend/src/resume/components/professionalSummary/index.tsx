@@ -14,7 +14,13 @@ import {
   Typography,
 } from "antd";
 import { useOpenAI } from "../../../utils";
-import { LightBulbIcon, MagicWandIcon, MagicWandLoading, RepharseIcon } from "../../../components/faIcons";
+import {
+  AIWizardIcon,
+  LightBulbIcon,
+  MagicWandIcon,
+  MagicWandLoading,
+  RepharseIcon,
+} from "../../../components/faIcons";
 import {
   PlusOutlined,
   ArrowRightOutlined,
@@ -25,7 +31,8 @@ import EditorJsInput from "../../../components/editor";
 import FormLabel from "../../../components/labelWithActions";
 import { useResume } from "../../../contexts/resume";
 import CustomCarousel from "../../../components/suggestionCarousel";
-import CVWizardBox from "../../../components/cvWizardBox";
+import CVWizardBox from "../../../components/cvWizardBoxV2";
+import openAI from "../../../hooks/openai";
 
 type FormLabelWithAIActionProps = {
   resumeId: string;
@@ -196,35 +203,34 @@ const FormLabelWithAIActions = ({
           </div>
         )}
       </Modal> */}
-         <Row>
-              {openai.data || openai.loading ? (
-                <CVWizardBox>
-                  <Typography.Text type="secondary">
-                    <MagicWandIcon /> CV Wizard Suggestions:
-                  </Typography.Text>
-                  {openai.loading && <Skeleton active></Skeleton>}
-                  {openai.loading === false &&
-                    openai.data!.result.length >
-                    0 && (
-                      // <Carousel>
-                      //   {descriptionHelper.descriptionSuggestions!.results.map(
-                      //     (item: any, idx: number) => (
-                      //       <div
-                      //         className="openai-generated-content-item"
-                      //         onClick={() => onAddDescription(item)}
-                      //       >
-                      //         {item}
-                      //       </div>
-                      //     )
-                      //   )}
-                      // </Carousel>
-                      <CustomCarousel
-                        suggestions={openai.data.result}
-                        onClick={(item: any) => onSelectDescription(item)} />
-                    )}
-                </CVWizardBox>
-              ) : null}
-            </Row>
+      {/* <Row>
+        {openai.data || openai.loading ? (
+          <CVWizardBox>
+            <Typography.Text type="secondary">
+              <MagicWandIcon /> CV Wizard Suggestions:
+            </Typography.Text>
+            {openai.loading && <Skeleton active></Skeleton>}
+            {openai.loading === false && openai.data!.result.length > 0 && (
+              // <Carousel>
+              //   {descriptionHelper.descriptionSuggestions!.results.map(
+              //     (item: any, idx: number) => (
+              //       <div
+              //         className="openai-generated-content-item"
+              //         onClick={() => onAddDescription(item)}
+              //       >
+              //         {item}
+              //       </div>
+              //     )
+              //   )}
+              // </Carousel>
+              <CustomCarousel
+                suggestions={openai.data.result}
+                onClick={(item: any) => onSelectDescription(item)}
+              />
+            )}
+          </CVWizardBox>
+        ) : null}
+      </Row> */}
       <FormLabel
         action={
           // <Popover
@@ -259,69 +265,72 @@ const FormLabelWithAIActions = ({
           //   </Button>
           // </Popover>
 
-          
-                <Popover
-                  placement="topRight"
-                  trigger="click"
-                  content={<Space direction="vertical">
-                    <Button
-                      type="text"
-                      // size="small"
-                      style={{
-                        height: "auto",
-                        textAlign: "left",
-                      }}
-                      disabled={description && description.length > 20 ? false : true}
-                      onClick={() => {
-                        // loadSuggestions({
-                        //   employerName: initialValues?.employerName,
-                        //   position: initialValues?.position,
-                        //   rewrite: true,
-                        //   existingDesscription: description,
-                        // });
-                        handleRewrite()
-                      }}
-                    >
-                      <Typography.Text strong>
-                        {" "}
-                        <RepharseIcon /> Optimize
-                      </Typography.Text>
-                      <br />
-                      <Typography.Text type="secondary">
-                        Rephrase and optimize your current description
-                      </Typography.Text>
-                    </Button>
-                    <Button
-                      type="text"
-                      style={{
-                        height: "auto",
-                        textAlign: "left",
-                        width: "100%",
-                      }}
-                      onClick={() => {
-                        // loadSuggestions({
-                        //   employerName: initialValues?.employerName,
-                        //   position: initialValues?.position,
-                        //   rewrite: false,
-                        // });
-                        handleGenSummary()
-                      }}
-                    >
-                      <Typography.Text strong>
-                        {" "}
-                        <LightBulbIcon /> Generate new ideas
-                      </Typography.Text>
-                      <br />
-                      <Typography.Text type="secondary">
-                        Get new ideas for the desciption
-                      </Typography.Text>
-                    </Button>
-                  </Space>}
+          <Popover
+            placement="topRight"
+            trigger="click"
+            content={
+              <Space direction="vertical">
+                <Button
+                  type="text"
+                  // size="small"
+                  style={{
+                    height: "auto",
+                    textAlign: "left",
+                  }}
+                  disabled={
+                    description && description.length > 20 ? false : true
+                  }
+                  onClick={() => {
+                    // loadSuggestions({
+                    //   employerName: initialValues?.employerName,
+                    //   position: initialValues?.position,
+                    //   rewrite: true,
+                    //   existingDesscription: description,
+                    // });
+                    handleRewrite();
+                  }}
                 >
-                  <Button type="link" size="small">
-                    <MagicWandIcon /> Write with CV Wizard
-                  </Button>
-                </Popover>
+                  <Typography.Text strong>
+                    {" "}
+                    <RepharseIcon /> Optimize
+                  </Typography.Text>
+                  <br />
+                  <Typography.Text type="secondary">
+                    Rephrase and optimize your current description
+                  </Typography.Text>
+                </Button>
+                <Button
+                  type="text"
+                  style={{
+                    height: "auto",
+                    textAlign: "left",
+                    width: "100%",
+                  }}
+                  onClick={() => {
+                    // loadSuggestions({
+                    //   employerName: initialValues?.employerName,
+                    //   position: initialValues?.position,
+                    //   rewrite: false,
+                    // });
+                    handleGenSummary();
+                  }}
+                >
+                  <Typography.Text strong>
+                    {" "}
+                    <LightBulbIcon /> Generate new ideas
+                  </Typography.Text>
+                  <br />
+                  <Typography.Text type="secondary">
+                    Get new ideas for the desciption
+                  </Typography.Text>
+                </Button>
+              </Space>
+            }
+          >
+            <Button type="link" size="small">
+              <MagicWandIcon /> Write with CV Wizard
+            </Button>
+          </Popover>
         }
         label={""}
         required={true}
@@ -360,6 +369,7 @@ const ProfessionalSummaryFlow = ({
   syncProfessionalSummary: (value: string) => Promise<void>;
 }) => {
   const resume = useResume();
+  const [showAIWizard, setShowAIWizard] = useState(false);
   const [state, setState] = React.useState({
     loading: false,
     summary: professionalSummary,
@@ -375,58 +385,181 @@ const ProfessionalSummaryFlow = ({
   const onSave = async (values: any) => {
     setState({ ...state, loading: true });
     await syncProfessionalSummary(values.professionalSummary);
-    await onFinish(values.professionalSummary)
+    await onFinish(values.professionalSummary);
     setState({ ...state, loading: false });
-  }
+  };
+
+  const descriptionHelper = openAI.useProfessionalSummaryHelper();
+  const loadSuggestions = async ({ rewrite }: { rewrite: boolean }) => {
+    setShowAIWizard(true);
+    await descriptionHelper.getSuggestions({
+      existingSummary: state.summary || "",
+      numberSuggestions: 3,
+      rewrite: rewrite,
+    });
+  };
 
   return (
-    <div>
-      <Row>
-        <Typography.Title level={4}>Professional Summary</Typography.Title>
-      </Row>
+    <div className="resume-edit-detail padding">
+      <div className="profile-input-section-title">
+        <Typography.Title
+          level={4}
+          style={{
+            marginBottom: "0px",
+          }}
+        >
+          Professional Summary
+        </Typography.Title>
+        <Popover
+          placement="topLeft"
+          trigger="click"
+          content={
+            <Space direction="vertical">
+              <Button
+                type="text"
+                // size="small"
+                style={{
+                  height: "auto",
+                  textAlign: "left",
+                }}
+                disabled={
+                  state.summary && state.summary.length > 20 ? false : true
+                }
+                onClick={() => {
+                  loadSuggestions({
+                    rewrite: true,
+                  });
+                }}
+              >
+                <Typography.Text strong>
+                  {" "}
+                  <RepharseIcon /> Optimize
+                </Typography.Text>
+                <br />
+                <Typography.Text type="secondary">
+                  Rephrase and optimize your current description
+                </Typography.Text>
+              </Button>
+              <Button
+                type="text"
+                style={{
+                  height: "auto",
+                  textAlign: "left",
+                  width: "100%",
+                }}
+                onClick={() => {
+                  loadSuggestions({
+                    rewrite: false,
+                  });
+                }}
+              >
+                <Typography.Text strong>
+                  {" "}
+                  <LightBulbIcon /> Generate new ideas
+                </Typography.Text>
+                <br />
+                <Typography.Text type="secondary">
+                  Get new ideas for the desciption
+                </Typography.Text>
+              </Button>
+            </Space>
+          }
+        >
+          <Button type="link">
+            <AIWizardIcon />
+          </Button>
+        </Popover>
+      </div>
       <Row>
         <Col span={24}>
-          <Typography.Text type="secondary">
-            Write 2-4 sentences that summarise your experience, skills and value
-            to an employer. Begin your profile with a clear and concise title
-            that reflects your professional identity, highlight your years of
-            experience, and explain the impact you make on an organisation. You
-            can also share your educational background and key skills. <br />
-            If you need some fresh ideas, try CV Wizard – it can refine your
-            profile or write you a new one based on your target role.
-          </Typography.Text>
+          <div className="profile-tab-detail">
+            <div className="user-input-area">
+              <Typography.Text type="secondary">
+                Write 2-4 sentences that summarise your experience, skills and
+                value to an employer. Begin your profile with a clear and
+                concise title that reflects your professional identity,
+                highlight your years of experience, and explain the impact you
+                make on an organisation. You can also share your educational
+                background and key skills. <br />
+                If you need some fresh ideas, try CV Wizard – it can refine your
+                profile or write you a new one based on your target role.
+              </Typography.Text>
+
+              <Form
+                name="personal_info"
+                onFinish={onSave}
+                initialValues={{
+                  professionalSummary: professionalSummary,
+                }}
+                form={form}
+                scrollToFirstError
+              >
+                <Form.Item
+                  name="professionalSummary"
+                  label=""
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please add a summary!",
+                    },
+                  ]}
+                >
+                  {/* <DummyInput resumeId={resume.resume?.id} onAdd={onAdd} /> */}
+                  <EditorJsInput  />
+
+                </Form.Item>
+
+                <Form.Item>
+                  <Button
+                    type="primary"
+                    htmlType="submit"
+                    loading={state.loading}
+                  >
+                    Save
+                  </Button>
+                </Form.Item>
+              </Form>
+            </div>
+            <div className="ai-wizard-area">
+              <Row style={{
+                width: "100%",
+              }}>
+                {showAIWizard ? (
+                  <CVWizardBox
+                    title="Description Tip"
+                    subtitle="Highlighting your key achievements here, like awards, dissertations or projects"
+                  >
+                    <Typography.Text type="secondary">
+                      CV Wizard Suggestions:
+                    </Typography.Text>
+                    {descriptionHelper.loading && <Skeleton active></Skeleton>}
+                    {descriptionHelper.loading === false &&
+                    !descriptionHelper.error &&
+                    descriptionHelper.suggestions?.result && 
+                      descriptionHelper.suggestions?.result?.length > 0 && (
+                        <CustomCarousel
+                          suggestions={descriptionHelper.suggestions.result}
+                          onClick={(item: any) => onAdd(item)}
+                        />
+                      )}
+
+                    {descriptionHelper.error && (
+                      <Typography.Text type="danger">
+                        Something wrong happened
+                      </Typography.Text>
+                    )}
+                  </CVWizardBox>
+                ) : null}
+              </Row>
+            </div>
+          </div>
         </Col>
       </Row>
-      <Row>
-        <Form
-          name="personal_info"
-          onFinish={onSave}
-          initialValues={{
-            professionalSummary: professionalSummary,
-          }}
-          form={form}
-          scrollToFirstError
-        >
-          <Form.Item
-            name="professionalSummary"
-            label=""
-            rules={[
-              {
-                required: true,
-                message: "Please add a summary!",
-              },
-            ]}
-          >
-            <DummyInput resumeId={resume.resume?.id} onAdd={onAdd} />
-          </Form.Item>
-
-          <Form.Item>
-            <Button type="primary"  htmlType="submit" loading={state.loading}>
-              Save
-            </Button>
-          </Form.Item>
+      {/* <Row>
+        
+         
         </Form>
-      </Row>
+      </Row> */}
     </div>
   );
 };

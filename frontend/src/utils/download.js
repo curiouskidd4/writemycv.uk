@@ -15,7 +15,7 @@ const useUtils = () => {
 
   const auth = useAuth();
 
-  const exportResumeToDoc = async (data) => {
+  const exportResumeToDoc = async (data)  => {
     setState((prevState) => ({
       ...prevState,
       loading: true,

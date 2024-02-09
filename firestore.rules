@@ -54,7 +54,21 @@ service cloud.firestore {
       allow write, read: if request.auth.uid == userId;
     }
 
+    match /awards/{userId} {
+      allow write, read: if request.auth.uid == userId;
+    }
 
+    match /publication/{userId} {
+      allow write, read: if request.auth.uid == userId;
+    }
+
+    match /volunteering/{userId} {
+      allow write, read: if request.auth.uid == userId;
+    }
+
+    match /language/{userId} {
+      allow write, read: if request.auth.uid == userId;
+    }
     
   }
 }

@@ -35,10 +35,10 @@ const PublicationFlow = ({
 
   return (
     <div className="resume-edit-detail">
-      <div className="detail-form-header">
+      {/* <div className="detail-form-header">
         <Typography.Title level={4}>Publication</Typography.Title>
-      </div>
-      <Row >
+      </div> */}
+      <Row style={{ width: "100%", height: "100%" }}>
         <PublicationIterator
           publicationList={publicationList}
           syncPublication={syncPublication}

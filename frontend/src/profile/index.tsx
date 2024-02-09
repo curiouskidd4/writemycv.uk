@@ -36,7 +36,7 @@ import {
   UploadIcon,
 } from "../components/faIcons";
 import "./index.css";
-import { NewResumeModal } from "../pages/resume/newResumeModal";
+import { NewResumeModal } from "../pages/allResume/newResumeModal";
 import { ImportResumeModal } from "./import";
 import { useAuth } from "../authContext";
 import LanguageFlow from "../resume/components/languages";
@@ -219,7 +219,7 @@ const ProfileV2_ = () => {
                 skillList={profileData.profile?.skills?.skillList || []}
                 onFinish={async () => {}}
                 syncSkills={syncSkills}
-                showTitle={false}
+                showTitle={true}
               />
             </Tabs.TabPane>
             <Tabs.TabPane

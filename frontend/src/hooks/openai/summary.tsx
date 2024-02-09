@@ -2,7 +2,8 @@ import axios from "axios";
 import { useContext, useState } from "react";
 import { createContext } from "vm";
 import { useAuth } from "../../authContext";
-import { useResume } from "../../resumeContext";
+import { useResume } from "../../contexts/resume";
+import { useProfile } from "../../contexts/profile";
 
 const BASE_URL =
   process.env.REACT_APP_BASE_URL ||
@@ -11,9 +12,10 @@ const BASE_URL =
 const useProfessionalSummaryHelper = () => {
   const auth = useAuth();
   const resumeData = useResume();
+  const profile = useProfile();
 
   type AISuggestionType = {
-    results: string[];
+    result: string[];
     message: string;
   };
   type ProfessionalSummaryStateType = {
@@ -29,15 +31,23 @@ const useProfessionalSummaryHelper = () => {
   });
 
   const getSuggestions = async ({
+    existingSummary = "",
     numberSuggestions = 3,
     rewrite = false,
   }: {
+    existingSummary: string;
     numberSuggestions: number;
     rewrite: boolean;
   }) => {
+    let generateFromProfile = profile?.profile?.userId ? true : false;
+    let resumeId = resumeData?.resume?.id;
+
     let data = {
         numberSuggestions,
         rewrite,
+        existingSummary,
+        generateFromProfile: profile.profile?.userId ? true : false,
+        resumeId: generateFromProfile ? null : resumeId,
     };
     setState({
       loading: true,
@@ -47,7 +57,7 @@ const useProfessionalSummaryHelper = () => {
     try {
       const token = await auth.user.getIdToken();
       const response = await axios.post(
-        `${BASE_URL}/openai/educationSummary`,
+        `${BASE_URL}/openai/professionalSummary`,
         data,
         {
           headers: {

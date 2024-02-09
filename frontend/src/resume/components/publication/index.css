@@ -12,6 +12,8 @@
 .publication-menu .ant-menu-item{
     height: auto;
     line-height: normal;
+    width: unset;
+
 }
 
 

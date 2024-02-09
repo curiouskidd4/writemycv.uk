@@ -27,7 +27,7 @@ const CVGoals = ({ initialValues, onFinish, syncResumeDetails }: CVGoalsProps) =
   }
 
   return (
-    <div>
+    <div className="resume-edit-detail padding">
       <div className="detail-form-header">
         <Typography.Title level={4}>CV Goals</Typography.Title>
       </div>

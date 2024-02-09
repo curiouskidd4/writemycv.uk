@@ -32,7 +32,7 @@ const CVWizardBox = ({
         <div className="subtitle">{subtitle}</div>
       </div>
       {show && 
-      <div className="body">
+      <div className="wizard-body">
         {children}
         <div className="actions">
           <Button type="link" 
