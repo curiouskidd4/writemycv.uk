@@ -3,35 +3,33 @@ import { functions } from "../../utils/firebase";
 import _ from "lodash";
 import { populateResumeDetails } from "./actions/populateResumeDetails";
 import { exportResume } from "./actions/export";
+import {
+  onDocumentWritten,
+
+} from "firebase-functions/v2/firestore";
 
 // Cloud functions which depends on workout update (create/update/delete)
-export const onWrite = functions.runWith(
-  {
-    timeoutSeconds: 300,
-    memory: "2GB",
-  }
-).firestore
-  .document("resumes/{resumeId}")
-  .onWrite(async (change, context) => {
+export const onWrite = onDocumentWritten("resumes/{resumeId}", async (event) => {
     try {
-      const oldData = change.before.data()
-        ? (change.before.data() as Resume)
+      const oldData = event.data?.before.data()
+        ? (event.data?.before.data()as Resume)
         : null;
-      const newData = change.after.data()
-        ? (change.after.data() as Resume)
+      const newData = event.data?.after.data()
+        ? (event.data?.after.data() as Resume)
         : null;
 
+      const resumeId = event.params.resumeId;
 
       // Check if resume is newly created
       if (!oldData && newData) {
-        await populateResumeDetails(context.params.resumeId, newData.userId);
-        await exportResume(context.params.resumeId, newData.userId);
+        await populateResumeDetails(resumeId, newData.userId);
+        await exportResume(resumeId, newData.userId);
         return;
       }  
       // If new data exists
       if (newData) {
         // await populateResumeDetails(context.params.resumeId, newData.userId);
-        await exportResume(context.params.resumeId, newData.userId);
+        await exportResume(resumeId, newData.userId);
       }
     } catch (error) {}
   });

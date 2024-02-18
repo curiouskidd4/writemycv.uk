@@ -150,7 +150,7 @@ const SingleEducationForm = ({
         style={{
           marginTop: "12px",
           width: "100%",
-        }}
+        }}  
       >
         <Row align="middle" justify="space-between" style={{ width: "70%" }}>
           <div className="profile-input-section-title">

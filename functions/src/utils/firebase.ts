@@ -2,11 +2,15 @@ import * as functions from "firebase-functions"
 import * as admin from "firebase-admin"
 // import * as googleFirestore from "@google-cloud/firestore"
 import * as googleFirestore from 'firebase-admin/firestore'
+import { setGlobalOptions } from "firebase-functions/v2/options";
 
 const client = new googleFirestore.v1.FirestoreAdminClient();
 
+setGlobalOptions({
+    region: "europe-west1",
+});
 admin.initializeApp({
-    storageBucket: process.env.ENV === "testing" ? "test-bucket" : "resu-me-a5cff.appspot.com",
+    storageBucket: process.env.ENV === "testing" ? "test-bucket" : "writemycv.appspot.com",
 });
 const db = admin.firestore();
 if (process.env.ENV === "testing") {

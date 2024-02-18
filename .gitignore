@@ -78,3 +78,7 @@ functions/.env.resu-me-a5cff
 .firebaserc
 firebase-export-1697437240554Sk6nOT/
 **/old/
+.env.prod
+functions/.env.prod
+functions/.env.local
+functions/.env.*
