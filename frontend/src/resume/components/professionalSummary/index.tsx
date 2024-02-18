@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   Button,
   Col,
@@ -33,6 +33,7 @@ import { useResume } from "../../../contexts/resume";
 import CustomCarousel from "../../../components/suggestionCarousel";
 import CVWizardBox from "../../../components/cvWizardBoxV2";
 import openAI from "../../../hooks/openai";
+import _ from "lodash";
 
 type FormLabelWithAIActionProps = {
   resumeId: string;
@@ -361,7 +362,7 @@ const DummyInput = ({ resumeId, onAdd, ...rest }: DummyInputProps) => {
 
 const ProfessionalSummaryFlow = ({
   professionalSummary,
-  onFinish,
+  // onFinish,
   syncProfessionalSummary,
 }: {
   professionalSummary: string;
@@ -372,10 +373,23 @@ const ProfessionalSummaryFlow = ({
   const [showAIWizard, setShowAIWizard] = useState(false);
   const [state, setState] = React.useState({
     loading: false,
+    showSaved: false,
     summary: professionalSummary,
   });
 
   const [form] = Form.useForm();
+
+  const debounceSave = useCallback(
+    _.debounce(async (val: any) => {
+      await syncProfessionalSummary(val);
+      console.log("Saving....");
+      setState((prev) => ({
+        ...prev,
+        loading: false,
+      }));
+    }, 1000),
+    []
+  );
 
   const onAdd = (value: string) => {
     // setState({ ...state, summary: value });
@@ -383,10 +397,10 @@ const ProfessionalSummaryFlow = ({
   };
 
   const onSave = async (values: any) => {
-    setState({ ...state, loading: true });
-    await syncProfessionalSummary(values.professionalSummary);
-    await onFinish(values.professionalSummary);
-    setState({ ...state, loading: false });
+    setState({ ...state, loading: true, showSaved: true });
+    await debounceSave(values.professionalSummary);
+    // await onFinish(values.professionalSummary);
+    // setState({ ...state, loading: false });
   };
 
   const descriptionHelper = openAI.useProfessionalSummaryHelper();
@@ -401,75 +415,94 @@ const ProfessionalSummaryFlow = ({
 
   return (
     <div className="resume-edit-detail padding">
-      <div className="profile-input-section-title">
-        <Typography.Title
-          level={4}
-          style={{
-            marginBottom: "0px",
-          }}
-        >
-          Professional Summary
-        </Typography.Title>
-        <Popover
-          placement="topLeft"
-          trigger="click"
-          content={
-            <Space direction="vertical">
-              <Button
-                type="text"
-                // size="small"
-                style={{
-                  height: "auto",
-                  textAlign: "left",
-                }}
-                disabled={
-                  state.summary && state.summary.length > 20 ? false : true
-                }
-                onClick={() => {
-                  loadSuggestions({
-                    rewrite: true,
-                  });
-                }}
-              >
-                <Typography.Text strong>
-                  {" "}
-                  <RepharseIcon /> Optimize
-                </Typography.Text>
-                <br />
-                <Typography.Text type="secondary">
-                  Rephrase and optimize your current description
-                </Typography.Text>
+      <Row align="middle" justify="space-between" style={{ width: "70%" }}>
+        <div style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          width: "100%"
+        }}>
+          <div className="profile-input-section-title">
+            <Typography.Title
+              level={4}
+              style={{
+                marginBottom: "0px",
+              }}
+            >
+              Professional Summary
+            </Typography.Title>
+            <Popover
+              placement="topLeft"
+              trigger="click"
+              content={
+                <Space direction="vertical">
+                  <Button
+                    type="text"
+                    // size="small"
+                    style={{
+                      height: "auto",
+                      textAlign: "left",
+                    }}
+                    disabled={
+                      state.summary && state.summary.length > 20 ? false : true
+                    }
+                    onClick={() => {
+                      loadSuggestions({
+                        rewrite: true,
+                      });
+                    }}
+                  >
+                    <Typography.Text strong>
+                      {" "}
+                      <RepharseIcon /> Optimize
+                    </Typography.Text>
+                    <br />
+                    <Typography.Text type="secondary">
+                      Rephrase and optimize your current description
+                    </Typography.Text>
+                  </Button>
+                  <Button
+                    type="text"
+                    style={{
+                      height: "auto",
+                      textAlign: "left",
+                      width: "100%",
+                    }}
+                    onClick={() => {
+                      loadSuggestions({
+                        rewrite: false,
+                      });
+                    }}
+                  >
+                    <Typography.Text strong>
+                      {" "}
+                      <LightBulbIcon /> Generate new ideas
+                    </Typography.Text>
+                    <br />
+                    <Typography.Text type="secondary">
+                      Get new ideas for the desciption
+                    </Typography.Text>
+                  </Button>
+                </Space>
+              }
+            >
+              <Button type="link">
+                <AIWizardIcon />
               </Button>
-              <Button
-                type="text"
-                style={{
-                  height: "auto",
-                  textAlign: "left",
-                  width: "100%",
-                }}
-                onClick={() => {
-                  loadSuggestions({
-                    rewrite: false,
-                  });
-                }}
-              >
-                <Typography.Text strong>
-                  {" "}
-                  <LightBulbIcon /> Generate new ideas
-                </Typography.Text>
-                <br />
-                <Typography.Text type="secondary">
-                  Get new ideas for the desciption
-                </Typography.Text>
-              </Button>
-            </Space>
-          }
-        >
-          <Button type="link">
-            <AIWizardIcon />
-          </Button>
-        </Popover>
-      </div>
+            </Popover>
+          </div>
+          {state.loading && state.showSaved ? (
+            <div className="auto-save-label-loading">
+              Saving changes <i className="fa-solid fa-cloud fa-beat"></i>
+            </div>
+          ) : state.showSaved ? (
+            <div className="auto-save-label-success">
+              Saved <i className="fa-solid fa-cloud"></i>
+            </div>
+          ) : null}
+        </div>
+      </Row>
+
       <Row>
         <Col span={24}>
           <div className="profile-tab-detail">
@@ -487,7 +520,8 @@ const ProfessionalSummaryFlow = ({
 
               <Form
                 name="personal_info"
-                onFinish={onSave}
+                // onFinish={onSave}
+                onValuesChange={onSave}
                 initialValues={{
                   professionalSummary: professionalSummary,
                 }}
@@ -505,25 +539,18 @@ const ProfessionalSummaryFlow = ({
                   ]}
                 >
                   {/* <DummyInput resumeId={resume.resume?.id} onAdd={onAdd} /> */}
-                  <EditorJsInput  />
-
+                  <EditorJsInput />
                 </Form.Item>
 
-                <Form.Item>
-                  <Button
-                    type="primary"
-                    htmlType="submit"
-                    loading={state.loading}
-                  >
-                    Save
-                  </Button>
-                </Form.Item>
+               
               </Form>
             </div>
             <div className="ai-wizard-area">
-              <Row style={{
-                width: "100%",
-              }}>
+              <Row
+                style={{
+                  width: "100%",
+                }}
+              >
                 {showAIWizard ? (
                   <CVWizardBox
                     title="Description Tip"
@@ -534,8 +561,8 @@ const ProfessionalSummaryFlow = ({
                     </Typography.Text>
                     {descriptionHelper.loading && <Skeleton active></Skeleton>}
                     {descriptionHelper.loading === false &&
-                    !descriptionHelper.error &&
-                    descriptionHelper.suggestions?.result && 
+                      !descriptionHelper.error &&
+                      descriptionHelper.suggestions?.result &&
                       descriptionHelper.suggestions?.result?.length > 0 && (
                         <CustomCarousel
                           suggestions={descriptionHelper.suggestions.result}
@@ -555,11 +582,7 @@ const ProfessionalSummaryFlow = ({
           </div>
         </Col>
       </Row>
-      {/* <Row>
-        
-         
-        </Form>
-      </Row> */}
+      
     </div>
   );
 };

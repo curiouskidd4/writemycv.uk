@@ -2,6 +2,8 @@ import React from "react";
 import { Checkbox, Col, Row, Tabs, Typography } from "antd";
 import "./index.css";
 import SortableComponent from "../../../components/sortableList";
+import PDFViewer from "../../../components/pdfViewer";
+import { useResume } from "../../../contexts/resume";
 
 let templates = [
   {
@@ -77,6 +79,17 @@ let sections = [
 
 const Adjustment = () => {
   const [currentOrder, setCurrentOrder] = React.useState(sections);
+  const [resumeURL, setResumeURL] = React.useState("");
+  const { getResumeURL } = useResume();
+
+  React.useEffect(() => {
+    const fetchResumeURL = async () => {
+      const url = await getResumeURL();
+      setResumeURL(url);
+    };
+    fetchResumeURL();
+  }, []);
+
   const onReorder = (newOrder: any) => {
     setCurrentOrder(newOrder);
   };
@@ -102,7 +115,6 @@ const Adjustment = () => {
           <Typography.Text>{item.name}</Typography.Text>
         </div>
         <Checkbox
-          
           checked={!item.disabled}
           onChange={() => {
             onDisable(item.key);
@@ -148,7 +160,12 @@ const Adjustment = () => {
             </Tabs.TabPane>
           </Tabs>
         </Col>
-        <Col span={14}>Preview</Col>
+        <Col span={14} style={{
+          overflow: "scroll", 
+          height: "100%"
+        }}>
+          {resumeURL ? <PDFViewer documentURL={resumeURL} /> : null}
+        </Col>
       </Row>
     </div>
   );

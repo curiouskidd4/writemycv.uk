@@ -1,5 +1,5 @@
-import { Divider, Menu, Row, Select, Steps } from "antd";
-import React, { useEffect } from "react";
+import { Divider, Menu, Row, Select, Steps, Typography } from "antd";
+import React, { useCallback, useEffect } from "react";
 import {
   MinusCircleOutlined,
   PlusOutlined,
@@ -15,6 +15,7 @@ import { Timestamp } from "firebase/firestore";
 import { DetailForm } from "./DetailForm";
 import { AchievementForm } from "./AchievementForm";
 import { DescriptionForm } from "./DescriptionForm";
+import _ from "lodash";
 
 export const colSpan = {
   xs: 24,
@@ -28,7 +29,7 @@ export const fullColSpan = 24;
 
 type SingleExperienceFormProps = {
   initialValues?: any;
-  onFinish?: (values: any) => void;
+  onFinish: (values: any) => void;
   saveLoading?: boolean;
 };
 
@@ -37,111 +38,141 @@ const SingleExperienceForm = ({
   onFinish,
   saveLoading,
 }: SingleExperienceFormProps) => {
-  const [experienceData, setExperienceData] = React.useState<any>({});
-
-  useEffect(() => {
-    let startDate = initialValues.startDate
-      ? dayjs(initialValues.startDate.toDate())
-      : null;
-    let endDate = initialValues.endDate
-      ? dayjs(initialValues.endDate.toDate())
-      : null;
+  let startDate = initialValues.startDate
+    ? dayjs(initialValues.startDate.toDate())
+    : null;
+  let endDate = initialValues.endDate
+    ? dayjs(initialValues.endDate.toDate())
+    : null;
     initialValues = {
       ...initialValues,
       dateRange: [startDate, endDate],
     };
-    setExperienceData(initialValues);
-    setState((prev) => ({
-      ...prev,
-      current: 0,
-    }));
-  }, [initialValues]);
+  const [experienceData, setExperienceData] = React.useState<any>(
+    initialValues || {}
+  );
 
+ 
   const [state, setState] = React.useState({
     current: 0,
     finished: false,
+    loading: false,
+    showSaved: false,
   });
 
-  const onSave = async (
-    key: "description" | "achievements" | "details",
-    details: any
-  ) => {
-    console.log(details);
+  const debounceSave = useCallback(
+    _.debounce(async (details: any) => {
+      await onFinish(details);
+      console.log("Saving....");
+      setState((prev) => ({
+        ...prev,
+        loading: false,
+      }));
+    }, 1000),
+    []
+  );
+
+  const onSave = async (details: any) => {
     setExperienceData((prev: any) => ({
       ...prev,
       ...details,
     }));
-    if (key === "details") {
+
+    let finalData = {
+      ...experienceData,
+      ...details,
+    };
+
+    // Check mandatory fields are filled
+    if (
+      !finalData.employerName ||
+      !finalData.position ||
+      !finalData.dateRange
+    ) {
       setState((prev) => ({
         ...prev,
-        current: 1,
+        loading: false,
       }));
-    } else if (key === "description") {
-      setState((prev) => ({
-        ...prev,
-        current: 2,
-      }));
-    } else if (key === "achievements") {
-      let finalData = {
-        ...experienceData,
-        ...details,
-      };
-      // Complete and move to next
-      if (onFinish) {
-        finalData.startDate = Timestamp.fromDate(
-          finalData.dateRange[0].toDate()
-        );
-        finalData.endDate = finalData.dateRange[1]
-          ? Timestamp.fromDate(finalData.dateRange[1].toDate())
-          : null;
-
-        delete finalData.dateRange;
-
-        setState((prev) => ({
-          ...prev,
-          loading: true,
-        }));
-        await onFinish(finalData);
-        setState((prev) => ({
-          ...prev,
-          finished: true,
-          loading: false,
-          //   current: 0,
-        }));
-      }
+      return;
     }
+
+    if (JSON.stringify(finalData) === JSON.stringify(initialValues)) {
+      setState((prev) => ({
+        ...prev,
+        loading: false,
+      }));
+      return;
+    }
+
+    setState((prev) => ({
+      ...prev,
+      loading: true,
+    }));
+    if (finalData.dateRange) {
+      // Complete and move to next
+      finalData.startDate = Timestamp.fromDate(finalData.dateRange[0].toDate());
+      finalData.endDate = finalData.dateRange[1]
+        ? Timestamp.fromDate(finalData.dateRange[1].toDate())
+        : null;
+
+      delete finalData.dateRange;
+    }
+    setState((prev) => ({
+      ...prev,
+      loading: true,
+      showSaved: true,
+    }));
+    await debounceSave(finalData);
+    // setState((prev) => ({
+    //   ...prev,
+    //   finished: true,
+    //   loading: false,
+    //   //   current: 0,
+    // }));
   };
 
   return (
     <div>
-
       <Row
         style={{
           marginTop: "24px",
           width: "100%",
         }}
       >
-
-        <>
+        <Row align="middle" justify="space-between" style={{ width: "70%" }}>
+          <div className="profile-input-section-title">
+            <Typography.Text strong>Basic Details</Typography.Text>
+          </div>
+          {state.loading && state.showSaved ? (
+            <div className="auto-save-label-loading">
+              Saving changes <i className="fa-solid fa-cloud fa-beat"></i>
+            </div>
+          ) : state.showSaved ? (
+            <div className="auto-save-label-success">
+              Saved <i className="fa-solid fa-cloud"></i>
+            </div>
+          ) : null}
+        </Row>
+        <div>
           <DetailForm
             initialValues={experienceData}
-            onFinish={(details) => onSave("details", details)}
+            onChange={(details) => onSave(details)}
             saveLoading={saveLoading}
           />
           <Divider className="profile-input-section-divider" />
           <DescriptionForm
             initialValues={experienceData}
-            onFinish={(details) => onSave("description", details)}
+            onChange={(details) => onSave(details)}
             saveLoading={saveLoading}
           />
           <Divider className="profile-input-section-divider" />
           <AchievementForm
             position={experienceData.position}
             initialValues={experienceData}
-            onFinish={(details) => onSave("achievements", details)}
+            onChange={(details) => onSave(details)}
             saveLoading={saveLoading}
           />
-        </>
+        </div>
       </Row>
     </div>
   );

@@ -12,6 +12,7 @@ import {
   Popover,
   Divider,
   Modal,
+  message,
 } from "antd";
 import React, { useEffect, useState } from "react";
 import {
@@ -28,10 +29,12 @@ import {
   addDoc,
   and,
   collection,
+  doc,
   onSnapshot,
   or,
   orderBy,
   query,
+  setDoc,
   where,
 } from "firebase/firestore";
 import { db, storage } from "../../services/firebase";
@@ -50,6 +53,7 @@ import {
 } from "../../components/faIcons";
 import { useNavigate } from "react-router-dom";
 import { Resume } from "../../types/resume";
+import { useMutateDoc } from "../../firestoreHooks";
 
 // const ResumeItemV2 = ({ resume }: { resume: Resume }) => {
 //   const { user } = useAuth();
@@ -234,8 +238,10 @@ import { Resume } from "../../types/resume";
 // };
 
 const ResumeItemV3 = ({ resume }: { resume: Resume }) => {
+  const resumeId = resume.id;
   const { user } = useAuth();
   const utils = useUtils();
+  const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [state, setState] = useState({
     error: "",
     loading: true,
@@ -245,6 +251,75 @@ const ResumeItemV3 = ({ resume }: { resume: Resume }) => {
   useEffect(() => {
     getScreenshot();
   }, []);
+
+  let publicResumeMutation = useMutateDoc("publicResume", "new");
+
+
+
+  const handlePublicLink = async () => {
+    // Get public link
+    let resumeRef = doc(db, "resumes", resumeId);
+  
+    let docId = await publicResumeMutation.mutate({
+      resumeId: resumeId,
+      userId: user.uid,
+      createdAt: new Date(),
+    });
+
+    // let publicLink = window.location.origin + "/public-resume/" + docId;
+    // Copy to clipboard
+    // navigator.clipboard.writeText(publicLink);
+    // message.success("Public link copied to clipboard");
+
+    // Update public resume ID in resume
+    // let resumeRef = doc(db, "resumes", resumeId);
+    try {
+      await setDoc(
+        resumeRef,
+        {
+          publicResumeId: docId,
+        },
+        { merge: true }
+      );
+      return docId;
+    } catch (e) {
+      debugger;
+      console.log(e);
+    }
+  };
+
+  const getPublicLink = async () => {
+    if (resume.publicResumeId) {
+      let publicLink = window.location.origin + "/public-resume/" + resume.publicResumeId;
+      navigator.clipboard.writeText(publicLink);
+      message.success("Public link copied to clipboard");
+    }else{
+      let id = await handlePublicLink();
+      let publicLink = window.location.origin + "/public-resume/" + id;
+      navigator.clipboard.writeText(publicLink);
+      message.success("Public link copied to clipboard");
+
+    }
+  }
+
+
+  const softDeleteResume = async () => {
+    let resumeRef = doc(db, "resumes", resumeId);
+
+    try {
+      await setDoc(
+        resumeRef,
+        {
+          isDeleted: true,
+        },
+        { merge: true }
+      );
+    } catch (e) {
+      debugger;
+      console.log(e);
+    }
+    setDeleteModalVisible(false);
+  };
 
   const getScreenshot = async () => {
     const gsRef = ref(
@@ -280,6 +355,7 @@ const ResumeItemV3 = ({ resume }: { resume: Resume }) => {
     window.open(url, "_blank");
   };
 
+
   const downloadResumeDocx = async (e: any) => {
     // e.preventDefault();
     let res = await utils.exportResumeToDoc({ resumeId: resume.id });
@@ -289,6 +365,51 @@ const ResumeItemV3 = ({ resume }: { resume: Resume }) => {
   let createdAt = moment(resume.createdAt.toDate()).fromNow();
   return (
     <>
+      <Modal
+      className="default-modal"
+        title="Are you sure you want to delete this resume?"
+        open={deleteModalVisible}
+        footer={null}
+        onCancel={
+          (e) => {
+            e.preventDefault();
+            setDeleteModalVisible(false);
+          }
+          // onCancel
+        }
+      >
+        {/* <p>Are you sure you want to delete this resume?</p> */}
+        <Space style={{
+          marginTop: "1rem"
+        }}
+        size="large"
+        >
+          <Button
+            type="primary"
+            danger
+            onClick={(e) => {
+                e.preventDefault();
+              softDeleteResume();
+            }}
+          >
+            Delete
+          </Button>
+
+          <Button
+            style={{
+              height: "41px"
+            }}
+            onClick={(e) => {
+                e.preventDefault();
+
+              setDeleteModalVisible(false);
+            }}
+          >
+            Cancel
+          </Button>
+        </Space>
+      </Modal>
+
       <Modal
         visible={state.showPreviewModal}
         footer={null}
@@ -380,7 +501,9 @@ const ResumeItemV3 = ({ resume }: { resume: Resume }) => {
                   <Button
                     size="small"
                     type="link"
-                    onClick={downloadResume}
+                    onClick={
+                      getPublicLink
+                    }
                     className="resume-action"
                   >
                     <i className="fa-solid fa-share-from-square"></i> Share
@@ -388,7 +511,11 @@ const ResumeItemV3 = ({ resume }: { resume: Resume }) => {
                   <Button
                     size="small"
                     type="link"
-                    onClick={downloadResume}
+                    onClick={
+                      () => {
+                        setDeleteModalVisible(true);
+                      }
+                    }
                     className="resume-action"
                   >
                     <i className="fa-solid fa-trash-can"></i> Delete
@@ -399,13 +526,11 @@ const ResumeItemV3 = ({ resume }: { resume: Resume }) => {
           </Col>
         </Row>
         <div>
-                <Link to={`/resumes/${resume.id}/edit`}>
-
-          <Button type="text" size="small" className="expand-icon">
-            <i className="fa-regular fa-eye"></i>
-          </Button>
-                </Link>
-
+          <Link to={`/resumes/${resume.id}/edit`}>
+            <Button type="text" size="small" className="expand-icon">
+              <i className="fa-regular fa-eye"></i>
+            </Button>
+          </Link>
         </div>
       </Card>
     </>
@@ -517,54 +642,54 @@ const ResumeListView = () => {
         </Row>
         <div className="resume-container">
           <div className="resume-body">
-          <ResumeBodyHeader createNewResume={createNewResume} />
+            <ResumeBodyHeader createNewResume={createNewResume} />
 
-          {state.loading && (
-            <Row
-              style={{ width: "100%", height: "50vh" }}
-              align="middle"
-              justify="center"
-            >
-              <Spin> </Spin>
-            </Row>
-          )}
-          {!state.loading && state.resumes.length == 0 && (
-            <Row
-              style={{ width: "100%", height: "50vh" }}
-              align="middle"
-              justify="center"
-            >
-              <Empty description="No resumes yet">
-                <Button type="primary" onClick={createNewResume}>
-                  Create New
-                </Button>
-              </Empty>
-            </Row>
-          )}
+            {state.loading && (
+              <Row
+                style={{ width: "100%", height: "50vh" }}
+                align="middle"
+                justify="center"
+              >
+                <Spin> </Spin>
+              </Row>
+            )}
+            {!state.loading && state.resumes.length == 0 && (
+              <Row
+                style={{ width: "100%", height: "50vh" }}
+                align="middle"
+                justify="center"
+              >
+                <Empty description="No resumes yet">
+                  <Button type="primary" onClick={createNewResume}>
+                    Create New
+                  </Button>
+                </Empty>
+              </Row>
+            )}
 
-          {
-            <List
-              style={{
-                marginTop: "1rem",
-              }}
-              grid={{
-                gutter: 32,
-                xs: 1,
-                sm: 2,
-                md: 2,
-                lg: 2,
-                xl: 2,
-                xxl: 2,
-              }}
-              dataSource={state.resumes}
-              renderItem={(item) => (
-                <List.Item key={item.id}>
-                  {/* <ResumeItem key={item.id} resume={item} /> */}
-                  <ResumeItemV3 key={item.id} resume={item} />
-                </List.Item>
-              )}
-            />
-          }
+            {
+              <List
+                style={{
+                  marginTop: "1rem",
+                }}
+                grid={{
+                  gutter: 32,
+                  xs: 1,
+                  sm: 2,
+                  md: 2,
+                  lg: 2,
+                  xl: 2,
+                  xxl: 2,
+                }}
+                dataSource={state.resumes}
+                renderItem={(item) => (
+                  <List.Item key={item.id}>
+                    {/* <ResumeItem key={item.id} resume={item} /> */}
+                    <ResumeItemV3 key={item.id} resume={item} />
+                  </List.Item>
+                )}
+              />
+            }
           </div>
         </div>
       </div>

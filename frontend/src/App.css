@@ -28,12 +28,12 @@
 }
 
 body {
-  background: rgb(195, 208, 231);
-  background: radial-gradient(
+  /* background: rgb(195, 208, 231); */
+  /* background: radial-gradient(
     circle,
     rgba(195, 208, 231, 0.5508797268907564) 0%,
     rgba(247, 233, 221, 0.5508797268907564) 80%
-  );
+  ); */
 }
 
 @media (prefers-reduced-motion: no-preference) {

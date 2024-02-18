@@ -26,8 +26,8 @@ import {
   LeftOutlined,
 } from "@ant-design/icons";
 import dayjs from "dayjs";
-import {  downloadStorageContent } from "../../helpers";
-import {  useParams } from "react-router-dom";
+import { downloadStorageContent } from "../../helpers";
+import { useParams } from "react-router-dom";
 import { storage, db } from "../../services/firebase";
 import { getDownloadURL, ref } from "firebase/storage";
 import { doc, getDoc } from "firebase/firestore";
@@ -51,7 +51,7 @@ const ResumePreview = () => {
     let resumeData = await getDoc(resumeRef);
     let resumeId = resumeData.data().resumeId;
     let userId = resumeData.data().userId;
-    // Populate this to public resumes 
+    // Populate this to public resumes
     const gsRef = ref(
       storage,
       `userData/${userId}/resumes/${resumeId}/resume.html`
@@ -63,7 +63,6 @@ const ResumePreview = () => {
 
     setState((prev) => ({ ...prev, loading: false, resumeHTML: resumeHTML }));
   };
-
 
   const sectionOrder = [
     "personal",
@@ -121,34 +120,46 @@ const ResumePreview = () => {
     );
   };
   return (
-    <div
+    <Row
+      justify="center"
       style={{
-        height: "100%",
         width: "100%",
         borderRadius: "4px",
         //   overflowY: "scroll",
         overflow: "auto",
+        backgroundColor: "grey",
+        padding: "1.5rem"
       }}
-      ref={targetRef}
     >
-      <iframe
-        ref={iframeRef}
-        key={scale}
-        onLoad={() => {
-          console.log("iframe loaded");
-          resize();
-        }}
-        //   width="100%"
-        //   height="100%"
-        className="resume-preview-frame"
-        srcDoc={state.resumeHTML}
+      <div
         style={{
-          // width: "500px",
-          // height: "100%",
-          border: "none",
+          height: "100%",
+          width: "800px",
+          borderRadius: "4px",
+          //   overflowY: "scroll",
+          overflow: "auto",
         }}
-      ></iframe>
-    </div>
+        ref={targetRef}
+      >
+        <iframe
+          ref={iframeRef}
+          key={scale}
+          onLoad={() => {
+            console.log("iframe loaded");
+            resize();
+          }}
+          //   width="100%"
+          //   height="100%"
+          className="resume-preview-frame"
+          srcDoc={state.resumeHTML}
+          style={{
+            // width: "500px",
+            // height: "100%",
+            border: "none",
+          }}
+        ></iframe>
+      </div>
+    </Row>
   );
 };
 

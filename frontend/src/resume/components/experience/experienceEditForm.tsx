@@ -123,35 +123,7 @@ const ExperienceForm = ({
           }}
           className="education-history-selector selector-col"
         >
-          {/* <Menu
-            className="experience-menu"
-            defaultSelectedKeys={[state.selectedExperienceIdx.toString()]}
-            style={{
-              //   height: "100%",
-              borderRight: 0,
-              background: "transparent",
-            }}
-            onSelect={(item) => {
-              setState({
-                selectedExperience: experienceList[parseInt(item.key)],
-                selectedExperienceIdx: parseInt(item.key),
-              });
-            }}
-            items={experienceList.map((exp, idx) => {
-              return {
-                key: idx.toString(),
-                label: <ExperienceCard experience={exp} />,
-                //   label: edu.degree,
-              };
-            })}
-          ></Menu>
-
-          <Row justify="start">
-            <Button style={{ margin: "8px 24px" }} onClick={addNewExperience}>
-              <PlusOutlined /> Add Experience
-            </Button>
-          </Row> */}
-
+          
           <SelectorSidebar
             items={experienceList}
             detailExtractor={detailExtractor}
@@ -183,13 +155,10 @@ const ExperienceForm = ({
             paddingBottom: "12px",
           }}
         >
-          <div>
-            <Typography.Title level={5}>
-              {state.selectedExperience?.employerName || "New Experience"}
-            </Typography.Title>
-          </div>
+          
           {state.selectedExperience && (
             <SingleExperienceForm
+              key={state.selectedExperience?.id}
               initialValues={state.selectedExperience}
               onFinish={onSave}
               saveLoading={saveLoading}

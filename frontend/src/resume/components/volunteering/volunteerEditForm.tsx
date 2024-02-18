@@ -16,6 +16,8 @@ import "./index.css";
 import SingleVolunteersFrom from "./components/editForm";
 import { Timestamp } from "firebase/firestore";
 import moment from "moment";
+import SelectorSidebar from "../../../components/selectorSidebar";
+import ObjectID from "bson-objectid";
 
 const VolunteerCard = ({ volunteer }: { volunteer: Volunteering }) => {
   let volunteerStart = volunteer.startDate
@@ -44,20 +46,20 @@ type VolunteerProps = {
 
 type VolunteerState = {
   selectedVolunteer: Volunteering | null;
-  selectedVolunteerIdx: number | null;
+  selectedId: string | null;
+  isNewItem?: boolean;
 };
 
 const VolunteerForm = ({
   volunteerList,
   saveLoading,
-  onFinish,
   syncVolunteers,
   showTitle = true,
 }: VolunteerProps) => {
   volunteerList = volunteerList || [];
   const [state, setState] = React.useState<VolunteerState>({
     selectedVolunteer: volunteerList.length > 0 ? volunteerList[0] : null,
-    selectedVolunteerIdx: volunteerList.length > 0 ? 0 : null,
+    selectedId: volunteerList.length > 0 ? volunteerList[0].id : null,
   });
 
   const onSave = async (volunteer: Volunteering) => {
@@ -65,21 +67,23 @@ const VolunteerForm = ({
     volunteer.endDate = volunteer.endDate
       ? Timestamp.fromDate(volunteer.endDate.toDate())
       : null;
-    volunteerList[state.selectedVolunteerIdx!] = volunteer;
-    await syncVolunteers(volunteerList);
-    setState((prev) => ({
-      ...prev,
-      selectedVolunteer: volunteer,
-    }));
-    message.success("Volunteer saved!");
-    if (onFinish) {
-      await onFinish(volunteerList);
+    
+    // publicationList[state.selectedPublicationIdx!] = publication;
+    let newVolunteerList = [...volunteerList];
+    let idx = newVolunteerList.findIndex((item) => item.id === volunteer.id);
+    if (idx > -1) {
+      newVolunteerList[idx] = volunteer;
+    } else {
+      newVolunteerList.push(volunteer);
     }
+
+    await syncVolunteers(newVolunteerList);
+    message.success("Volunteer item saved!");
   };
 
   const addNew = () => {
     const newItem: Volunteering = {
-      id: (volunteerList.length + 1).toString(),
+      id: ObjectID().toHexString(),
       title: "",
       startDate: Timestamp.fromDate(new Date()),
       endDate: null,
@@ -87,16 +91,22 @@ const VolunteerForm = ({
     };
     setState((prev) => ({
       selectedVolunteer: newItem,
-      selectedVolunteerIdx: volunteerList.length,
+      selectedId: newItem.id,
+      isNewItem: true,
     }));
   };
 
+  const detailExtractor = (volunteer: Volunteering) => {
+    return { title: volunteer.title, subtitle: "" };
+  };
+
+  console.log("VolunteerList", volunteerList);
   return (
     <>
       {showTitle ? (
         <Typography.Title level={4}>Volunteer</Typography.Title>
       ) : null}
-       <Row
+      <Row
         style={{
           height: "100%",
         }}
@@ -107,11 +117,11 @@ const VolunteerForm = ({
             minWidth: "250px",
           }}
           className="volunteer-history-selector selector-col"
-          >
+        >
           {/* <Typography.Title level={5}>Volunteer Items</Typography.Title> */}
           {/* <Typography.Text type="secondary">Your history</Typography.Text> */}
 
-          <Menu
+          {/* <Menu
             className="volunteer-menu"
             selectedKeys={
               state.selectedVolunteerIdx != null
@@ -141,7 +151,26 @@ const VolunteerForm = ({
             <Button style={{ margin: "8px 24px" }} onClick={addNew}>
               <PlusOutlined /> Add Volunteer
             </Button>
-          </Row>
+          </Row> */}
+
+          <SelectorSidebar
+            items={volunteerList}
+            detailExtractor={detailExtractor}
+            onReorder={(newOrder: Volunteering[]) => {
+              syncVolunteers(newOrder);
+            }}
+            addNew={addNew}
+            entityTitle="Volunteering"
+            selectedKey={state.selectedId}
+            onSelect={(key: string) => {
+              setState({
+                selectedVolunteer: volunteerList.filter(
+                  (item) => item.id === key
+                )[0],
+                selectedId: key,
+              });
+            }}
+          />
         </Col>
         <Col
           flex="auto"
@@ -162,15 +191,17 @@ const VolunteerForm = ({
               />
             )} */}
 
-          {state.selectedVolunteer != null &&
-          state.selectedVolunteerIdx != null ? (
+          {state.selectedVolunteer != null ? (
             <>
-              <div>
+              {/* <div>
                 <Typography.Title level={5}>
                   Volunteering #{state.selectedVolunteerIdx + 1}
                 </Typography.Title>
-              </div>
+              </div> */}
               <SingleVolunteersFrom
+              isNewItem = {state.isNewItem}
+
+                key={state.selectedVolunteer.id}
                 initialValues={{ ...state.selectedVolunteer }}
                 onFinish={onSave}
                 saveLoading={saveLoading}

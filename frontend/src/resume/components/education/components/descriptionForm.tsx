@@ -56,7 +56,7 @@ export const DescriptionForm = ({ value, onChange }: DescriptionFormProps) => {
     onChange({
       description: description,
     });
-  }, [description]);
+  }, [description, onChange]);
 
   const onAddDescription = (value: string) => {
     setDescription(value);

@@ -1,5 +1,5 @@
 import React, { ReactNode } from "react";
-import { ref } from "firebase/storage";
+import { getDownloadURL, ref } from "firebase/storage";
 import { createContext, useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { db, storage } from "../services/firebase";
@@ -30,6 +30,7 @@ import {
   Volunteering,
 } from "../types/resume";
 import { message } from "antd";
+import ObjectID from "bson-objectid";
 
 type ResumeContextType = {
   loadResumeHTML: () => Promise<void>;
@@ -47,6 +48,7 @@ type ResumeContextType = {
   softDeleteResume: () => Promise<void>;
   copyPublicLink: () => Promise<string>;
   markResumeComplete: () => Promise<void>;
+  getResumeURL: () => Promise<string>;
 
   loading: boolean;
   resumeHTMLLoading: boolean;
@@ -86,6 +88,7 @@ const ResumeContext = createContext<ResumeContextType>({
   savePublication: async () => {},
   saveVolunteering: async () => {},
   saveLanguages: async () => {},
+  getResumeURL: async () => "",
 });
 
 const useResumeProvider = () => {
@@ -105,6 +108,13 @@ const useResumeProvider = () => {
       loadResume();
     }
   }, [resumeId]);
+
+  const _fixId = (data: any): any => {
+    if (!data.id){
+      data.id = ObjectID().toHexString();
+    }
+    return data;
+  }
 
   const _fixUndefined = (data: any): any => {
     // Replace any underfined with null
@@ -135,12 +145,22 @@ const useResumeProvider = () => {
     if (firebaseData) {
       const resumeData = firebaseData as Resume;
 
+      resumeData.awardList = (resumeData.awardList || []).map(_fixId)
+      resumeData.educationList = (resumeData.educationList || []).map(_fixId)
+      resumeData.experienceList = (resumeData.experienceList || []).map(_fixId)
+      
+      resumeData.publicationList = (resumeData.publicationList || []).map(_fixId)
+      resumeData.volunteeringList = (resumeData.volunteeringList || []).map(_fixId)
+
+
       // Check if all the mandatory fields are present in the resume
       // If not, create them
       let experienceList = resumeData.experienceList;
       let educationList = resumeData.educationList;
       let skillList = resumeData.skillList;
       let personalInfo = resumeData.personalInfo;
+      
+
 
       if (!experienceList) {
         experienceList = [];
@@ -212,6 +232,18 @@ const useResumeProvider = () => {
     // Open the url in new tab
     window.open(url, "_blank");
   };
+
+  const getResumeURL = async () => {
+    const gsRef = ref(
+      storage,
+      `userData/${userId}/resumes/${resumeId}/resume.pdf`
+    );
+
+    // Get the download URL
+    let url = await getDownloadURL(gsRef);
+    return url;
+  }
+
 
   const saveEducation = async (educations: Education[]) => {
     let educationsFixed = educations.map((edu) => {
@@ -404,6 +436,7 @@ const useResumeProvider = () => {
           volunteeringList: volunteeringsFixed,
         },
       }));
+      debugger
     }
   }
 
@@ -435,11 +468,6 @@ const useResumeProvider = () => {
     let item: DocumentReference;
 
     if (!publicItemId) {
-      // let doct = await addDoc(db, "publicResumes", {
-      //   resumeId: resumeId,
-      //   userId: user.uid,
-      //   createdAt: Timestamp.now(),
-      // })
 
       console.log({
         resumeId: resumeId,
@@ -472,11 +500,11 @@ const useResumeProvider = () => {
       item = doc(db, "publicResume", publicItemId);
     }
 
+
     if (publicItemId) {
       let publicLink =
         window.location.origin + "/public-resume/" + publicItemId;
       // Copy to clipboard
-      
       return publicLink;
     } else {
       message.error("Something went wrong");
@@ -538,6 +566,7 @@ const useResumeProvider = () => {
     savePublication,
     saveVolunteering,
     saveLanguages,
+    getResumeURL,
     ...state,
   };
 };

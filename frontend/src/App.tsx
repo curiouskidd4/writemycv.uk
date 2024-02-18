@@ -94,8 +94,6 @@ const GenPublicLayout = ({ showSigninButtons = true }) => {
       <div id="public-detail">
         <Outlet />
       </div>
-      {/* <Footer />
-       */}
       {hideFooter ? null : <Footer />}
     </>
   );

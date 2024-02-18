@@ -23,7 +23,7 @@ export const DetailForm = ({ value, onChange }: DetailFormProps) => {
     form.setFieldsValue({
       ...value,
     });
-  }, [value]);
+  }, []);
 
   const handleChange = (changedValues: any, values: any) => {
     // Check if value has changed only then push

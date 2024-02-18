@@ -16,6 +16,8 @@ import "./index.css";
 import SinglePublicationsFrom from "./components/editForm";
 import { Timestamp } from "firebase/firestore";
 import moment from "moment";
+import SelectorSidebar from "../../../components/selectorSidebar";
+import ObjectID from "bson-objectid";
 
 const PublicationCard = ({ publication }: { publication: Publication }) => {
   let publicationDateStr = moment(publication.date.toDate()).format("MMM YYYY");
@@ -37,7 +39,9 @@ type PublicationProps = {
 
 type PublicationState = {
   selectedPublication: Publication | null;
-  selectedPublicationIdx: number | null;
+  // selectedPublicationIdx: number | null;
+  selectedId: string | null;
+  isNewItem?: boolean;
 };
 
 const PublicationForm = ({
@@ -50,23 +54,35 @@ const PublicationForm = ({
   publicationList = publicationList || [];
   const [state, setState] = React.useState<PublicationState>({
     selectedPublication: publicationList.length > 0 ? publicationList[0] : null,
-    selectedPublicationIdx: publicationList.length > 0 ? 0 : null,
+    // selectedPublicationIdx: publicationList.length > 0 ? 0 : null,
+    selectedId: publicationList.length > 0 ? publicationList[0].id : null,
+
   });
 
   const onSave = async (publication: Publication) => {
     publication.date = Timestamp.fromDate(publication.date.toDate());
-    publicationList[state.selectedPublicationIdx!] = publication;
-
-    await syncPublications(publicationList);
-    message.success("Publication saved!");
-    if (onFinish) {
-      await onFinish(publicationList);
+    // publicationList[state.selectedPublicationIdx!] = publication;
+    let newPublicationList = [...publicationList];
+    let idx = newPublicationList.findIndex(
+      (item) => item.id === publication.id
+    );
+    if (idx > -1) {
+      newPublicationList[idx] = publication;
+    } else {
+      newPublicationList.push(publication);
     }
+
+    await syncPublications(newPublicationList);
+    message.success("Publication saved!");
+
+    // if (onFinish) {
+    //   await onFinish(publicationList);
+    // }
   };
 
   const addNew = () => {
     const newItem: Publication = {
-      id: (publicationList.length + 1).toString(),
+      id: ObjectID().toHexString(),
       title: "",
       date: Timestamp.fromDate(new Date()),
       description: "",
@@ -74,8 +90,14 @@ const PublicationForm = ({
     };
     setState((prev) => ({
       selectedPublication: newItem,
-      selectedPublicationIdx: publicationList.length,
+      // selectedPublicationIdx: publicationList.length,
+      selectedId: newItem.id,
+      isNewItem: true,
     }));
+  };
+
+  const detailExtractor = (publication: Publication) => {
+    return { title: publication.title, subtitle: "" };
   };
 
   return (
@@ -98,7 +120,7 @@ const PublicationForm = ({
           {/* <Typography.Title level={5}>Publication Items</Typography.Title> */}
           {/* <Typography.Text type="secondary">Your history</Typography.Text> */}
 
-          <Menu
+          {/* <Menu
             className="publication-menu"
             selectedKeys={
               state.selectedPublicationIdx != null
@@ -128,16 +150,38 @@ const PublicationForm = ({
             <Button style={{ margin: "8px 24px" }} onClick={addNew}>
               <PlusOutlined /> Add Publication
             </Button>
-          </Row>
+          </Row> */}
+
+          <SelectorSidebar
+            items={publicationList}
+            detailExtractor={detailExtractor}
+            onReorder={(newOrder: Publication[]) => {
+              syncPublications(newOrder);
+            }}
+            addNew={addNew}
+            entityTitle="Education"
+            selectedKey={state.selectedId}
+            onSelect={(key: string) => {
+              setState({
+                selectedPublication: publicationList.filter(
+                  (item) => item.id === key
+                )[0],
+                selectedId: key,
+              });
+            }}
+          />
         </Col>
-        <Col span={16} style={{
+        <Col
+          span={16}
+          style={{
             paddingLeft: "24px",
             paddingTop: "24px",
             height: "100%",
             overflowY: "auto",
             overflowX: "hidden",
             paddingBottom: "2rem",
-          }}>
+          }}
+        >
           {/* {state.selectedPublication && (
               <SinglePublicationForm
                 initialValues={state.selectedPublication}
@@ -146,15 +190,16 @@ const PublicationForm = ({
               />
             )} */}
 
-          {state.selectedPublication != null &&
-          state.selectedPublicationIdx != null ? (
+          {state.selectedPublication != null ? (
             <>
-              <div>
+              {/* <div>
                 <Typography.Title level={5}>
                   Publication #{state.selectedPublicationIdx + 1}
                 </Typography.Title>
-              </div>
+              </div> */}
               <SinglePublicationsFrom
+                isNewItem={state.isNewItem}
+                key={state.selectedPublication.id}
                 initialValues={state.selectedPublication}
                 onFinish={onSave}
                 saveLoading={saveLoading}

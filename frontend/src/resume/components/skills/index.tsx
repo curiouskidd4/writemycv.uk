@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import {
   Button,
   Col,
@@ -20,6 +20,7 @@ import {
 import { Skill } from "../../../types/resume";
 import useOpenAI from "../../../hooks/openai";
 import CVWizardBox from "../../../components/cvWizardBoxV2";
+import _ from "lodash";
 
 const SkillItem = ({
   skill,
@@ -99,6 +100,7 @@ const SkillFlow = ({
     skillList: skillList,
     skillText: "",
     loading: false,
+    showSaved: false,
   });
   const skillHelper = useOpenAI.useSkillHelper();
 
@@ -109,30 +111,33 @@ const SkillFlow = ({
     });
   }, []);
 
-  const onSave = async () => {
-    setState((prev) => ({
-      ...prev,
-      loading: true,
-    }));
-    await syncSkills(state.skillList);
-    if (onFinish) {
-      await onFinish();
-    }
-    setState((prev) => ({
-      ...prev,
-      loading: false,
-    }));
-  };
+  const debounceSave = useCallback(
+    _.debounce(async (skillList: any) => {
+      await syncSkills(skillList);
+      console.log("Saving....");
+      setState((prev) => ({
+        ...prev,
+        showSaved: true,
+        loading: false,
+      }));
+    }, 1000),
+    []
+  );
+
+  useEffect(() => {
+    debounceSave(state.skillList);
+  }, [state.skillList]);
 
   const addSkill = (skillName: string) => {
     setState((prev) => ({
       ...prev,
       skillList: [
+        
+        ...prev.skillList,
         {
           name: skillName,
           level: "Expert",
         },
-        ...prev.skillList,
       ],
     }));
   };
@@ -159,8 +164,25 @@ const SkillFlow = ({
   return (
     <div className="resume-edit-detail padding">
       {showTitle && (
-        <div className="detail-form-header">
+        <div
+          className="detail-form-header"
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            width: "70%",
+          }}
+        >
           <Typography.Title level={4}>Skills</Typography.Title>
+          {state.loading && state.showSaved ? (
+            <div className="auto-save-label-loading">
+              Saving changes <i className="fa-solid fa-cloud fa-beat"></i>
+            </div>
+          ) : state.showSaved ? (
+            <div className="auto-save-label-success">
+              Saved <i className="fa-solid fa-cloud"></i>
+            </div>
+          ) : null}
         </div>
       )}
       <div className="detail-form-body">
@@ -308,7 +330,7 @@ const SkillFlow = ({
                 )}
               </Space>
             </Row>
-            <Row style={{ marginTop: "24px" }}>
+            {/* <Row style={{ marginTop: "24px" }}>
               <Button
                 type="primary"
                 loading={state.loading}
@@ -318,7 +340,7 @@ const SkillFlow = ({
               >
                 Save
               </Button>
-            </Row>
+            </Row> */}
           </div>
           <div className="ai-wizard-area">
             <CVWizardBox
@@ -326,7 +348,7 @@ const SkillFlow = ({
               subtitle="List all your skills to add them in future resumes"
             >
               <Typography.Text type="secondary">
-              Try the following suggestions:
+                Try the following suggestions:
               </Typography.Text>
               {skillHelper.loading && <Skeleton active></Skeleton>}
 

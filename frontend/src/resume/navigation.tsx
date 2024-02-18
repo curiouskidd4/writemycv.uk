@@ -24,6 +24,9 @@ import VolunteerFlow from "./components/volunteering";
 import LanguageFlow from "./components/languages";
 import { message } from "antd";
 import Adjustment from "./components/adjustment";
+import AwardForm from "./components/awards/awardsEditForm";
+import PublicationForm from "./components/publication/publicationEditForm";
+import VolunteerForm from "./components/volunteering/volunteerEditForm";
 
 type NavigationProps = {
   current: number | null;
@@ -57,50 +60,50 @@ const Navigation = ({
 
   const syncResumeDetails = async (resume: Resume) => {
     await resumeContext.saveResumeDetails(resume);
-    message.success("Resume details saved!");
+    // message.success("Resume details saved!");
   };
   const syncEducation = async (educationList: Education[]) => {
     await resumeContext.saveEducation(educationList);
-    message.success("Education saved!");
+    // message.success("Education saved!");
   };
 
   const syncPersonalInfo = async (personalInfo: PersonalInfo) => {
     await resumeContext.savePersonalInfo(personalInfo);
-    message.success("Progress Saved!");
+    // message.success("Progress Saved!");
   };
 
   const syncExperience = async (experienceList: Experience[]) => {
     await resumeContext.saveExperience(experienceList);
-    message.success("Progress Saved!");
+    // message.success("Progress Saved!");
   };
 
   const syncSkills = async (skillList: Skill[]) => {
     await resumeContext.saveSkills(skillList);
-    message.success("Progress Saved!");
+    // message.success("Progress Saved!");
   };
   const syncProfessionalSummary = async (professionalSummary: string) => {
     await resumeContext.saveProfessionalSummary(professionalSummary);
-    message.success("Progress Saved!");
+    // message.success("Progress Saved!");
   };
 
   const syncAwards = async (awardList: Award[]) => {
     await resumeContext.saveAwards(awardList);
-    message.success("Progress Saved!");
+    // message.success("Progress Saved!");
   };
 
   const syncPublications = async (publicationList: Publication[]) => {
     await resumeContext.savePublication(publicationList);
-    message.success("Progress Saved!");
+    // message.success("Progress Saved!");
   };
 
   const syncVolunteering = async (volunteeringList: Volunteering[]) => {
     await resumeContext.saveVolunteering(volunteeringList);
-    message.success("Progress Saved!");
+    // message.success("Progress Saved!");
   };
 
   const syncLanguages = async (languageList: Language[]) => {
     await resumeContext.saveLanguages(languageList);
-    message.success("Progress Saved!");
+    // message.success("Progress Saved!");
   };
 
   if (current === 0) {
@@ -185,32 +188,41 @@ const Navigation = ({
     );
   } else if (current == 6) {
     return (
-      <AwardFlow
+      // <AwardFlow
+      //   awardList={resume.awardList || []}
+      //   onFinish={async () => {
+      //     setCurrent(7);
+      //   }}
+      //   syncAward={syncAwards}
+      // />
+
+      <AwardForm
         awardList={resume.awardList || []}
-        onFinish={async () => {
-          setCurrent(7);
-        }}
-        syncAward={syncAwards}
+        syncAwards={syncAwards}
+        // onFinish={onFinish}
+        showTitle={false}
       />
     );
   } else if (current == 7) {
     return (
-      <PublicationFlow
+      <PublicationForm
+      showTitle={false}
         publicationList={resume.publicationList || []}
-        onFinish={async () => {
-          setCurrent(6);
-        }}
-        syncPublication={syncPublications}
+        // onFinish={async () => {
+        //   setCurrent(6);
+        // }}
+        syncPublications={syncPublications}
       />
     );
   } else if (current == 8) {
     return (
-      <VolunteerFlow
+      <VolunteerForm
+        showTitle={false}
         volunteerList={resume.volunteeringList || []}
         onFinish={async () => {
           setCurrent(9);
         }}
-        syncVolunteer={syncVolunteering}
+        syncVolunteers={syncVolunteering}
       />
     );
   } else if (current == 9) {

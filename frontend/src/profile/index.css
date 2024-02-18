@@ -177,6 +177,8 @@
 }
 
 .profile-input-section-title {
+  display: flex;
+  align-items: center;
   margin-bottom: 12px;
   span {
     font: normal normal bold 16px /21px DM Sans !important;

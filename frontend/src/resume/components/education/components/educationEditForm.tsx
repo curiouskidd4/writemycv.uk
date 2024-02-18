@@ -171,7 +171,6 @@ const SingleEducationForm = ({
           <DetailForm
             value={educationData}
             onChange={(details) => onSave(details)}
-            // onFinish={(details) => onSave("details", details)}
             saveLoading={saveLoading}
           />
           <Divider className="profile-input-section-divider" />

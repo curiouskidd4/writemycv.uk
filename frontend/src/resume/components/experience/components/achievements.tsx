@@ -298,7 +298,6 @@ const AchievementThemeWizard = ({
     }
   }, [showAIWizard]);
 
-  console.log("showAIWizard", showAIWizard);
   return showAIWizard ? (
     <CVWizardBox title="Achievement Topics" subtitle="Highlighting your key achievements here">
     <>
@@ -494,8 +493,8 @@ const AchievementCard = ({
 type AchievementsProps = {
   jobTitle: string;
   description?: string;
-  value?: any;
-  onChange?: (value: any) => void;
+  value: any;
+  onChange: (value: any) => void;
 };
 
 type AchievementStateType = {
@@ -528,7 +527,7 @@ const Achievements = ({
   });
 
   useEffect(() => {
-    if (jobTitle && jobTitle != state.loadedTheme) {
+    if (jobTitle && jobTitle !== state.loadedTheme) {
       getThemeSuggestions();
       setState((prev) => ({ ...prev, loadedTheme: jobTitle }));
     }
@@ -537,7 +536,7 @@ const Achievements = ({
   useEffect(() => {
     if (
       state.selectedTheme &&
-      state.selectedTheme != state.loadedThemeDescription
+      state.selectedTheme !== state.loadedThemeDescription
     ) {
       getThemeDescription();
       setState((prev) => ({
@@ -575,8 +574,8 @@ const Achievements = ({
 
   const addAchievement = () => {
     let mode =
-      state.editIdx != null || state.editIdx != undefined ? "edit" : "add";
-    if (mode == "edit") {
+      state.editIdx != null || state.editIdx !== undefined ? "edit" : "add";
+    if (mode === "edit") {
       if (state.editIdx == null) {
         return;
       }
@@ -585,9 +584,7 @@ const Achievements = ({
         theme: state.selectedTheme || "",
         description: state.currentAchievement,
       };
-      if (onChange) {
         onChange(value);
-      }
       setState((prev) => ({
         ...prev,
         modalVisible: false,
@@ -602,9 +599,7 @@ const Achievements = ({
         description: state.currentAchievement,
       });
 
-      if (onChange) {
         onChange(newValue);
-      }
       setState((prev) => ({
         ...prev,
         modalVisible: false,
@@ -625,6 +620,7 @@ const Achievements = ({
       editIdx: index,
     }));
   };
+
 
   return (
     <>
@@ -677,20 +673,7 @@ const Achievements = ({
           </div>
 
           <Row style={{ paddingBottom: "1rem", width: "100%" }}>
-            {/* <Row style={{ width: "100%" }}>
-          <Col>
-            <Typography.Title level={5}>Achievements</Typography.Title>
-          </Col>
-          <Col
-            style={{
-              marginLeft: "auto",
-            }}
-          >
-            <Button type="link" size="small">
-              <MagicWandIcon /> CV Wizard
-            </Button>
-          </Col>
-        </Row> */}
+           
             <Row
               style={{
                 marginBottom: "0.5rem",
@@ -726,9 +709,7 @@ const Achievements = ({
                     onDelete={(index) => {
                       let newValue = [...value];
                       newValue.splice(index, 1);
-                      if (onChange) {
                         onChange(newValue);
-                      }
                     }}
                   />
                 ))}

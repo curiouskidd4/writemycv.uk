@@ -16,6 +16,8 @@ import "./index.css";
 import SingleAwardsFrom from "./components/editForm";
 import { Timestamp } from "firebase/firestore";
 import moment from "moment";
+import SelectorSidebar from "../../../components/selectorSidebar";
+import ObjectID from "bson-objectid";
 
 const AwardCard = ({ award }: { award: Award }) => {
   let awardDateStr = moment(award.date.toDate()).format("MMM YYYY");
@@ -37,7 +39,8 @@ type AwardProps = {
 
 type AwardState = {
   selectedAward: Award | null;
-  selectedAwardIdx: number | null;
+  // selectedAwardIdx: number | null;
+  selectedId: string | null;
 };
 
 const AwardForm = ({
@@ -50,23 +53,35 @@ const AwardForm = ({
   awardList = awardList || [];
   const [state, setState] = React.useState<AwardState>({
     selectedAward: awardList.length > 0 ? awardList[0] : null,
-    selectedAwardIdx: awardList.length > 0 ? 0 : null,
+    // selectedAwardIdx: awardList.length > 0 ? 0 : null,
+    selectedId: awardList.length > 0 ? awardList[0].id : null,
   });
 
-  const onSave = async (award: Award) => {
-    award.date = Timestamp.fromDate(award.date.toDate());
-    awardList[state.selectedAwardIdx!] = award;
 
-    await syncAwards(awardList);
-    message.success("Award saved!");
-    if (onFinish) {
-      await onFinish(awardList);
+  const onSave = async (publication: Award) => {
+    publication.date = Timestamp.fromDate(publication.date.toDate());
+    // publicationList[state.selectedPublicationIdx!] = publication;
+    let newAwardList = [...awardList];
+    let idx = newAwardList.findIndex(
+      (item) => item.id === publication.id
+    );
+    if (idx > -1) {
+      newAwardList[idx] = publication;
+    } else {
+      newAwardList.push(publication);
     }
+
+    await syncAwards(newAwardList);
+    message.success("Awards saved!");
+    // if (onFinish) {
+    //   await onFinish(publicationList);
+    // }
   };
+
 
   const addNew = () => {
     const newItem: Award = {
-      id: (awardList.length + 1).toString(),
+      id: ObjectID().toHexString(),
       title: "",
       date: Timestamp.fromDate(new Date()),
       description: "",
@@ -74,8 +89,13 @@ const AwardForm = ({
     };
     setState((prev) => ({
       selectedAward: newItem,
-      selectedAwardIdx: awardList.length,
+      // selectedAwardIdx: awardList.length,
+      selectedId: newItem.id,
     }));
+  };
+
+  const detailExtractor = (award: Award) => {
+    return { title: award.title, subtitle: "" };
   };
 
   return (
@@ -96,7 +116,7 @@ const AwardForm = ({
           {/* <Typography.Title level={5}>Award Items</Typography.Title> */}
           {/* <Typography.Text type="secondary">Your history</Typography.Text> */}
 
-          <Menu
+          {/* <Menu
             className="award-menu"
             defaultSelectedKeys={
               state.selectedAwardIdx != null
@@ -121,12 +141,26 @@ const AwardForm = ({
                 //   label: edu.degree,
               };
             })}
-          ></Menu>
-          <Row justify="start">
-            <Button style={{ margin: "8px 24px" }} onClick={addNew}>
-              <PlusOutlined /> Add Award
-            </Button>
-          </Row>
+          ></Menu> */}
+
+          <SelectorSidebar
+            items={awardList}
+            detailExtractor={detailExtractor}
+            onReorder={(newOrder: Award[]) => {
+              syncAwards(newOrder);
+            }}
+            addNew={addNew}
+            entityTitle="Award"
+            selectedKey={state.selectedId}
+            onSelect={(key: string) => {
+              setState({
+                selectedAward: awardList.filter((item) => item.id === key)[0],
+                selectedId: key,
+              });
+            }}
+          />
+
+          
         </Col>
         <Col
           flex="auto"
@@ -147,14 +181,15 @@ const AwardForm = ({
               />
             )} */}
 
-          {state.selectedAward != null && state.selectedAwardIdx != null ? (
+          {state.selectedAward != null  ? (
             <>
-              <div>
+              {/* <div>
                 <Typography.Title level={5}>
                   Award #{state.selectedAwardIdx + 1}
                 </Typography.Title>
-              </div>
+              </div> */}
               <SingleAwardsFrom
+                key={state.selectedAward.id}
                 initialValues={state.selectedAward}
                 onFinish={onSave}
                 saveLoading={saveLoading}

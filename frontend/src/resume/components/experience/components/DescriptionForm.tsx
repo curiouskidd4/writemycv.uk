@@ -14,12 +14,12 @@ import openAI from "../../../../hooks/openai";
 
 type DescriptionFormProps = {
   initialValues?: any;
-  onFinish?: (values: any) => void;
+  onChange: (values: any) => void;
   saveLoading?: boolean;
 };
 export const DescriptionForm = ({
   initialValues,
-  onFinish,
+  onChange,
 }: DescriptionFormProps) => {
   const [description, setDescription] = React.useState(
     initialValues?.description || ""
@@ -49,22 +49,17 @@ export const DescriptionForm = ({
     });
   };
 
-  useEffect(() => {
-    // console.log(initialValues);
-    setDescription(initialValues?.description || "");
-  }, [initialValues]);
+
 
   const onAddDescription = (value: string) => {
     setDescription(value);
   };
 
-  const onSave = () => {
-    if (onFinish) {
-      onFinish({
-        description: description,
-      });
-    }
-  };
+  useEffect(() => {
+    onChange({
+      description: description,
+    });
+  }, [description]);
 
   return (
     <div className="profile-tab-detail">

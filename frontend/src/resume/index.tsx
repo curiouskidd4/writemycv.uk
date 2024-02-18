@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { ResumeProvider, useResume } from "../contexts/resume";
-import { Typography, Steps, Row, Col, Button, Space } from "antd";
+import { Typography, Steps, Row, Col, Button, Space, Modal, message } from "antd";
 import "./index.css";
 import Navigation from "./navigation";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -9,6 +9,7 @@ import {
   CollapseRight,
   DownloadIcon,
 } from "../components/faIcons";
+import PDFViewer from "../components/pdfViewer";
 
 type ResumeEditStepsProps = {
   current?: number;
@@ -171,6 +172,7 @@ const ResumeEditSteps = ({
 const ResumeEditV2Loader = () => {
   const resumeData = useResume();
   const [current, setCurrent] = React.useState(0);
+  const [previewUrl, setPreviewUrl] = React.useState("");
   const navigate = useNavigate();
   const location = useLocation();
   const editMode = location.state?.editMode ? true : false;
@@ -182,6 +184,22 @@ const ResumeEditV2Loader = () => {
     navigate(`/resumes/${resumeData.resume?.id}`);
   };
 
+  const downloadResume = async () => {
+    await resumeData.downloadResume();
+  };
+
+  const showPreview = async () => {
+    let url = await resumeData.getResumeURL();
+    setPreviewUrl(url);
+  };
+
+  const getPublicUrl = async () => {
+    let url = await resumeData.copyPublicLink();
+    navigator.clipboard.writeText(url);
+    message.success("Link copied to clipboard");
+    return url;
+  }
+
   if (resumeData.loading) {
     return <div>Loading...</div>;
   }
@@ -189,8 +207,28 @@ const ResumeEditV2Loader = () => {
   if (!resumeData.resume) {
     return <div>Resume not found</div>;
   }
+
   return (
     <div className="resume">
+      <>
+        <Modal
+          title="Preview"
+          open={previewUrl ? true : false}
+          onCancel={() => {
+            setPreviewUrl("");
+          }}
+          footer={null}
+          width={800}
+        >
+          <Row
+            justify="center"
+            style={{ marginBottom: "16px", height: "80vh", 
+            overflowY: "auto"}}
+          >
+            <PDFViewer documentURL={previewUrl} />
+          </Row>
+        </Modal>
+      </>
       <Row align="middle" className="title-header">
         <Col>
           <Typography.Title
@@ -199,7 +237,7 @@ const ResumeEditV2Loader = () => {
               marginBottom: "0px",
             }}
           >
-            Career Repository
+            Your CVs / {resumeData.resume?.name}
           </Typography.Title>
         </Col>
         <Col
@@ -212,20 +250,21 @@ const ResumeEditV2Loader = () => {
         >
           <Button
             onClick={() => {
-              // setNewResumeModalVisible(true);
+              showPreview();
             }}
           >
             <i className="fa-solid fa-eye"></i>
             Preview
           </Button>
 
-          <Button >
-          <i className="fa-solid fa-download"></i>
-            Download </Button>
+          <Button onClick={downloadResume}>
+            <i className="fa-solid fa-download"></i>
+            Download{" "}
+          </Button>
 
           <Button
             onClick={() => {
-              // setNewResumeModalVisible(true);
+              getPublicUrl()
             }}
           >
             <i className="fa-solid fa-share-nodes"></i>
