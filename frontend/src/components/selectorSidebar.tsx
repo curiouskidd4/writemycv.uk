@@ -54,15 +54,16 @@ const SelectorSidebar = ({
           selectedKey === item.id ? "selector-item selected" : "selector-item"
         }
         key={item.id}
+        onClick={() => {
+          if (onSelect) {
+            onSelect(item.id);
+          }
+        }}
       >
         <Card
           item={detail}
           dragHandle={dragHandle}
-          onClick={() => {
-            if (onSelect) {
-              onSelect(item.id);
-            }
-          }}
+          
         />
       </div>
     );

@@ -110,10 +110,10 @@ const Adjustment = () => {
     return (
       <div className="section-item">
         {/* <dragHandle className="drag-handle">:::</dragHandle> */}
-        <div>
-          {dragHandle}
+        <Row align="middle">
+          <span style={{width: "12px", marginRight: "8px"}}>{dragHandle}</span>
           <Typography.Text>{item.name}</Typography.Text>
-        </div>
+        </Row>
         <Checkbox
           checked={!item.disabled}
           onChange={() => {

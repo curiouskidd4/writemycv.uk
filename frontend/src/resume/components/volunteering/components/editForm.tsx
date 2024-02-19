@@ -162,10 +162,10 @@ export const DetailForm = ({isNewItem, initialValues, onFinish }: DetailFormProp
             </Form.Item>
           </Col>
         </Row>
-
+{/* 
         <Button type="primary" htmlType="submit">
           Save
-        </Button>
+        </Button> */}
       </Form>
     </div>
   );

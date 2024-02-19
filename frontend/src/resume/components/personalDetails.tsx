@@ -1,6 +1,7 @@
 import { Button, Col, Form, Input, Row, Select, Typography } from "antd";
-import React from "react";
+import React, { useCallback } from "react";
 import { PhoneInput } from "../../pages/coolForm/inputs/phoneInput";
+import _ from "lodash";
 
 type PersonalDetailsProps = {
   initialValues?: any;
@@ -17,6 +18,18 @@ const PersonalDetails = ({
 }: PersonalDetailsProps) => {
   const [loading, setLoading] = React.useState(false);
 
+  const debounceSave = useCallback(
+    _.debounce(async (values: any) => {
+      setLoading(true);
+      await syncPersonalInfo(values);
+      if (onFinish) {
+        await onFinish(values);
+      }
+      setLoading(false);
+    }, 1000),
+    [syncPersonalInfo, onFinish]
+  );
+
   const onSubmit = async (values: any) => {
     setLoading(true);
     await syncPersonalInfo(values);
@@ -24,6 +37,15 @@ const PersonalDetails = ({
       await onFinish(values);
     }
     setLoading(false);
+  };
+
+  const handleChange = async (value: any, changedValues: any) => {
+    // Check if the value has changed
+
+    if (JSON.stringify(initialValues) !== JSON.stringify(changedValues)) {
+      setLoading(true);
+      await debounceSave(changedValues);
+    }
   };
   let colSpan = {
     xs: 24,
@@ -37,16 +59,32 @@ const PersonalDetails = ({
     <div className="personal-info-form resume-edit-detail padding">
       {showTitle ? (
         <div className="detail-form-header">
-          <Typography.Title level={4}>Personal Info</Typography.Title>
+          {/* <Typography.Title level={4}>Personal Info</Typography.Title>
+           */}
+          <Row align="middle" justify="space-between" style={{ width: "70%" }}>
+            <div className="profile-input-section-title">
+              <Typography.Title level={4}>Personal Info</Typography.Title>
+            </div>
+            {loading ? (
+              <div className="auto-save-label-loading">
+                Saving changes <i className="fa-solid fa-cloud fa-beat"></i>
+              </div>
+            ) : (
+              <div className="auto-save-label-success">
+                Saved <i className="fa-solid fa-cloud"></i>
+              </div>
+            )}
+          </Row>
         </div>
       ) : null}
       <div className="detail-form-body">
         <Form
           name="personal_info"
-          onFinish={onSubmit}
+          // onFinish={onSubmit}
           initialValues={{
             ...initialValues,
           }}
+          onValuesChange={handleChange}
           scrollToFirstError
           layout="vertical"
         >
@@ -162,13 +200,13 @@ const PersonalDetails = ({
               </Col>
             </Row>
           </div>
-          <div className="cv-submit">
+          {/* <div className="cv-submit">
             <Form.Item>
               <Button type="primary" htmlType="submit" loading={loading}>
                 Save
               </Button>
             </Form.Item>
-          </div>
+          </div> */}
         </Form>
       </div>
     </div>

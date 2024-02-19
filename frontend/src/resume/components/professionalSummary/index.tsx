@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import {
   Button,
   Col,
+  Divider,
   Form,
   Input,
   Modal,
@@ -16,6 +17,7 @@ import {
 import { useOpenAI } from "../../../utils";
 import {
   AIWizardIcon,
+  DeleteIcon,
   LightBulbIcon,
   MagicWandIcon,
   MagicWandLoading,
@@ -34,6 +36,8 @@ import CustomCarousel from "../../../components/suggestionCarousel";
 import CVWizardBox from "../../../components/cvWizardBoxV2";
 import openAI from "../../../hooks/openai";
 import _ from "lodash";
+import ReactMarkdown from "react-markdown";
+import CVWizardBadge from "../../../components/cvWizardBadge";
 
 type FormLabelWithAIActionProps = {
   resumeId: string;
@@ -56,6 +60,8 @@ const FormLabelWithAIActions = ({
     modalVisible: false,
     mode: null,
   });
+
+  const [showAIWizard, setShowAIWizard] = useState(false);
 
   let openai = useOpenAI();
   const handleGenSummary = () => {
@@ -377,7 +383,6 @@ const ProfessionalSummaryFlow = ({
     summary: professionalSummary,
   });
 
-  const [form] = Form.useForm();
 
   const debounceSave = useCallback(
     _.debounce(async (val: any) => {
@@ -392,16 +397,19 @@ const ProfessionalSummaryFlow = ({
   );
 
   const onAdd = (value: string) => {
-    // setState({ ...state, summary: value });
-    form.setFieldsValue({ professionalSummary: value });
+    setState({ ...state, summary: value });
   };
 
-  const onSave = async (values: any) => {
-    setState({ ...state, loading: true, showSaved: true });
-    await debounceSave(values.professionalSummary);
-    // await onFinish(values.professionalSummary);
-    // setState({ ...state, loading: false });
-  };
+
+
+  useEffect(() => {
+    // Check if the summary has changed
+    if (state.summary !== professionalSummary) {
+      setState({ ...state, loading: true, showSaved: true });
+      debounceSave(state.summary);
+
+    }
+  }, [state.summary]);
 
   const descriptionHelper = openAI.useProfessionalSummaryHelper();
   const loadSuggestions = async ({ rewrite }: { rewrite: boolean }) => {
@@ -414,100 +422,159 @@ const ProfessionalSummaryFlow = ({
   };
 
   return (
-    <div className="resume-edit-detail padding">
-      <Row align="middle" justify="space-between" style={{ width: "70%" }}>
-        <div style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          width: "100%"
-        }}>
-          <div className="profile-input-section-title">
-            <Typography.Title
-              level={4}
-              style={{
-                marginBottom: "0px",
-              }}
-            >
-              Professional Summary
-            </Typography.Title>
-            <Popover
-              placement="topLeft"
-              trigger="click"
-              content={
-                <Space direction="vertical">
-                  <Button
-                    type="text"
-                    // size="small"
-                    style={{
-                      height: "auto",
-                      textAlign: "left",
-                    }}
-                    disabled={
-                      state.summary && state.summary.length > 20 ? false : true
-                    }
-                    onClick={() => {
-                      loadSuggestions({
-                        rewrite: true,
-                      });
-                    }}
-                  >
-                    <Typography.Text strong>
-                      {" "}
-                      <RepharseIcon /> Optimize
-                    </Typography.Text>
-                    <br />
-                    <Typography.Text type="secondary">
-                      Rephrase and optimize your current description
-                    </Typography.Text>
-                  </Button>
-                  <Button
-                    type="text"
-                    style={{
-                      height: "auto",
-                      textAlign: "left",
-                      width: "100%",
-                    }}
-                    onClick={() => {
-                      loadSuggestions({
-                        rewrite: false,
-                      });
-                    }}
-                  >
-                    <Typography.Text strong>
-                      {" "}
-                      <LightBulbIcon /> Generate new ideas
-                    </Typography.Text>
-                    <br />
-                    <Typography.Text type="secondary">
-                      Get new ideas for the desciption
-                    </Typography.Text>
-                  </Button>
-                </Space>
-              }
-            >
-              <Button type="link">
-                <AIWizardIcon />
-              </Button>
-            </Popover>
-          </div>
-          {state.loading && state.showSaved ? (
-            <div className="auto-save-label-loading">
-              Saving changes <i className="fa-solid fa-cloud fa-beat"></i>
-            </div>
-          ) : state.showSaved ? (
-            <div className="auto-save-label-success">
-              Saved <i className="fa-solid fa-cloud"></i>
-            </div>
-          ) : null}
+    <>
+      <Modal
+        width={800}
+        visible={showAIWizard}
+        footer={null}
+        onCancel={() => setShowAIWizard(false)}
+        className="default-modal"
+      >
+        <CVWizardBadge />
+        <div
+          style={{
+            margin: "1rem 0rem",
+            font: "normal normal bold 24px/12px DM Sans",
+          }}
+        >
+          Description Suggestion
         </div>
-      </Row>
+        {descriptionHelper.loading && (
+          <div className="spin-container" style={{ height: "100px" }}>
+            <Spin />
+          </div>
+        )}
 
-      <Row>
-        <Col span={24}>
-          <div className="profile-tab-detail">
-            <div className="user-input-area">
-              <Typography.Text type="secondary">
+        {descriptionHelper.loading === false &&
+          descriptionHelper.suggestions &&
+          descriptionHelper.suggestions.result.length > 0 && (
+            <>
+              <div
+                style={{
+                  margin: "1rem 0rem",
+                  font: "normal normal normal 16px/24px DM Sans",
+                }}
+              >
+                Select any of the following suggestions
+              </div>
+              <div>
+                {descriptionHelper.suggestions?.result?.map(
+                  (item: string, index: number) => (
+                    <div
+                      key={index}
+                      className="openai-generated-content-item"
+                      onClick={() => {
+                        onAdd(item);
+                        setShowAIWizard(false);
+                      }}
+                    >
+                      <ReactMarkdown>{item}</ReactMarkdown>
+                    </div>
+                  )
+                )}
+              </div>
+            </>
+          )}
+      </Modal>
+      <div className="resume-edit-detail padding">
+        <Row  align="middle" justify="space-between" >
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              width: "70%",
+              paddingRight: "50px"
+            }}
+          >
+            <div className="profile-input-section-title">
+              <Typography.Title
+                level={4}
+                style={{
+                  marginBottom: "0px",
+                }}
+              >
+                Professional Summary
+              </Typography.Title>
+              <Popover
+                placement="topLeft"
+                trigger="click"
+                content={
+                  <Space direction="vertical">
+                    <Button
+                      type="text"
+                      // size="small"
+                      style={{
+                        height: "auto",
+                        textAlign: "left",
+                      }}
+                      disabled={
+                        state.summary && state.summary.length > 20
+                          ? false
+                          : true
+                      }
+                      onClick={() => {
+                        loadSuggestions({
+                          rewrite: true,
+                        });
+                      }}
+                    >
+                      <Typography.Text strong>
+                        {" "}
+                        <RepharseIcon /> Optimize
+                      </Typography.Text>
+                      <br />
+                      <Typography.Text type="secondary">
+                        Rephrase and optimize your current description
+                      </Typography.Text>
+                    </Button>
+                    <Button
+                      type="text"
+                      style={{
+                        height: "auto",
+                        textAlign: "left",
+                        width: "100%",
+                      }}
+                      onClick={() => {
+                        loadSuggestions({
+                          rewrite: false,
+                        });
+                      }}
+                    >
+                      <Typography.Text strong>
+                        {" "}
+                        <LightBulbIcon /> Generate new ideas
+                      </Typography.Text>
+                      <br />
+                      <Typography.Text type="secondary">
+                        Get new ideas for the desciption
+                      </Typography.Text>
+                    </Button>
+                  </Space>
+                }
+              >
+                <Button type="link">
+                  <AIWizardIcon />
+                </Button>
+              </Popover>
+            </div>
+            {state.loading && state.showSaved ? (
+              <div className="auto-save-label-loading">
+                Saving changes <i className="fa-solid fa-cloud fa-beat"></i>
+              </div>
+            ) : state.showSaved ? (
+              <div className="auto-save-label-success">
+                Saved <i className="fa-solid fa-cloud"></i>
+              </div>
+            ) : null}
+          </div>
+        </Row>
+
+        <Row gutter={24} className="description-input">
+          <Col span={24}>
+            <div className="profile-tab-detail">
+              <div className="user-input-area">
+                {/* <Typography.Text type="secondary">
                 Write 2-4 sentences that summarise your experience, skills and
                 value to an employer. Begin your profile with a clear and
                 concise title that reflects your professional identity,
@@ -516,74 +583,116 @@ const ProfessionalSummaryFlow = ({
                 background and key skills. <br />
                 If you need some fresh ideas, try CV Wizard – it can refine your
                 profile or write you a new one based on your target role.
-              </Typography.Text>
+              </Typography.Text> */}
+                <Row gutter={24} className="description-input">
+                  <div className="description-options">
+                    <Space
+                      size="small"
+                      direction="horizontal"
+                      split={
+                        <Divider
+                          type="vertical"
+                          style={{
+                            height: "24px",
+                            margin: "0 0rem",
+                            borderInlineStart: "1px solid var(--black)",
+                            borderBlockStart: "1px solid var(--black)",
+                          }}
+                        />
+                      }
+                    >
+                      <Button
+                        type="link"
+                        size="small"
+                        // onClick={loadSuggestions}
+                        onClick={() => {
+                          loadSuggestions({
+                            rewrite: true,
+                          });
+                        }}
+                      >
+                        <MagicWandIcon color="var(--black)" marginRight="0px" />
+                      </Button>
 
-              <Form
-                name="personal_info"
-                // onFinish={onSave}
-                onValuesChange={onSave}
-                initialValues={{
-                  professionalSummary: professionalSummary,
-                }}
-                form={form}
-                scrollToFirstError
-              >
-                <Form.Item
-                  name="professionalSummary"
-                  label=""
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please add a summary!",
-                    },
-                  ]}
+                      <Button
+                        type="link"
+                        size="small"
+                        danger
+                        onClick={() =>
+                          setState((prev) => ({ ...prev, summary: "" }))
+                        }
+                      >
+                        <DeleteIcon color="var(--black)" marginRight="0px" />
+                      </Button>
+                    </Space>
+                  </div>
+                  <Col span={24}>
+                    <EditorJsInput
+                      value={state.summary}
+                      onChange={(value: any) => {
+                        setState({ ...state, summary: value });
+                      }}
+                    />
+                  </Col>
+                </Row>
+              </div>
+              <div className="ai-wizard-area">
+                <Row
+                  style={{
+                    width: "100%",
+                  }}
                 >
-                  {/* <DummyInput resumeId={resume.resume?.id} onAdd={onAdd} /> */}
-                  <EditorJsInput />
-                </Form.Item>
-
-               
-              </Form>
-            </div>
-            <div className="ai-wizard-area">
-              <Row
-                style={{
-                  width: "100%",
-                }}
-              >
-                {showAIWizard ? (
                   <CVWizardBox
                     title="Description Tip"
                     subtitle="Highlighting your key achievements here, like awards, dissertations or projects"
+                    actions={[
+                      <Button
+                        className="black-button-small"
+                        type="primary"
+                        onClick={() =>
+                          loadSuggestions({
+                            rewrite: false,
+                          })
+                        }
+                      >
+                        {" "}
+                        <MagicWandIcon color="var(--white)" />
+                        Generate Ideas
+                      </Button>,
+                    ]}
                   >
-                    <Typography.Text type="secondary">
-                      CV Wizard Suggestions:
-                    </Typography.Text>
-                    {descriptionHelper.loading && <Skeleton active></Skeleton>}
-                    {descriptionHelper.loading === false &&
-                      !descriptionHelper.error &&
-                      descriptionHelper.suggestions?.result &&
-                      descriptionHelper.suggestions?.result?.length > 0 && (
-                        <CustomCarousel
-                          suggestions={descriptionHelper.suggestions.result}
-                          onClick={(item: any) => onAdd(item)}
-                        />
-                      )}
-
-                    {descriptionHelper.error && (
-                      <Typography.Text type="danger">
-                        Something wrong happened
+                    {/* <Typography.Text type="secondary">
+                        CV Wizard Suggestions:
                       </Typography.Text>
-                    )}
+                      {descriptionHelper.loading && (
+                        <Skeleton active></Skeleton>
+                      )}
+                      {descriptionHelper.loading === false &&
+                        !descriptionHelper.error &&
+                        descriptionHelper.suggestions?.result &&
+                        descriptionHelper.suggestions?.result?.length > 0 && (
+                          <CustomCarousel
+                            suggestions={descriptionHelper.suggestions.result}
+                            onClick={(item: any) => onAdd(item)}
+                          />
+                        )}
+
+                      {descriptionHelper.error && (
+                        <Typography.Text type="danger">
+                          Something wrong happened
+                        </Typography.Text>
+                      )} */}
+                    <div>
+                      Stuck for ideas describing your education? Try CV Wizard
+                    </div>
                   </CVWizardBox>
-                ) : null}
-              </Row>
+                </Row>
+              </div>
             </div>
-          </div>
-        </Col>
-      </Row>
-      
-    </div>
+          </Col>
+        </Row>
+      </div>
+    </>
   );
 };
 

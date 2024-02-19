@@ -19,15 +19,6 @@ import moment from "moment";
 import SelectorSidebar from "../../../components/selectorSidebar";
 import ObjectID from "bson-objectid";
 
-const AwardCard = ({ award }: { award: Award }) => {
-  let awardDateStr = moment(award.date.toDate()).format("MMM YYYY");
-  return (
-    <>
-      <div className="title">{award.title}</div>
-      <div className="subtitle">{awardDateStr}</div>
-    </>
-  );
-};
 
 type AwardProps = {
   awardList: Award[];

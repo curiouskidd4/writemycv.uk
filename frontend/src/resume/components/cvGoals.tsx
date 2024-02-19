@@ -56,19 +56,20 @@ const CVGoals = ({ initialValues, onFinish, syncResumeDetails }: CVGoalsProps) =
               <Input />
             </Form.Item>
             <Form.Item
-              label="Mention roles you are targeting"
+              label="Job Title"
               name="targetRole"
               rules={[]}
             >
-              <Input style={{ width: "100%" }} placeholder="Roles"></Input>
+              <Input style={{ width: "100%" }} placeholder="Roles" disabled></Input>
             </Form.Item>
 
             <Form.Item
-              label="Job Description (Paste job description or link to job posting)"
+              label="Job Description"
               name="jobDescription"
               rules={[]}
             >
               <Input.TextArea
+                disabled
                 placeholder="Mention job description you are targeting"
                 autoSize={{ minRows: 3, maxRows: 5 }}
               />

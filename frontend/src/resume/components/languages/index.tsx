@@ -8,7 +8,7 @@ import {
   Space,
   Typography,
 } from "antd";
-import React from "react";
+import React, { useEffect } from "react";
 import { Language } from "../../../types/resume";
 import { DeleteOutlined, ArrowRightOutlined } from "@ant-design/icons";
 import { lang } from "moment";
@@ -154,15 +154,34 @@ const LanguageFlow = ({
   syncLanguages: (languages: Language[]) => Promise<void>;
   showTitle?: boolean;
 }) => {
-  const [loading, setLoading] = React.useState(false);
+  const [state, setState] = React.useState({
+    loading: false,
+    showSaved: false,
+  });
   const [showAdd, setShowAdd] = React.useState(false);
   const [languageListState, setLanguageListState] =
     React.useState<Language[]>(languageList);
 
   React.useEffect(() => {
     setLanguageListState(languageList);
-  }, [languageList]);
+  }, []);
 
+  useEffect(() => {
+    syncLang(languageListState);
+  }, [languageListState]);
+
+  const syncLang = async (languages: Language[]) => {
+    setState((prev) => ({
+      ...prev,
+      loading: true,
+      showSaved: true,
+    }));
+    await syncLanguages(languageListState);
+    setState((prev) => ({
+      ...prev,
+      loading: false,
+    }));
+  };
   const handleAddLanguage = (language: string) => {
     setLanguageListState((prev) => [
       ...prev,
@@ -171,15 +190,6 @@ const LanguageFlow = ({
         fluency: "Expert",
       },
     ]);
-  };
-
-  const handleSave = async () => {
-    setLoading(true);
-    await syncLanguages(languageListState);
-    setLoading(false);
-    if (onFinish) {
-      onFinish();
-    }
   };
 
   const handleSaveLanguage = async (language: Language) => {
@@ -193,7 +203,6 @@ const LanguageFlow = ({
     } else {
       setLanguageListState((prev) => [...prev, language]);
     }
-    await syncLanguages(languageListState);
   };
 
   const handleRemoveLanguageItem = async (language: Language) => {
@@ -201,16 +210,28 @@ const LanguageFlow = ({
       (item) => item.name !== language.name
     );
     setLanguageListState(newList);
-    await syncLanguages(newList);
   };
 
   return (
     <div className="resume-edit-detail padding">
       {showTitle && (
-        <Row>
-          <Col span={24}>
-            <Typography.Title level={4}>Languages</Typography.Title>
-          </Col>
+        <Row
+          style={{
+            width: "50%",
+          }}
+          justify="space-between"
+          align="middle"
+        >
+          <Typography.Title level={4}>Languages</Typography.Title>
+          {state.loading && state.showSaved ? (
+            <div className="auto-save-label-loading">
+              Saving changes <i className="fa-solid fa-cloud fa-beat"></i>
+            </div>
+          ) : state.showSaved ? (
+            <div className="auto-save-label-success">
+              Saved <i className="fa-solid fa-cloud"></i>
+            </div>
+          ) : null}
         </Row>
       )}
 
@@ -224,6 +245,7 @@ const LanguageFlow = ({
       <Row
         style={{
           marginTop: "24px",
+          width: "70%",
         }}
       >
         <Space
@@ -250,9 +272,7 @@ const LanguageFlow = ({
             <Row align="middle">
               <Input
                 className="skill-input"
-                suffix={
-                  <i className="fa-solid fa-arrow-right"></i>
-                }
+                suffix={<i className="fa-solid fa-arrow-right"></i>}
                 onPressEnter={(e) => {
                   handleAddLanguage(e.currentTarget.value);
                   setShowAdd(false);
@@ -279,11 +299,11 @@ const LanguageFlow = ({
           )}
         </Space>
       </Row>
-      <Row style={{ marginTop: "24px" }}>
+      {/* <Row style={{ marginTop: "24px" }}>
         <Button type="primary" loading={loading} onClick={handleSave}>
           Save
         </Button>
-      </Row>
+      </Row> */}
     </div>
   );
 };

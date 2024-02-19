@@ -115,9 +115,7 @@ const Navigation = ({
             targetRole: resume.targetRole,
             jobDescription: resume.jobDescription,
           }}
-          onFinish={async (values) => {
-            setCurrent(1);
-          }}
+          
           syncResumeDetails={syncResumeDetails}
         />
         {/* <SaveButton
@@ -131,9 +129,6 @@ const Navigation = ({
     return (
       <PersonalDetails
         initialValues={resume.personalInfo}
-        onFinish={async () => {
-          setCurrent(2);
-        }}
         syncPersonalInfo={syncPersonalInfo}
       />
     );

@@ -856,6 +856,7 @@ select {
   padding: 12px 30px !important;
 
   position: relative;
+  cursor: pointer;
 
 
   .drag-grip {
