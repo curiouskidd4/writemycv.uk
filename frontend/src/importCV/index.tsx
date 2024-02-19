@@ -221,7 +221,6 @@ const ImportCVToProfile = () => {
                     style={{ fontSize: "128px", color: "#E3E3E3" }}
                     className="fa-solid fa-circle fa-beat fa-2xl"
                   ></i>
-
                 </div>
                 <div className="uploading-message">
                   <Typography.Text
@@ -241,10 +240,10 @@ const ImportCVToProfile = () => {
                       color: "var(--black)",
                       font: "normal normal normal 16px/24px DM Sans",
                       textAlign: "center",
-
                     }}
                   >
-                    Please hold on a moment while we securely import your CV. This may take a few seconds.
+                    Please hold on a moment while we securely import your CV.
+                    This may take a few seconds.
                   </Typography.Text>
                 </div>
               </div>
@@ -292,14 +291,14 @@ const ImportCVToProfile = () => {
                       color: "var(--black)",
                       font: "normal normal normal 16px/24px DM Sans",
                       textAlign: "center",
-
                     }}
                   >
-                    Explore your information, make edits, and then create your a new CV
+                    Explore your information, make edits, and then create your a
+                    new CV
                   </Typography.Text>
                   <div>
                     <Button
-                    className="black-button"
+                      className="black-button"
                       onClick={() => {
                         window.location.href = "/repository";
                       }}

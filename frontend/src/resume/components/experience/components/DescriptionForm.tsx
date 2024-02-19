@@ -1,4 +1,15 @@
-import { Button, Col, Popover, Row, Skeleton, Space, Typography } from "antd";
+import {
+  Button,
+  Col,
+  Divider,
+  Modal,
+  Popover,
+  Row,
+  Skeleton,
+  Space,
+  Spin,
+  Typography,
+} from "antd";
 import React, { useEffect } from "react";
 import EditorJsInput from "../../../../components/editor";
 import { BulbOutlined } from "@ant-design/icons";
@@ -6,11 +17,15 @@ import CustomCarousel from "../../../../components/suggestionCarousel";
 import CVWizardBox from "../../../../components/cvWizardBoxV2";
 import {
   AIWizardIcon,
+  DeleteIcon,
+  EditIcon,
   LightBulbIcon,
   MagicWandIcon,
   RepharseIcon,
 } from "../../../../components/faIcons";
 import openAI from "../../../../hooks/openai";
+import ReactMarkdown from "react-markdown";
+import CVWizardBadge from "../../../../components/cvWizardBadge";
 
 type DescriptionFormProps = {
   initialValues?: any;
@@ -24,7 +39,6 @@ export const DescriptionForm = ({
   const [description, setDescription] = React.useState(
     initialValues?.description || ""
   );
-
   const [showAIWizard, setShowAIWizard] = React.useState(false);
 
   const descriptionHelper = openAI.useExperienceHelper();
@@ -49,124 +63,227 @@ export const DescriptionForm = ({
     });
   };
 
-
-
   const onAddDescription = (value: string) => {
     setDescription(value);
   };
 
   useEffect(() => {
-    onChange({
-      description: description,
-    });
+      onChange({
+        description: description,
+      });
   }, [description]);
 
   return (
-    <div className="profile-tab-detail">
-      <div className="user-input-area">
-        <div className="profile-input-section-title">
-          <Typography.Text>Description</Typography.Text>
-
-          <Popover
-            trigger="click"
-            content={
-              <Space direction="vertical">
-                <Button
-                  type="text"
-                  // size="small"
-                  style={{
-                    height: "auto",
-                    textAlign: "left",
-                  }}
-                  disabled={
-                    description && description.length > 20 ? false : true
-                  }
-                  onClick={() => {
-                    loadSuggestions({
-                      employerName: initialValues?.employerName,
-                      position: initialValues?.position,
-                      rewrite: true,
-                      existingDesscription: description,
-                    });
-                  }}
-                >
-                  <Typography.Text strong>
-                    {" "}
-                    <RepharseIcon /> Optimize
-                  </Typography.Text>
-                  <br />
-                  <Typography.Text type="secondary">
-                    Rephrase and optimize your current description
-                  </Typography.Text>
-                </Button>
-                <Button
-                  type="text"
-                  style={{
-                    height: "auto",
-                    textAlign: "left",
-                    width: "100%",
-                  }}
-                  onClick={() => {
-                    loadSuggestions({
-                      employerName: initialValues?.employerName,
-                      position: initialValues?.position,
-                      rewrite: false,
-                    });
-                  }}
-                >
-                  <Typography.Text strong>
-                    {" "}
-                    <LightBulbIcon /> Generate new ideas
-                  </Typography.Text>
-                  <br />
-                  <Typography.Text type="secondary">
-                    Get new ideas for the desciption
-                  </Typography.Text>
-                </Button>
-              </Space>
-            }
-          >
-            <Button type="link">
-              <AIWizardIcon />
-            </Button>
-          </Popover>
+    <>
+      <Modal
+        width={800}
+        visible={showAIWizard}
+        footer={null}
+        onCancel={() => setShowAIWizard(false)}
+        className="default-modal"
+      >
+        <CVWizardBadge />
+        <div
+          style={{
+            margin: "1rem 0rem",
+            font: "normal normal bold 24px/12px DM Sans",
+          }}
+        >
+          Description Suggestion
         </div>
-        <Space direction="vertical" size="large" style={{ width: "100%" }}>
-          <Row gutter={24}>
-            <Col span={24}>
-              <Row>
-                <Typography.Text type="secondary">
-                  <BulbOutlined />
-                  Tip: Write 2-3 sentences which provide the reader with a clear
-                  understanding of your role, including what you are responsible
-                  for and the overall impact you made in the role. If relevant,
-                  include how you progressed, and the size of your team and
-                  budget. Stuck for ideas describing your role? Try CV Wizard –
-                  it can refine your summary or create you a new one based on
-                  your job title.
-                </Typography.Text>
-              </Row>
-              <Row></Row>
-              <EditorJsInput
-                value={description}
-                onChange={(value: any) => {
-                  setDescription(value);
+        {descriptionHelper.loading && (
+          <div className="spin-container" style={{ height: "100px" }}>
+            <Spin />
+          </div>
+        )}
+
+        {descriptionHelper.loading === false &&
+          descriptionHelper.descriptionSuggestions &&
+          descriptionHelper.descriptionSuggestions.results.length > 0 && (
+            <>
+              <div
+                style={{
+                  margin: "1rem 0rem",
+                  font: "normal normal normal 16px/24px DM Sans",
                 }}
-              />
-            </Col>
-          </Row>
-          {/* <Button type="primary" htmlType="submit" onClick={onSave}>
-          Save
-        </Button> */}
-        </Space>
-      </div>
-      <div className="ai-wizard-area">
-        {showAIWizard ? (
+              >
+                Select any of the following suggestions
+              </div>
+              <div>
+                {descriptionHelper.descriptionSuggestions?.results?.map(
+                  (item: string, index: number) => (
+                    <div
+                      key={index}
+                      className="openai-generated-content-item"
+                      onClick={() => {
+                        onAddDescription(item);
+                        setShowAIWizard(false);
+                      }}
+                    >
+                      <ReactMarkdown>{item}</ReactMarkdown>
+                    </div>
+                  )
+                )}
+              </div>
+            </>
+          )}
+      </Modal>
+      <div className="profile-tab-detail">
+        <div className="user-input-area">
+          <div className="profile-input-section-title">
+            <Typography.Text>Description</Typography.Text>
+
+            <Popover
+              trigger="click"
+              content={
+                <Space direction="vertical">
+                  <Button
+                    type="text"
+                    // size="small"
+                    style={{
+                      height: "auto",
+                      textAlign: "left",
+                    }}
+                    disabled={
+                      description && description.length > 20 ? false : true
+                    }
+                    onClick={() => {
+                      loadSuggestions({
+                        employerName: initialValues?.employerName,
+                        position: initialValues?.position,
+                        rewrite: true,
+                        existingDesscription: description,
+                      });
+                    }}
+                  >
+                    <Typography.Text strong>
+                      {" "}
+                      <RepharseIcon /> Optimize
+                    </Typography.Text>
+                    <br />
+                    <Typography.Text type="secondary">
+                      Rephrase and optimize your current description
+                    </Typography.Text>
+                  </Button>
+                  <Button
+                    type="text"
+                    style={{
+                      height: "auto",
+                      textAlign: "left",
+                      width: "100%",
+                    }}
+                    onClick={() => {
+                      loadSuggestions({
+                        employerName: initialValues?.employerName,
+                        position: initialValues?.position,
+                        rewrite: false,
+                      });
+                    }}
+                  >
+                    <Typography.Text strong>
+                      {" "}
+                      <LightBulbIcon /> Generate new ideas
+                    </Typography.Text>
+                    <br />
+                    <Typography.Text type="secondary">
+                      Get new ideas for the desciption
+                    </Typography.Text>
+                  </Button>
+                </Space>
+              }
+            >
+              <Button type="link">
+                <AIWizardIcon />
+              </Button>
+            </Popover>
+          </div>
+          <Space direction="vertical" size="large" style={{ width: "100%" }}>
+            <Row gutter={24} className="description-input">
+              <div className="description-options">
+                <Space
+                  size="small"
+                  direction="horizontal"
+                  split={
+                    <Divider
+                      type="vertical"
+                      style={{
+                        height: "24px",
+                        margin: "0 0rem",
+                        borderInlineStart: "1px solid var(--black)",
+                        borderBlockStart: "1px solid var(--black)",
+                      }}
+                    />
+                  }
+                >
+                  <Button
+                    type="link"
+                    size="small"
+                    // onClick={loadSuggestions}
+                    onClick={() => {
+                      loadSuggestions({
+                        employerName: initialValues?.employerName,
+                        position: initialValues?.position,
+                        rewrite: true,
+                        existingDesscription: description,
+                      });
+                    }}
+                  >
+                    <MagicWandIcon color="var(--black)" marginRight="0px" />
+                  </Button>
+                  {/* <Button
+                    type="link"
+                    size="small"
+                    onClick={() => {
+                      // onEditAchievement(item.id!);
+                    }}
+                  >
+                    <EditIcon color="var(--black)" marginRight="0px" />
+                  </Button> */}
+                  <Button
+                    type="link"
+                    size="small"
+                    danger
+                    onClick={() => setDescription("")}
+                  >
+                    <DeleteIcon color="var(--black)" marginRight="0px" />
+                  </Button>
+                </Space>
+              </div>
+              <Col span={24}>
+                <EditorJsInput
+                  value={description}
+                  onChange={(value: any) => {
+                    setDescription(value);
+                  }}
+                />
+              </Col>
+            </Row>
+          </Space>
+        </div>
+        <div className="ai-wizard-area">
           <CVWizardBox
             title="Description Tip"
-            subtitle="Highlighting your key achievements here, like awards, dissertations or projects"
+            // subtitle="Highlighting your key achievements here, like awards, dissertations or projects"
+            subtitle="Use this section to add details of scholarships / awards, dissertations / projects and any other relevant information."
+            actions={[
+              <Button
+                className="black-button-small"
+                type="primary"
+                onClick={() =>
+                  loadSuggestions({
+                    employerName: initialValues?.employerName,
+                    position: initialValues?.position,
+                    rewrite: false,
+                  })
+                }
+              >
+                {" "}
+                <MagicWandIcon color="var(--white)" />
+                Generate Ideas
+              </Button>,
+            ]}
           >
-            <Typography.Text type="secondary">
+            {/* <Typography.Text type="secondary">
               <MagicWandIcon /> CV Wizard Suggestions:
             </Typography.Text>
             {descriptionHelper.loading && <Skeleton active></Skeleton>}
@@ -190,10 +307,13 @@ export const DescriptionForm = ({
                   }
                   onClick={(item: any) => onAddDescription(item)}
                 />
-              )}
+              )} */}
+
+            <div>Stuck for ideas describing your experience? Try CV Wizard</div>
+            <div></div>
           </CVWizardBox>
-        ) : null}
+        </div>
       </div>
-    </div>
+    </>
   );
 };

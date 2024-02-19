@@ -1,10 +1,11 @@
-import { Button, Col, Popover, Row, Skeleton, Space, Typography } from "antd";
+import { Button, Col, Divider, Modal, Popover, Row, Skeleton, Space, Spin, Typography } from "antd";
 import React, { useEffect } from "react";
 import EditorJsInput from "../../../../components/editor";
 import { BulbOutlined } from "@ant-design/icons";
 import openAI from "../../../../hooks/openai";
 import {
   AIWizardIcon,
+  DeleteIcon,
   LightBulbIcon,
   MagicWandIcon,
   RepharseIcon,
@@ -12,6 +13,8 @@ import {
 import CVWizardBox from "../../../../components/cvWizardBoxV2";
 import CustomCarousel from "../../../../components/suggestionCarousel";
 import { on } from "events";
+import ReactMarkdown from "react-markdown";
+import CVWizardBadge from "../../../../components/cvWizardBadge";
 
 type DescriptionFormProps = {
   value?: any;
@@ -47,23 +50,73 @@ export const DescriptionForm = ({ value, onChange }: DescriptionFormProps) => {
     });
   };
 
-  // useEffect(() => {
-  //   // console.log(initialValues);
-  //   setDescription(value?.description || "");
-  // }, [value]);
 
   useEffect(() => {
     onChange({
       description: description,
     });
-  }, [description, onChange]);
+  }, [description]);
 
   const onAddDescription = (value: string) => {
     setDescription(value);
   };
 
-
   return (
+    <>
+    <Modal
+        width={800}
+        visible={showAIWizard}
+        footer={null}
+        onCancel={() => setShowAIWizard(false)}
+        className="default-modal"
+      >
+        <CVWizardBadge />
+        <div
+          style={{
+            margin: "1rem 0rem",
+            font: "normal normal bold 24px/12px DM Sans",
+          }}
+        >
+          Description Suggestion
+        </div>
+        {descriptionHelper.loading && (
+          <div className="spin-container" style={{ height: "100px" }}>
+            <Spin />
+          </div>
+        )}
+
+        {descriptionHelper.loading === false &&
+          descriptionHelper.descriptionSuggestions &&
+          descriptionHelper.descriptionSuggestions.results.length > 0 && (
+            <>
+              <div
+                style={{
+                  margin: "1rem 0rem",
+                  font: "normal normal normal 16px/24px DM Sans",
+                }}
+              >
+                Select any of the following suggestions
+              </div>
+              <div>
+                {descriptionHelper.descriptionSuggestions?.results?.map(
+                  (item: string, index: number) => (
+                    <div
+                      key={index}
+                      className="openai-generated-content-item"
+                      onClick={() => {
+                        onAddDescription(item); 
+                        setShowAIWizard(false);
+                      }
+                    }
+                    >
+                      <ReactMarkdown>{item}</ReactMarkdown>
+                    </div>
+                  )
+                )}
+              </div>
+            </>
+          )}
+      </Modal>
     <div className="profile-tab-detail">
       <div className="user-input-area">
         <div className="profile-input-section-title">
@@ -138,7 +191,59 @@ export const DescriptionForm = ({ value, onChange }: DescriptionFormProps) => {
           size="large"
           style={{ width: "100%", paddingRight: "1rem" }}
         >
-          <Row gutter={24}>
+            <Row gutter={24} className="description-input">
+            <div className="description-options">
+                <Space
+                  size="small"
+                  direction="horizontal"
+                  split={
+                    <Divider
+                      type="vertical"
+                      style={{
+                        height: "24px",
+                        margin: "0 0rem",
+                        borderInlineStart: "1px solid var(--black)",
+                        borderBlockStart: "1px solid var(--black)",
+                      }}
+                    />
+                  }
+                >
+                  <Button
+                    type="link"
+                    size="small"
+                    // onClick={loadSuggestions}
+                    onClick={() => {
+                      loadSuggestions({
+                        school: value?.school,
+                        degree: value?.degree,
+                        rewrite: true,
+                        existingDesscription: description,
+                      });
+                    }}
+                  >
+                    <MagicWandIcon color="var(--black)" marginRight="0px" />
+                  </Button>
+                  {/* <Button
+                    type="link"
+                    size="small"
+                    onClick={() => {
+                      // onEditAchievement(item.id!);
+                    }}
+                  >
+                    <EditIcon color="var(--black)" marginRight="0px" />
+                  </Button> */}
+                  <Button
+                    type="link"
+                    size="small"
+                    danger
+                    onClick={ () => setDescription("")}
+
+                    
+                  >
+                    <DeleteIcon color="var(--black)" marginRight="0px" />
+                  </Button>
+                </Space>
+              </div>
             <Col span={24}>
               <Row>
                 <Col
@@ -147,14 +252,14 @@ export const DescriptionForm = ({ value, onChange }: DescriptionFormProps) => {
                   }}
                 ></Col>
               </Row>
-              <Row>
+              {/* <Row>
                 <Typography.Text type="secondary">
                   <BulbOutlined />
                   List further achievements here, such as scholarships, awards,
                   the title of your dissertation and / or key projects. Try CV
                   wizard to get more ideas.
                 </Typography.Text>
-              </Row>
+              </Row> */}
 
               <EditorJsInput
                 value={description}
@@ -171,12 +276,28 @@ export const DescriptionForm = ({ value, onChange }: DescriptionFormProps) => {
       </div>
       <div className="ai-wizard-area">
         <Row>
-          {showAIWizard ? (
-            <CVWizardBox
-              title="Description Tip"
-              subtitle="Highlighting your key achievements here, like awards, dissertations or projects"
-            >
-              <Typography.Text type="secondary">
+          <CVWizardBox
+            title="Description Tip"
+            subtitle="Highlighting your key achievements here, like awards, dissertations or projects"
+            actions={[
+              <Button
+                className="black-button-small"
+                type="primary"
+                onClick={() =>
+                  loadSuggestions({
+                    school: value?.school,
+                    degree: value?.degree,
+                    rewrite: false,
+                  })
+                }
+              >
+                {" "}
+                <MagicWandIcon color="var(--white)" />
+                Generate Ideas
+              </Button>,
+            ]}
+          >
+            {/* <Typography.Text type="secondary">
                 CV Wizard Suggestions:
               </Typography.Text>
               {descriptionHelper.loading && <Skeleton active></Skeleton>}
@@ -201,11 +322,13 @@ export const DescriptionForm = ({ value, onChange }: DescriptionFormProps) => {
                     }
                     onClick={(item: any) => onAddDescription(item)}
                   />
-                )}
-            </CVWizardBox>
-          ) : null}
+                )} */}
+            <div>Stuck for ideas describing your education? Try CV Wizard</div>
+            <div></div>
+          </CVWizardBox>
         </Row>
       </div>
     </div>
+    </>
   );
 };

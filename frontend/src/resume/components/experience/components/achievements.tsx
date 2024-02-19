@@ -15,6 +15,7 @@ import {
   Space,
   Modal,
   Spin,
+  Divider,
 } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { useOpenAI } from "../../../../utils";
@@ -22,13 +23,18 @@ import Markdown from "react-markdown";
 import {
   AIWizardHideIcon,
   AIWizardIcon,
+  DeleteIcon,
+  EditIcon,
   MagicWandIcon,
   MagicWandLoading,
 } from "../../../../components/faIcons";
 import CVWizardBox from "../../../../components/cvWizardBoxV2";
 import { Achievement } from "../../../../types/resume";
 import CustomCarousel from "../../../../components/suggestionCarousel";
-
+import CVWizardBadge from "../../../../components/cvWizardBadge";
+import { PlusOutlined } from "@ant-design/icons";
+import SortableComponent from "../../../../components/sortableList";
+import ObjectID from "bson-objectid";
 type AchievementStep1Props = {
   selectedTheme: string | null;
   themeDescription: any;
@@ -43,9 +49,20 @@ const AchievementStep1 = ({
 
   return (
     <>
-      <Typography.Title level={5}>
-        Selected Theme: {selectedTheme}
-      </Typography.Title>
+      <div>
+        <div className="">
+          <CVWizardBadge />
+        </div>
+        <div
+          className="profile-input-section-title"
+          style={{
+            margin: "1rem 0rem",
+            font: "normal normal bold 24px/12px DM Sans",
+          }}
+        >
+          {selectedTheme ? `Selected Theme: ${selectedTheme}` : "Achievement"}
+        </div>
+      </div>
 
       {themeDescription.loading && (
         <div className="spin-container" style={{ height: "100px" }}>
@@ -54,19 +71,29 @@ const AchievementStep1 = ({
       )}
       {!themeDescription.loading && (
         <>
-          <Typography.Text type="secondary">
-            {themeDescription.data?.result?.explanation}
-          </Typography.Text>
           <div
+            className=""
             style={{
-              marginTop: "0.5rem",
-              marginBottom: "0.5rem",
+              backgroundColor: "var(--accent-2-lighter)",
+              borderRadius: "10px",
+              padding: "20px",
+              font: "normal normal normal 14px/22px DM Sans;",
             }}
           >
-            <Typography.Text type="secondary">
-              Select any of the following examples and update it as per your own
-              achievement
+            <Typography.Text>
+              {themeDescription.data?.result?.explanation}
             </Typography.Text>
+          </div>
+          <div
+            style={{
+              margin: "1rem 0rem",
+              font: "normal normal normal 16px/24px DM Sans",
+            }}
+          >
+            Choose one this examples and tailor it to reflect your personal
+            achievements:
+          </div>
+          <div>
             {themeDescription.data?.result?.examples?.map(
               (item: string, index: number) => (
                 <div
@@ -143,41 +170,34 @@ const AchievementStep2 = ({
 
   return (
     <>
-      <Typography.Title level={5}>
+      {/* <Typography.Title level={5}>
         Selected Theme: {selectedTheme}
-      </Typography.Title>
+      </Typography.Title> */}
 
-      <Row justify="end">
-        <Col>
-          <Popover
-            zIndex={1050}
-            placement="bottomRight"
-            trigger={["click"]}
-            content={
-              <div>
-                <Space direction="vertical">
-                  <Typography.Text type="secondary">
-                    Write with CV Wizard
-                  </Typography.Text>{" "}
-                  <Button type="link" size="small" onClick={handleRewrite}>
-                    Rephrase and Optimise
-                  </Button>
-                  {/* <Button type="link" size="small">
-                    Repharse with Instructions
-                  </Button> */}
-                  <Button type="link" size="small" onClick={handleGenSummary}>
-                    Generate New Summary
-                  </Button>
-                </Space>
-              </div>
-            }
+      <div>
+        <div className="">
+          <CVWizardBadge />
+        </div>
+        <Row justify="space-between" align="middle">
+          <div
+            className="profile-input-section-title"
+            style={{
+              margin: "1rem 0rem",
+              font: "normal normal bold 24px/12px DM Sans",
+            }}
           >
-            <Button type="link" size="small">
-              <MagicWandIcon /> Write with CV Wizard
-            </Button>
-          </Popover>
-        </Col>
-      </Row>
+            {selectedTheme ? `Selected Theme: ${selectedTheme}` : "Achievement"}
+          </div>
+          <Button
+            type="primary"
+            size="small"
+            onClick={handleRewrite}
+            className="black-button-small"
+          >
+            <MagicWandIcon color="white" /> Rephrase
+          </Button>
+        </Row>
+      </div>
 
       <Input.TextArea
         rows={3}
@@ -233,10 +253,10 @@ const AchievementStep2 = ({
         >
           <div
             style={{
-              margin: "0.25rem 0",
+              margin: "1rem 0",
             }}
           >
-            <Typography.Text type="secondary">Suggestions</Typography.Text>
+            Select any of the following suggestions:
           </div>
           {openai.loading && (
             <div
@@ -265,6 +285,7 @@ const AchievementStep2 = ({
       )}
       <Row style={{ marginTop: "1rem" }}>
         <Button
+          className="black-button"
           onClick={() => {
             onSave();
           }}
@@ -299,16 +320,18 @@ const AchievementThemeWizard = ({
   }, [showAIWizard]);
 
   return showAIWizard ? (
-    <CVWizardBox title="Achievement Topics" subtitle="Highlighting your key achievements here">
-    <>
-        <Row>
+    <CVWizardBox
+      title="Achievement Topics"
+      subtitle="Highlighting your key achievements here"
+    >
+      <>
+        {/* <Row>
           <Col>
             <Typography.Text type="secondary">
-               CV Wizard Suggestions:
+              CV Wizard Suggestions:
             </Typography.Text>
           </Col>
-          
-        </Row>
+        </Row> */}
         <Row>
           <Typography.Text type="secondary">
             Select your theme to get started
@@ -367,7 +390,7 @@ const AchievementRewrite = ({
 
   return (
     <CVWizardBox title="Achievement Suggestion" subtitle="">
-    <Row>
+      <Row>
         <Typography.Text type="secondary">
           <MagicWandIcon /> CV Wizard Suggestions:
         </Typography.Text>
@@ -414,16 +437,60 @@ const AchievementRewrite = ({
   );
 };
 
+const AllAchievements = (
+  value: any,
+  onChange: (value: any) => void,
+  onEditAchievement: (id: string) => void
+) => {
+  const renderFn = (item: any, dragHandle: any) => {
+    return (
+      <>
+        <Row align="top" className="achievement-item" wrap={false}>
+          <Col
+            flex="24px"
+            style={{
+              paddingTop: "4px",
+            }}
+          >
+            {dragHandle}
+          </Col>
+          <Col flex="auto">
+            <AchievementCard
+              key={item.id}
+              item={item}
+              onEditAchievement={onEditAchievement}
+              onDelete={(id) => {
+                let newValue = [...value];
+                newValue = newValue.filter((item: any) => item.id !== id);
+                onChange(newValue);
+              }}
+            />
+          </Col>
+        </Row>
+        <Divider style={{ margin: "0.5rem 0" }} />
+      </>
+    );
+  };
+  return (
+    <>
+      <SortableComponent
+        items={value}
+        renderFn={renderFn}
+        onReorder={(newOrder: any) => {
+          onChange(newOrder);
+        }}
+      />
+    </>
+  );
+};
 const AchievementCard = ({
   item,
   onEditAchievement,
-  index,
   onDelete,
 }: {
   item: Achievement;
-  index: number;
-  onEditAchievement: (index: number) => void;
-  onDelete: (index: number) => void;
+  onEditAchievement: (id: string) => void;
+  onDelete: (id: string) => void;
 }) => {
   const [state, setState] = useState<{
     showAIWizard: boolean;
@@ -444,36 +511,52 @@ const AchievementCard = ({
   };
 
   return (
-    <Row
-      style={{
-        width: "100%",
-      }}
+    <
+      // style={{
+      //   width: "100%",
+      // }}
     >
-      <div className="achievement-item">
-        <div className="achievement-item-header">
-          <Typography.Text type="secondary">{item.theme}</Typography.Text>
-          <div>
-            <Button type="link" size="small" onClick={loadSuggestions}>
-              <MagicWandIcon />
-            </Button>
-            <Button
-              type="link"
-              size="small"
-              onClick={() => {
-                onEditAchievement(index);
+      <div className="achievement-options">
+        <Space
+          size="small"
+          direction="horizontal"
+          split={
+            <Divider
+              type="vertical"
+              style={{
+                height: "24px",
+                margin: "0 0rem",
+                borderInlineStart: "1px solid var(--black)",
+                borderBlockStart: "1px solid var(--black)",
               }}
-            >
-              <EditOutlined />
-            </Button>
-            <Button
-              type="link"
-              size="small"
-              danger
-              onClick={() => onDelete(index)}
-            >
-              <DeleteOutlined />
-            </Button>
-          </div>
+            />
+          }
+        >
+          <Button type="link" size="small" onClick={loadSuggestions}>
+            <MagicWandIcon color="var(--black)" marginRight="0px" />
+          </Button>
+          <Button
+            type="link"
+            size="small"
+            onClick={() => {
+              onEditAchievement(item.id!);
+            }}
+          >
+            <EditIcon color="var(--black)" marginRight="0px" />
+          </Button>
+          <Button
+            type="link"
+            size="small"
+            danger
+            onClick={() => onDelete(item.id!)}
+          >
+            <DeleteIcon color="var(--black)" marginRight="0px" />
+          </Button>
+        </Space>
+      </div>
+      <div>
+        <div className="achievement-item-header">
+          <Typography.Text type="secondary"></Typography.Text>
         </div>
         <Typography.Text>{item.description}</Typography.Text>
 
@@ -487,7 +570,7 @@ const AchievementCard = ({
           />
         )}
       </div>
-    </Row>
+    </>
   );
 };
 type AchievementsProps = {
@@ -514,6 +597,13 @@ const Achievements = ({
   value,
   onChange,
 }: AchievementsProps) => {
+  // Add id if not present
+  value = value?.map((item: any, idx: number) => {
+    return {
+      ...item,
+      id: item.id || ObjectID().toHexString(),
+    };
+  });
   // AI Actions helper
   const [state, setState] = useState<AchievementStateType>({
     modalVisible: false,
@@ -574,7 +664,8 @@ const Achievements = ({
 
   const addAchievement = () => {
     let mode =
-      state.editIdx != null || state.editIdx !== undefined ? "edit" : "add";
+      state.editIdx != null && state.editIdx !== undefined ? "edit" : "add";
+    debugger;
     if (mode === "edit") {
       if (state.editIdx == null) {
         return;
@@ -584,7 +675,7 @@ const Achievements = ({
         theme: state.selectedTheme || "",
         description: state.currentAchievement,
       };
-        onChange(value);
+      onChange(value);
       setState((prev) => ({
         ...prev,
         modalVisible: false,
@@ -595,11 +686,12 @@ const Achievements = ({
     } else {
       let newValue = value ? [...value] : [];
       newValue.push({
+        id: ObjectID().toHexString(),
         theme: state.selectedTheme,
         description: state.currentAchievement,
       });
 
-        onChange(newValue);
+      onChange(newValue);
       setState((prev) => ({
         ...prev,
         modalVisible: false,
@@ -610,7 +702,8 @@ const Achievements = ({
     }
   };
 
-  const onEditAchievement = (index: number) => {
+  const onEditAchievement = (id: string) => {
+    let index = value.findIndex((item: any) => item.id === id);
     setState((prev) => ({
       ...prev,
       modalVisible: true,
@@ -621,16 +714,16 @@ const Achievements = ({
     }));
   };
 
-
   return (
     <>
       <Modal
-        width={600}
+        width={800}
         closeIcon={true}
         open={state.modalVisible}
         footer={null}
         onCancel={onModalClose}
         zIndex={1050}
+        className="default-modal"
       >
         {state.isAtStep1 && (
           <AchievementStep1
@@ -672,8 +765,7 @@ const Achievements = ({
             </Button>
           </div>
 
-          <Row style={{ paddingBottom: "1rem", width: "100%" }}>
-           
+          {/* <Row style={{ paddingBottom: "1rem", width: "100%" }}>
             <Row
               style={{
                 marginBottom: "0.5rem",
@@ -686,11 +778,11 @@ const Achievements = ({
                 perfect!
               </Typography.Text>
             </Row>
-          </Row>
-          <Row style={{ paddingBottom: "1rem" }}>
+          </Row> */}
+          <Row style={{ paddingBottom: "1rem" }} className="all-achievements">
             {value && value.length > 0 && (
               <>
-                <Row
+                {/* <Row
                   style={{
                     width: "100%",
                   }}
@@ -698,9 +790,9 @@ const Achievements = ({
                   <Typography.Text type="secondary">
                     Added achievements
                   </Typography.Text>{" "}
-                </Row>
+                </Row> */}
 
-                {value.map((item: any, index: number) => (
+                {/* {value.map((item: any, index: number) => (
                   <AchievementCard
                     key={index}
                     item={item}
@@ -709,13 +801,28 @@ const Achievements = ({
                     onDelete={(index) => {
                       let newValue = [...value];
                       newValue.splice(index, 1);
-                        onChange(newValue);
+                      onChange(newValue);
                     }}
                   />
-                ))}
+                ))} */}
+                {AllAchievements(value, onChange, onEditAchievement)}
               </>
             )}
           </Row>
+          <Button
+            type="link"
+            className="small-link-btn"
+            onClick={() => {
+              setState((prev) => ({
+                ...prev,
+                modalVisible: true,
+                isAtStep1: false,
+              }));
+            }}
+          >
+            <PlusOutlined />
+            Add New
+          </Button>
         </div>
         <div className="ai-wizard-area">
           <AchievementThemeWizard

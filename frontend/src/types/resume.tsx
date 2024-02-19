@@ -74,6 +74,7 @@ interface AwardList {
 }
 
 interface Achievement {
+  id?: string;
   theme: string | null;
   description: string;
 }

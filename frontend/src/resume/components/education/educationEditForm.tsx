@@ -64,26 +64,22 @@ const EducationForm = ({
     selectedId: educationList.length > 0 ? educationList[0].id : null,
   });
 
-  const onSave = async (experience: Education) => {
-    // educationList[state.selectedEducationIdx!] = experience;
-    // await syncEducation(educationList);
-    // message.success("Education saved!");
-    // if (onFinish) {
-    //   await onFinish(educationList);
-    // }
-
+  const onSave = async (education: Education) => {
     // Update based on id
-    let newEducationList = [...educationList];
-    const idx = newEducationList.findIndex((item) => item.id === experience.id);
-    if (idx === -1) {
-      // Delete isNew flag
-      delete experience.isNew;
-      newEducationList.push(experience);
-    } else {
-      newEducationList[idx] = experience;
+    let newEducationList = educationList.map((item) => {
+      if (item.id === education.id) {
+        return { ...education };
+      }
+      return item;
     }
+    );
+
 
     await syncEducation(newEducationList);
+    if (onFinish) {
+      await onFinish(education);
+    }
+    message.success("Education saved");
   };
 
   const addNew = () => {

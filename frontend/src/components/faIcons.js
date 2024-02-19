@@ -33,11 +33,11 @@ import {
   faAward,
 } from "@fortawesome/free-solid-svg-icons";
 
-export const MagicWandIcon = ({color = "#E9AFA3"}) => (
+export const MagicWandIcon = ({ color = "#E9AFA3", marginRight = "6px" }) => (
   <FontAwesomeIcon
     icon={faWandMagicSparkles}
     style={{
-      marginRight: "6px",
+      marginRight: marginRight,
       color: color,
     }}
   />
@@ -128,22 +128,22 @@ export const ShareIcon = () => (
   />
 );
 
-export const DeleteIcon = () => (
+export const DeleteIcon = ({ color = "#ff4d4f", marginRight = "6px" }) => (
   <FontAwesomeIcon
     icon={faTrash}
     style={{
-      marginRight: "6px",
-      color: "#ff4d4f",
+      marginRight: marginRight ? marginRight : "6px",
+      color: color ? color : "#ff4d4f",
     }}
   />
 );
 
-export const EditIcon = () => (
+export const EditIcon = ({ color = "#E9AFA3", marginRight = "6px" }) => (
   <FontAwesomeIcon
     icon={faPenToSquare}
     style={{
-      marginRight: "6px",
-      color: "#E9AFA3",
+      marginRight: marginRight ? marginRight : "6px",
+      color: color ? color : "#E9AFA3",
     }}
   />
 );

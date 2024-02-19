@@ -6,12 +6,13 @@ const CVWizardBox = ({
   children,
   title,
   subtitle,
+  actions,
 }: {
   children: React.ReactNode;
   title: string;
   subtitle: string;
+  actions?: React.ReactNode;
 }) => {
-
   const [show, setShow] = React.useState(true);
   return (
     <div
@@ -24,25 +25,28 @@ const CVWizardBox = ({
       //   backgroundColor: "--var(primary-200)",
       // }}
     >
-      <div className={show? "header" : "header is-hidded"} onClick={
-        () => setShow(!show)
-      }>
+      <div
+        className={show ? "header" : "header is-hidded"}
+        onClick={() => setShow(!show)}
+      >
         <AIWizardIcon />
         <div className="title">{title}</div>
         <div className="subtitle">{subtitle}</div>
       </div>
-      {show && 
-      <div className="wizard-body">
-        {children}
-        <div className="actions">
-          <Button type="link" 
-          onClick={
-            () => setShow(!show)
-          }
-          >Hide</Button>
+      {show && (
+        <div className="wizard-body">
+          {children}
+          <div className="actions" style={{
+            display: "flex",
+            alignItems: "center",
+          }}>
+            <Button type="link" onClick={() => setShow(!show)}>
+              Hide
+            </Button>
+            {actions}
+          </div>
         </div>
-      </div>
-      }
+      )}
     </div>
   );
 };

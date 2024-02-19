@@ -44,15 +44,14 @@ const SingleExperienceForm = ({
   let endDate = initialValues.endDate
     ? dayjs(initialValues.endDate.toDate())
     : null;
-    initialValues = {
-      ...initialValues,
-      dateRange: [startDate, endDate],
-    };
+  initialValues = {
+    ...initialValues,
+    dateRange: [startDate, endDate],
+  };
   const [experienceData, setExperienceData] = React.useState<any>(
     initialValues || {}
   );
 
- 
   const [state, setState] = React.useState({
     current: 0,
     finished: false,
@@ -73,11 +72,6 @@ const SingleExperienceForm = ({
   );
 
   const onSave = async (details: any) => {
-    setExperienceData((prev: any) => ({
-      ...prev,
-      ...details,
-    }));
-
     let finalData = {
       ...experienceData,
       ...details,
@@ -89,12 +83,13 @@ const SingleExperienceForm = ({
       !finalData.position ||
       !finalData.dateRange
     ) {
-      setState((prev) => ({
-        ...prev,
-        loading: false,
-      }));
       return;
     }
+
+    setExperienceData((prev: any) => ({
+      ...prev,
+      ...details,
+    }));
 
     if (JSON.stringify(finalData) === JSON.stringify(initialValues)) {
       setState((prev) => ({

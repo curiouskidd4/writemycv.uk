@@ -85,9 +85,23 @@ a {
   color: var(--white) !important;
   text-align: center;
   font: normal normal bold 16px/12px DM Sans;
+
+  
 }
 
 .black-button:hover {
   opacity: 0.9;
+  background: #000000 0% 0% no-repeat padding-box !important;
   color: var(--white) !important;
+}
+
+.black-button-small {
+  height: 26px;
+  color: var(--white) !important;
+  text-align: center;
+  font: normal normal bold 12px/12px DM Sans !important;
+  letter-spacing: 0px;
+  opacity: 1;
+  background: var(--black) 0% 0% no-repeat padding-box !important;
+border-radius: 5px;
 }

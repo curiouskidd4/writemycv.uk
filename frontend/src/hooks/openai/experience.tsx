@@ -2,7 +2,7 @@ import axios from "axios";
 import { useContext, useState } from "react";
 import { createContext } from "vm";
 import { useAuth } from "../../authContext";
-import { useResume } from "../../resumeContext";
+import { useResume } from "../../contexts/resume";
 import { useProfile } from "../../contexts/profile";
 
 const BASE_URL =

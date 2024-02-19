@@ -54,7 +54,7 @@ const SingleEducationForm = ({
   }) => {
     console.log("Checking AI suggestions");
     // Check if the new value is different from the previous value
-    if (newVal.school && newVal.degree && (prevVal.degree != newVal.degree)) {
+    if (newVal.school && newVal.degree && prevVal.degree != newVal.degree) {
       // Run Modules suggestion and show it to the user
       await educationHelper.suggestCourses({
         school: newVal.school,
@@ -81,11 +81,6 @@ const SingleEducationForm = ({
   );
 
   const onSave = async (details: any) => {
-    setEducationData((prev: any) => ({
-      ...prev,
-      ...details,
-    }));
-
     // Complete and move to next
     let finalData = {
       ...educationData,
@@ -97,14 +92,15 @@ const SingleEducationForm = ({
       return;
     }
 
-    if (JSON.stringify(finalData) === JSON.stringify(initialValues)) {
-      setState((prev) => ({
-        ...prev,
-        loading: false,
-      }));
+
+    if (JSON.stringify(finalData) == JSON.stringify(initialValues)) {
       return;
     }
 
+    setEducationData((prev: any) => ({
+      ...prev,
+      ...details,
+    }));
     setState((prev) => ({
       ...prev,
       loading: true,
@@ -150,7 +146,7 @@ const SingleEducationForm = ({
         style={{
           marginTop: "12px",
           width: "100%",
-        }}  
+        }}
       >
         <Row align="middle" justify="space-between" style={{ width: "70%" }}>
           <div className="profile-input-section-title">
@@ -167,7 +163,6 @@ const SingleEducationForm = ({
           ) : null}
         </Row>
 
-        <div>
           <DetailForm
             value={educationData}
             onChange={(details) => onSave(details)}
@@ -191,7 +186,6 @@ const SingleEducationForm = ({
             onChange={(details) => onSave(details)}
             saveLoading={saveLoading}
           />
-        </div>
       </Row>
     </div>
   );
