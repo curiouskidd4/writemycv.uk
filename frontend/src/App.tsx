@@ -13,8 +13,6 @@ import {
   useNavigate,
 } from "react-router-dom";
 
-// import ResponseForm from "./pages/responseForm";
-// import Predictions from "./predictions";
 import LoginSignupPage from "./pages/signInUp/index.js";
 import CustomHeader from "./components/header.js";
 import Footer from "./components/footer.jsx";
@@ -23,7 +21,6 @@ import PrivacyPolicy from "./legal/PrivacyPolicy.jsx";
 import TermsService from "./legal/TermsService.jsx";
 // import Payment from "./pages/subscription";
 import PublicHeader from "./components/publicHeader.js";
-import { UserContext } from "./customContext.js";
 import { useAuth, ProviderAuth } from "./authContext.js";
 
 import moment from "moment";

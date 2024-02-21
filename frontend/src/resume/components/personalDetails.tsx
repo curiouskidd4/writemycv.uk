@@ -57,13 +57,14 @@ const PersonalDetails = ({
   };
   return (
     <div className="personal-info-form resume-edit-detail padding">
-      {showTitle ? (
         <div className="detail-form-header">
           {/* <Typography.Title level={4}>Personal Info</Typography.Title>
            */}
           <Row align="middle" justify="space-between" style={{ width: "70%" }}>
             <div className="profile-input-section-title">
-              <Typography.Title level={4}>Personal Info</Typography.Title>
+              <Typography.Title level={4} style={{
+                marginBottom: "0px"
+              }}>Personal Info</Typography.Title>
             </div>
             {loading ? (
               <div className="auto-save-label-loading">
@@ -76,7 +77,6 @@ const PersonalDetails = ({
             )}
           </Row>
         </div>
-      ) : null}
       <div className="detail-form-body">
         <Form
           name="personal_info"

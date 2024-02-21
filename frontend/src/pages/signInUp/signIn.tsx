@@ -8,6 +8,7 @@ import {
   Typography,
   Divider,
   message,
+  Row,
 } from "antd";
 import { Link } from "react-router-dom";
 import { GoogleOutlined, LockOutlined } from "@ant-design/icons";
@@ -25,9 +26,12 @@ const tailLayout = {
 
 const CustomInput = (props: any) => {
   return (
-    <div>
+    <>
       <Input.Password {...props} />
-      <Link to="/forgot-password">
+      <Row justify="end" style={{
+        marginTop: "4px"
+      }}>
+      <Link to="/forgot-password" className="small-link-btn">
         <Button
           size="small"
           type="link"
@@ -38,7 +42,8 @@ const CustomInput = (props: any) => {
           Forgot Password?
         </Button>
       </Link>
-    </div>
+      </Row>
+    </>
   );
 };
 
@@ -133,11 +138,13 @@ const SignInForm = ({
         initialValues={{ remember: true }}
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
+        
       >
         <Form.Item
-          label="Username"
+          label="Email"
           name="username"
-          rules={[{ required: true, message: "Please input your username!" }]}
+          
+          rules={[{ required: true, message: "Please input your email!" }]}
         >
           <Input />
         </Form.Item>
@@ -158,7 +165,7 @@ const SignInForm = ({
               htmlType="submit"
               style={{ width: "100%" }}
             >
-              Submit
+              Sign In
             </Button>
           </Form.Item>
         </div>
@@ -166,7 +173,7 @@ const SignInForm = ({
 
       <div
         style={{
-          marginTop: "2rem",
+          marginTop: "0rem",
         }}
       >
         <Divider>Or</Divider>
@@ -198,10 +205,10 @@ const SignInForm = ({
           }}
         >
           <Typography.Text type="secondary">
-            Don't have an account?
+            No Account?
             <Link to="/signup">
               {" "}
-              <a style={{ color: "var(--primary)" }}>Sign Up</a>
+              <a style={{ color: "var(--primary)" }}>Join Now</a>
             </Link>
           </Typography.Text>
         </div>

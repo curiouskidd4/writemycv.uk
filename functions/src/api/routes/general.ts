@@ -20,20 +20,26 @@ const template = `
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100;0,9..40,200;0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;0,9..40,900;0,9..40,1000;1,9..40,100;1,9..40,200;1,9..40,300;1,9..40,400;1,9..40,500;1,9..40,600;1,9..40,700;1,9..40,800;1,9..40,900;1,9..40,1000&display=swap" rel="stylesheet">
+
 </head>
 <body style="font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4;">
+  
     <div style="background-color: #ffffff; width: 100%; max-width: 600px; margin: 20px auto; padding: 2rem 20px; text-align: center;">
+      <div style="display:flex; justify-content:center">
+    <img src="https://resu-me-a5cff.web.app/logo.png" style="height:67px"/>
+  </div>
       
-        <h1 style="margin: 0;text-align: left;">Verify This Email Address</h1>
-        <p style="margin: 0;text-align: left;">Hi {displayName},</p>
-        <p style="margin: 0;text-align: left;">Welcome to Resu.me!</p>
-        <p style="margin: 0; text-align: left;">Please click the button below to verify your email address.</p>
-        <p style="margin: 0; text-align: left;">If you did not sign up to Resu.me, please ignore this email or contact us at support@resum.me</p>
-        <a href="{link_to_verification}" style="display: inline-block; padding: 10px 20px; margin: 20px 0; background-color: #009688; color: #ffffff; text-decoration: none; border-radius: 5px; font-weight: bold; text-align: center;">Verify Email</a>
-        <p style="margin: 0; text-align: left;"><br>Resu.me Team</p>
+       
+        <p style="margin: 0; margin-top: 2rem;text-align: left; font: normal normal bold 25px/12px DM Sans; height: 34px ">Hi {displayName},</p>
+        <p style="margin: 0; margin-top: 1rem; text-align: left; font:normal normal normal 16px/22px DM Sans;">Welcome to WriteMyCV. You are one step away from creating the perfect CV. Click below to verify your email.</p>
+        
+        <button onclick="window.open({link_to_verification}, "_blank") style="width: 201px; height: 41px; background: #37fdaa 0% 0% no-repeat padding-box; background: #37FDAA 0% 0% no-repeat padding-box; border-radius: 12px; text-align: center; border: none; text-align: center;
+font: normal normal bold 16px/12px DM Sans; margin: 2rem 0rem">Verify Email</button>
+      <p style="margin: 0; text-align: left; font:normal normal normal 16px/22px DM Sans;">If you did not create an account, please ignore this email or contact us at <a href="emailto:support@writemycv.uk" style="color:#a774ff">support@writemycv.uk</a></p>
+        <p style="margin: 0; text-align: left;"><br>WriteMyCV Team</p>
         <div style="text-align: center; margin-top: 20px; font-size: 0.8em; color: #666666;">
-            <p style="margin: 0;">Need Support?</p>
-            <p style="margin: 0;">Feel free to email us if you have any questions, comments or suggestions. We'll be happy to resolve your issues.</p>
+            
         </div>
     </div>
 </body>
@@ -45,19 +51,26 @@ const resetPasswordTemplate = `<!DOCTYPE html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100;0,9..40,200;0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;0,9..40,900;0,9..40,1000;1,9..40,100;1,9..40,200;1,9..40,300;1,9..40,400;1,9..40,500;1,9..40,600;1,9..40,700;1,9..40,800;1,9..40,900;1,9..40,1000&display=swap" rel="stylesheet">
+
 </head>
 <body style="font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4;">
+  
     <div style="background-color: #ffffff; width: 100%; max-width: 600px; margin: 20px auto; padding: 2rem 20px; text-align: center;">
+      <div style="display:flex; justify-content:center">
+    <img src="https://resu-me-a5cff.web.app/logo.png" style="height:67px"/>
+  </div>
       
-        <h1 style="margin: 0;text-align: left;">Reset Password</h1>
-        <p style="margin: 0;text-align: left;">Hi {displayName},</p>
-        <p style="margin: 0; text-align: left;">Please click the button below to reset your password</p>
-        <p style="margin: 0; text-align: left;">If you did not request this, please ignore this email or contact us at support@writemycv.uk</p>
-        <a href="{link_to_verification}" style="display: inline-block; padding: 10px 20px; margin: 20px 0; background-color: #009688; color: #ffffff; text-decoration: none; border-radius: 5px; font-weight: bold; text-align: center;">Verify Email</a>
-        <p style="margin: 0; text-align: left;"><br>Resu.me Team</p>
+       
+        <p style="margin: 0; margin-top: 2rem;text-align: left; font: normal normal bold 25px/12px DM Sans; height: 34px ">Hi {displayName},</p>
+        <p style="margin: 0; margin-top: 1rem; text-align: left; font:normal normal normal 16px/22px DM Sans;">You recently requested to reset your password for your account. Click the link below to set up a new password:</p>
+        
+        <button onclick="window.open({link_to_verification}, "_blank") style="width: 201px; height: 41px; background: #37fdaa 0% 0% no-repeat padding-box; background: #37FDAA 0% 0% no-repeat padding-box; border-radius: 12px; text-align: center; border: none; text-align: center;
+font: normal normal bold 16px/12px DM Sans; margin: 2rem 0rem">Verify Email</button>
+      <p style="margin: 0; text-align: left; font:normal normal normal 16px/22px DM Sans;">If you did not request a password reset, please ignore this email or contact us at <a href="emailto:support@writemycv.uk" style="color:#a774ff">support@writemycv.uk</a></p>
+        <p style="margin: 0; text-align: left;"><br>WriteMyCV Team</p>
         <div style="text-align: center; margin-top: 20px; font-size: 0.8em; color: #666666;">
-            <p style="margin: 0;">Need Support?</p>
-            <p style="margin: 0;">Feel free to email us if you have any questions, comments or suggestions. We'll be happy to resolve your issues.</p>
+            
         </div>
     </div>
 </body>
@@ -123,11 +136,19 @@ router.post(
 
     try {
       await sendResetPasswordEmail(email);
-      res.status(200).send("Email sent");
+      res.status(200).send({
+        status: "success",
+        message: "Email sent",
+      
+      });
       return;
-    } catch (error) {
-      console.log(error);
-      res.status(400).send("Error sending email");
+    } catch (error: any) {
+      let info = error.errorInfo;
+      res.status(400).send({
+        status: "error",
+        message:  info.message,
+        code: info.code
+      });
       return;
     }
   }

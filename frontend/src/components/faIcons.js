@@ -148,25 +148,30 @@ export const EditIcon = ({ color = "#E9AFA3", marginRight = "6px" }) => (
   />
 );
 
-export const UploadIcon = () => (
+export const UploadIcon = (
+  { color = "#E9AFA3", marginRight = "6px" },
+) => (
   <FontAwesomeIcon
     icon={faUpload}
     style={{
-      marginRight: "6px",
-      color: "#E9AFA3",
+      color: color,
+      marginRight: marginRight,
     }}
   />
 );
 
-export const PlusIcon = () => (
+export const PlusIcon = (
+  { color = "#E9AFA3", marginRight = "6px" },
+) => (
   <FontAwesomeIcon
     icon={faPlus}
     style={{
-      marginRight: "6px",
-      color: "#E9AFA3",
+      color: color,
+      marginRight: marginRight,
     }}
   />
 );
+
 export const CollapseLeft = () => (
   <FontAwesomeIcon
     icon={faChevronLeft}

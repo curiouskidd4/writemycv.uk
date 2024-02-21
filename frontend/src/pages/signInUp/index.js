@@ -7,7 +7,6 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../authContext";
 import "./index.css";
 
-const { TabPane } = Tabs;
 const LoginSignupPage = ({ isSignup }) => {
   const [flags, updateFlags] = useState({ activeTab: "1" });
   // const auth = new Auth();
@@ -89,18 +88,9 @@ const LoginSignupPage = ({ isSignup }) => {
                   width: "100%",
                 }}
               >
-                <div className="large-logo">RESU.ME</div>
+                <div className="large-logo">WriteMyCV</div>
 
-                <Typography.Title
-                  level={3}
-                  style={{
-                    // textAlign: "center",
-                    fontWeight: 600,
-                    color: "var(--accent-200)",
-                  }}
-                >
-                  Crafted by AI, Tailored for Success.
-                </Typography.Title>
+                <div className="logo-subtitle">Craft The Perfect CV</div>
               </div>
             </div>
           </Col>
@@ -113,18 +103,18 @@ const LoginSignupPage = ({ isSignup }) => {
           >
             <div
               style={{
-            height: "100%",
+                height: "100%",
 
                 maxWidth: "600px",
                 margin: "20px auto",
                 padding: "0px 25px",
                 display: "flex",
                 flexDirection: "column",
-                paddingTop: isSignup? "4rem" : "8rem",
+                paddingTop: isSignup ? "4rem" : "8rem",
               }}
             >
-              <Typography.Title level={3}>
-                {isSignup ? "Sign Up" : "Sign In"}
+              <Typography.Title level={3} className="form-title">
+                {isSignup ? "Create new account" : "Welcome Back"}
               </Typography.Title>
 
               <div
@@ -132,7 +122,8 @@ const LoginSignupPage = ({ isSignup }) => {
                   flex: 1,
                   display: "flex",
                   flexDirection: "column",
-                  justifyContent: "center",
+                  // justifyContent: "center",
+                  marginTop: "2rem",
                 }}
               >
                 {isSignup ? (

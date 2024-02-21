@@ -841,6 +841,12 @@ select {
 .selector-side-bar .ant-menu-title-content {
   margin: 12px;
   /* padding: 4px; */
+
+}
+.selector-side-bar .selector-title {
+  font: normal normal bold 16px/21px DM Sans;
+  margin: 16px 0;
+  padding-left: 20px;
 }
 .selector-item {
   height: auto;

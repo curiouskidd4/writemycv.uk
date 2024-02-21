@@ -71,11 +71,16 @@ const SelectorSidebar = ({
 
   return (
     <div className="selector-side-bar">
+      <div>
+        <div className="selector-title">
+          {entityTitle}
+        </div>
       <SortableComponent
         items={items}
         onReorder={onReorder}
         renderFn={renderFn}
       />
+      </div>
 
       <Row justify="start">
         <Button style={{ margin: "8px 24px" }} onClick={addNew}>

@@ -106,7 +106,7 @@ const ProfileV2_ = () => {
 
   return (
     <div className="profile">
-      <Row  align="middle" className="title-header">
+      <Row align="middle" className="title-header">
         <Col>
           <Typography.Title
             level={3}
@@ -124,18 +124,24 @@ const ProfileV2_ = () => {
             alignItems: "center",
             gap: "16px",
           }}
-          
         >
           <Button
             onClick={() => {
               setNewResumeModalVisible(true);
             }}
           >
-            <PlusIcon />
+            <PlusIcon color="var(--black)" />
             New CV
           </Button>
 
-          <Button icon={<ImportOutlined />}>Import CV</Button>
+          <Button
+            onClick={() => {
+              setImportResumeModalVisible(true);
+            }}
+          >
+            <UploadIcon color="var(--black)" />
+            Import CV
+          </Button>
         </Col>
       </Row>
       {profileData.loading ? <div>Loading...</div> : null}

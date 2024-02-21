@@ -159,7 +159,7 @@ const PublicationForm = ({
               syncPublications(newOrder);
             }}
             addNew={addNew}
-            entityTitle="Education"
+            entityTitle="Publication"
             selectedKey={state.selectedId}
             onSelect={(key: string) => {
               setState({

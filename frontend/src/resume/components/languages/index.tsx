@@ -214,7 +214,6 @@ const LanguageFlow = ({
 
   return (
     <div className="resume-edit-detail padding">
-      {showTitle && (
         <Row
           style={{
             width: "50%",
@@ -233,7 +232,6 @@ const LanguageFlow = ({
             </div>
           ) : null}
         </Row>
-      )}
 
       {/* <NewLanguageInput
         selectedLanguages={

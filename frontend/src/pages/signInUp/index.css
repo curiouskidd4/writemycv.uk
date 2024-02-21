@@ -37,14 +37,36 @@
 }
 
 .large-logo {
-  font-family: "Barlow Condensed", sans-serif;
-  /* font-family: "Manrope", sans-serif; */
-
-  /* color: #214683 !important; */
+  /* font-family: "Barlow Condensed", sans-serif;
   color: var(--primary-400);
   margin: 0;
-  text-transform: uppercase;
   letter-spacing: 4px;
   font-weight: 800;
   font-size: 64px;
+   */
+
+  color: var(--white);
+  text-align: left;
+  font: normal normal bold 50px/45px DM Sans;
+  letter-spacing: 0px;
+  opacity: 1;
+}
+
+.logo-subtitle {
+  color: var(--white);
+  text-align: left;
+  font: normal normal normal 35px/45px DM Sans;
+  letter-spacing: 0px;
+  color: #ffffff;
+  text-transform: capitalize;
+  opacity: 1;
+  margin-top: 0.5rem;
+}
+
+.form-title {
+  color: var(--black);
+  text-align: left;
+  font: normal normal bold 30px/12px DM Sans;
+  letter-spacing: 0px;
+  opacity: 1;
 }

@@ -131,7 +131,7 @@ const ExperienceForm = ({
               syncExperience(newOrder);
             }}
             addNew={addNewExperience}
-            entityTitle="Education"
+            entityTitle="Experience"
             selectedKey={state.selectedId}
             onSelect={(key: string) => {
               setState((prev) => ({
