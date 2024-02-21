@@ -125,3 +125,12 @@ a {
   background: var(--black) 0% 0% no-repeat padding-box !important;
 border-radius: 5px;
 }
+
+.ant-upload-drag-icon {
+  padding: 1rem 0;
+  svg {
+    width: 3em; 
+    height: 3em;
+    color: var(--primary) !important;
+  }
+}
