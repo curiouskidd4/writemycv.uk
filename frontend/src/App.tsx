@@ -164,23 +164,7 @@ const protectedRouter = createBrowserRouter([
       },
     ],
   },
-  // {
-  //   path: "/label/:id",
-  //   element: <LabelHome />,
-  // },
-  // {
-  //   path: "/label",
-  //   element: <LabelTaskPage />,
-  // },
 
-  // {
-  //   path: "/dataset/:id",
-  //   element: <PubmedDataHome />,
-  // },
-  // {
-  //   path: "/dataset",
-  //   element: <PubmedDataSplit />,
-  // },
 ]);
 
 const verificationRouter = createBrowserRouter([
@@ -201,7 +185,15 @@ const verificationRouter = createBrowserRouter([
         element: <EmailVerification />,
       },
       {
-        path: "/*",
+        path: "*",
+        element: (
+          <div>
+            <Navigate to="/verification" />
+          </div>
+        ),
+      },
+      {
+        path: "",
         element: (
           <div>
             <Navigate to="/verification" />
@@ -210,23 +202,7 @@ const verificationRouter = createBrowserRouter([
       },
     ],
   },
-  // {
-  //   path: "/label/:id",
-  //   element: <LabelHome />,
-  // },
-  // {
-  //   path: "/label",
-  //   element: <LabelTaskPage />,
-  // },
 
-  // {
-  //   path: "/dataset/:id",
-  //   element: <PubmedDataHome />,
-  // },
-  // {
-  //   path: "/dataset",
-  //   element: <PubmedDataSplit />,
-  // },
 ]);
 
 const baseRouter = createBrowserRouter([
@@ -275,31 +251,7 @@ const baseRouter = createBrowserRouter([
           </div>
         ),
       },
-      // {
-      //   path: "forgot-password",
-      //   element: (
-      //     <div>
-      //       <ForgotPassword />
-      //     </div>
-      //   ),
-      // },
-      // {
-      //   path: "forgot-password-confirm",
-      //   element: (
-      //     <div>
-      //       <ForgotPasswordConfirm />
-      //     </div>
-      //   ),
-      // },
-
-      // {
-      //   path: "complete_invite",
-      //   element: (
-      //     <div>
-      //       <FinishInvite />
-      //     </div>
-      //   ),
-      // },
+  
       { path: "terms-service", element: <TermsService /> },
       { path: "privacy-policy", element: <PrivacyPolicy /> },
       { path: "public-resume/:publicResumeId", element: <ResumePreview /> },

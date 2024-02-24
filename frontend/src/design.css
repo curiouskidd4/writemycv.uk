@@ -2,6 +2,20 @@
   color: black !important;
   font: normal normal bold 16px/12px DM Sans !important;
   height: 41px;
+
+}
+
+.ant-btn-primary.ant-btn-dangerous {
+  color: white !important;
+}
+
+.ant-btn-primary.ant-btn-dangerous:hover {
+  color: white !important;
+  opacity: 0.9;
+}
+.ant-btn-primary:hover {
+  color: black !important;
+  opacity: 0.9;
 }
 .ant-btn-link {
   font: normal normal bold 16px/12px DM Sans !important;

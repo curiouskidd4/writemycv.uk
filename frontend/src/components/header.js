@@ -64,7 +64,7 @@ const CustomHeader = () => {
             display: "flex" }} className="logo">
             {/* <Typography.Title level={3}>Resu.me</Typography.Title>
              */}
-            <img src="/logo.png" style={{ height: "40px" }} />
+            <img src="/WriteMyCV-light-background.png" style={{ height: "40px" }} />
           </Col>
           <Col span={16}>
             <div style={{ float: "right" }} className="nav-menu">
@@ -74,7 +74,7 @@ const CustomHeader = () => {
                 // type={location.pathname == "/resumes" ? "link" : "text"}
                 className={location.pathname.match(/\/resumes/) ? "active" : ""}
               >
-                Resumes
+                My CVs
               </Button>
               <Button
                 onClick={() => navigate("/repository")}

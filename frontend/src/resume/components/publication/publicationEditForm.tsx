@@ -51,33 +51,35 @@ const PublicationForm = ({
   syncPublications,
   showTitle = true,
 }: PublicationProps) => {
+  const [newItem, setNewItem] = React.useState<Publication | null>(null);
+
   publicationList = publicationList || [];
   const [state, setState] = React.useState<PublicationState>({
     selectedPublication: publicationList.length > 0 ? publicationList[0] : null,
     // selectedPublicationIdx: publicationList.length > 0 ? 0 : null,
     selectedId: publicationList.length > 0 ? publicationList[0].id : null,
-
   });
 
   const onSave = async (publication: Publication) => {
-    publication.date = Timestamp.fromDate(publication.date.toDate());
-    // publicationList[state.selectedPublicationIdx!] = publication;
-    let newPublicationList = [...publicationList];
-    let idx = newPublicationList.findIndex(
-      (item) => item.id === publication.id
-    );
-    if (idx > -1) {
-      newPublicationList[idx] = publication;
+    if (newItem) {
+      setNewItem(null);
+      publication.date = Timestamp.fromDate(publication.date.toDate());
+
+      await syncPublications([...publicationList, publication]);
     } else {
-      newPublicationList.push(publication);
+      publication.date = Timestamp.fromDate(publication.date.toDate());
+      const newPublicationList = publicationList.map((item) => {
+        if (item.id === publication.id) {
+          return publication;
+        } else {
+          return item;
+        }
+      });
+
+      await syncPublications(newPublicationList);
+      message.success("Publication saved!");
+
     }
-
-    await syncPublications(newPublicationList);
-    message.success("Publication saved!");
-
-    // if (onFinish) {
-    //   await onFinish(publicationList);
-    // }
   };
 
   const addNew = () => {
@@ -88,6 +90,7 @@ const PublicationForm = ({
       description: "",
       link: "",
     };
+    setNewItem(newItem);
     setState((prev) => ({
       selectedPublication: newItem,
       // selectedPublicationIdx: publicationList.length,
@@ -117,41 +120,7 @@ const PublicationForm = ({
           }}
           className="publication-history-selector  selector-col"
         >
-          {/* <Typography.Title level={5}>Publication Items</Typography.Title> */}
-          {/* <Typography.Text type="secondary">Your history</Typography.Text> */}
-
-          {/* <Menu
-            className="publication-menu"
-            selectedKeys={
-              state.selectedPublicationIdx != null
-                ? [state.selectedPublicationIdx.toString()]
-                : []
-            }
-            style={{
-              //   height: "100%",
-              borderRight: 0,
-              background: "transparent",
-            }}
-            onSelect={(item) => {
-              setState({
-                selectedPublication: publicationList[parseInt(item.key)],
-                selectedPublicationIdx: parseInt(item.key),
-              });
-            }}
-            items={publicationList.map((edu, idx) => {
-              return {
-                key: idx.toString(),
-                label: <PublicationCard publication={edu} />,
-                //   label: edu.degree,
-              };
-            })}
-          ></Menu>
-           <Row justify="start">
-            <Button style={{ margin: "8px 24px" }} onClick={addNew}>
-              <PlusOutlined /> Add Publication
-            </Button>
-          </Row> */}
-
+   
           <SelectorSidebar
             items={publicationList}
             detailExtractor={detailExtractor}
@@ -169,6 +138,7 @@ const PublicationForm = ({
                 selectedId: key,
               });
             }}
+            newItem={newItem ? true : false}
           />
         </Col>
         <Col
@@ -182,21 +152,10 @@ const PublicationForm = ({
             paddingBottom: "2rem",
           }}
         >
-          {/* {state.selectedPublication && (
-              <SinglePublicationForm
-                initialValues={state.selectedPublication}
-                onFinish={onFinish}
-                saveLoading={saveLoading}
-              />
-            )} */}
 
           {state.selectedPublication != null ? (
             <>
-              {/* <div>
-                <Typography.Title level={5}>
-                  Publication #{state.selectedPublicationIdx + 1}
-                </Typography.Title>
-              </div> */}
+
               <SinglePublicationsFrom
                 isNewItem={state.isNewItem}
                 key={state.selectedPublication.id}

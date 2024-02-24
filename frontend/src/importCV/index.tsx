@@ -32,8 +32,8 @@ const ImportCVToProfile = () => {
   const [state, setState] = useState<StateType>({
     isComplete: false,
     questionIdx: 0,
-    file: "Somethign",
-    importSuccess: true,
+    file: null,
+    importSuccess: false,
   });
 
   const openai = useOpenAI();
@@ -64,19 +64,6 @@ const ImportCVToProfile = () => {
       window.location.href = "/repository";
     }
   };
-  //   const saveResponse = (response) => {
-  //     console.log(response);
-  //   };
-  //   const onLogout = () => {
-  //     auth.logout();
-  //   };
-
-  //   const setCurrentQuestionIdx = (idx) => {
-  //     setState((prev) => ({
-  //       ...prev,
-  //       questionIdx: idx,
-  //     }));
-  //   };
 
   const props: UploadProps = {
     name: "file",
@@ -89,7 +76,6 @@ const ImportCVToProfile = () => {
       console.log(file);
       return Promise.resolve("ok");
     },
-    // action: "https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188",
     onChange: handleFileChange,
     onDrop(e) {
       console.log("Dropped files", e.dataTransfer.files);
@@ -98,7 +84,7 @@ const ImportCVToProfile = () => {
 
   return (
     <div>
-      <div className="title-header">Start your repository</div>
+      <div className="title-header">Create your Career Repository</div>
       <div
         style={{
           maxWidth: "1000px",
@@ -115,39 +101,9 @@ const ImportCVToProfile = () => {
         </Row>
         <Row>
           <Typography.Text>
-            Welcome to Write My CV: Your Smart CV Maker!
+          Welcome to Write My CV
           </Typography.Text>
         </Row>
-        {/* <div
-        style={{
-          width: "100%",
-          // maxWidth: "500px",
-        }}
-      >
-        <Progress
-          percent={(state.questionIdx + 1) * 25}
-          strokeColor={"#256763"}
-        />
-
-        <Typography.Title level={2}>Onboarding</Typography.Title>
-        <CoolForm
-          questions={questions}
-          finalScreen={(props) => (
-            <FinalScreen
-              {...props}
-              userId={auth.user.uid}
-              onProfileSave={auth.markProfileCompleted}
-            />
-          )}
-          setCurrentQuestionIdx={setCurrentQuestionIdx}
-          onChange={saveResponse}
-        />
-        <div style={{ display: "flex", justifyContent: "center" }}>
-          <Button type="link" onClick={onLogout}>
-            Logout
-          </Button>
-        </div>
-      </div> */}
 
         <Modal
           visible={showModal}
@@ -218,7 +174,7 @@ const ImportCVToProfile = () => {
                   }}
                 >
                   <i
-                    style={{ fontSize: "128px", color: "#E3E3E3" }}
+                    style={{ fontSize: "128px", color: "var(--primary)" }}
                     className="fa-solid fa-circle fa-beat fa-2xl"
                   ></i>
                 </div>
@@ -311,137 +267,7 @@ const ImportCVToProfile = () => {
             )}
           </div>
         </Modal>
-        {/* <div
-        style={{
-          margin: "32px auto",
-        }}
-      >
-        {state.file && !state.importSuccess && (
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              flexDirection: "column",
-              alignContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <div
-              style={{
-                margin: "96px auto",
-                display: "flex",
-                justifyContent: "center",
-              }}
-            >
-              <i
-                style={{ fontSize: "128px", color: "var(--primary-400)" }}
-                className="fa-solid fa-cloud-arrow-up fa-bounce fa-2xl"
-              ></i>
-            </div>
-            <div>
-              <Typography.Text
-                type="secondary"
-                style={{
-                  fontSize: "16px",
-                }}
-              >
-                Uploading {state.file?.name}
-              </Typography.Text>
-              <br />
-              <Typography.Text
-                type="secondary"
-                style={{
-                  fontSize: "16px",
-                }}
-              >
-                This may take a few minutes, please wait and don't refresh the
-                page
-              </Typography.Text>
-            </div>
-          </div>
-        )}
-        {!state.file && !state.importSuccess && (
-          <>
-            {" "}
-            <Upload.Dragger {...props}>
-              <p className="ant-upload-drag-icon">
-                <InboxOutlined />
-              </p>
-              <p className="ant-upload-text">
-              Start filling your details to create your Repository
-              </p>
-              <p className="ant-upload-hint">
-                You can upload a PDF or Word document. You can also import your
-                profile from LinkedIn, just export from LinkedIn and upload
-                here.
-              </p>
-            </Upload.Dragger>
-            <Divider>Or </Divider>
-            <Button
-              style={{
-                height: "50px",
-                margin: "32px 0px",
-                width: "100%",
-              }}
-              onClick={() => {
-                overrideFlag({ reload: true});
-              }}
-            >
-              Add your profile details manually
-            </Button>
-          </>
-        )}
 
-        {state.importSuccess && (
-          <div>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                flexDirection: "column",
-                alignContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <div
-                style={{
-                  margin: "96px auto",
-                  display: "flex",
-                  justifyContent: "center",
-                }}
-              >
-                <i
-                  style={{ fontSize: "128px", color: "var(--primary-400)" }}
-                  className="fa-solid fa-circle-check"
-                >
-                  {" "}
-                </i>
-              </div>
-              <div>
-                <Typography.Text
-                  type="secondary"
-                  style={{
-                    fontSize: "16px",
-                  }}
-                >
-                  Your profile has been successfully updated, go to the
-                  repository section and please validate your details!
-                </Typography.Text>
-              </div>
-              <div>
-                <Button
-                  onClick={() => {
-                    window.location.href = "/repository";
-                  }}
-                  type="primary"
-                >
-                  Go to repository
-                </Button>
-              </div>
-            </div>
-          </div>
-        )}
-      </div> */}
 
         <Modal
           visible={howItWorks}
@@ -457,55 +283,58 @@ const ImportCVToProfile = () => {
           </div>
           <div className="modal-body">
             <div className="modal-body-content">
-              <p className="para-title">FILL IN YOUR REPOSITORY</p>
+              <p className="para-title">📝 CREATE Your Repository</p>
               <p>
                 <b>- Start from Scratch or Upload an Existing CV:</b> Input your
                 professional experience, skills, education, and more.
               </p>
-              <p>
+              {/* <p>
                 <b>- Detail is Key:</b> The richness of your input determines
                 the quality of your future tailored CVs. This is a one-time
                 effort.
-              </p>
-              <p className="para-title">EXPERIENCE THE AI-POWERED CV WIZARD </p>
+              </p> */}
+              <p className="para-title">🧙‍♂️Use CV Wizard to optimise and tailor your CV </p>
               <p>
                 <b>- Automatic Tailoring:</b> After completing your repository,
                 our CV Wizard crafts customized CVs for different roles and
                 industries at a click.
               </p>
-              <p>
+              {/* <p>
                 <b>- AI-driven Accuracy:</b> Ensures each CV aligns perfectly
                 with job-specific requirements.
-              </p>
-              <p className="para-title">PERSONALIZE YOUR GENERATED CV</p>
+              </p> */}
+              <p className="para-title">✏️Personalise Your Generated CV</p>
               <p>
                 <b>- Edit and Perfect: </b>
                 Feel free to make adjustments. Follow the CV Wizard’s
                 suggestions to fill in gaps or enhance existing content.
               </p>
-              <p className="para-title">EXPORT AND ACHIEVE YOUR CAREER GOALS</p>
+              <p className="para-title">🚀Export and Achieve Your Career Goals</p>
               <p>
-                <b>- Easy Export Options:</b> Download as PDF or create a
-                shareable link. - ATS Compliant: Your resume adheres to
-                Applicant Tracking System (ATS) guidelines, maximizing its
-                chances of getting noticed.
+                <b>- Easy Export Options:</b> Download as PDF or create a shareable link.
+              </p>
+              <p>
+                <b>- ATS Compliant:</b> Your resume adheres to Applicant Tracking System (ATS) guidelines, maximizing its opportunity to be seen by a human recruiter.
               </p>
             </div>
-            <div className="modal-body-action">
-              <Button type="primary">Create my repository</Button>
+            <div className="modal-body-action" >
+              <Button type="primary" onClick={
+                () => {
+                  setHowItWorks(false);
+                  setShowModal(true);
+                }
+              
+              }>Create my repository</Button>
             </div>
           </div>
         </Modal>
         <div className="content">
           <div className="content-header">
-            Start filling your details to create your Repository
+          Create your Career Repository
           </div>
 
           <div className="content-body">
-            Before you dive into creating your perfect CV, filling the
-            repository is a simple yet essential step to complete. This is a
-            one-time process that will allow you to create endless tailored CVs
-            with the help of our CV Wizard! Ready to Start?
+          Creating your career repository is a one-time step that will allow you to create as many CVs as you need and enable you to seamlessly update your CV for as long as you need.
           </div>
 
           <div className="action">

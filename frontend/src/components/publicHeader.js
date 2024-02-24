@@ -40,7 +40,7 @@ function getItem(label, key, icon, children) {
   };
 }
 
-const PublicHeader = ({showSignInButtons=true}) => {
+const PublicHeader = ({ showSignInButtons = true }) => {
   const screens = useBreakpoint();
 
   const navigate = useNavigate();
@@ -53,37 +53,45 @@ const PublicHeader = ({showSignInButtons=true}) => {
   };
   return (
     <Header className="public-header">
-      <Row style={{ maxWidth: "1200px", margin: "0px auto" }} align="middle">
-        <Col span={8} className="logo">
+      <Row style={{ maxWidth: "1200px", margin: "0px auto", height: "100%" }} align="middle">
+        <Col span={8} className="logo" style={{
+          display: "flex",
+          alignItems: "center",
+        }}>
           {/* <img
             // src="/logo.png"
             alt="Resu.me | Logo"
             style={{ height: "50px", margin: "auto 0px" }}
           /> */}
-          <Typography.Title level={3} >Resu.me</Typography.Title>
+          {/* <Typography.Title level={3} >Resu.me</Typography.Title> */}
+          <img
+            src="/WriteMyCV-light-background.png"
+            alt="WriteMyCV"
+            style={{ height: "50px" }}
+          />
         </Col>
         <Col span={16}>
           <div style={{ float: "right" }} className="nav-menu">
             <Space>
-              {showSignInButtons  && <>
-              <Button
-                // size="large"
-                type="link"
-                onClick={() => navigate("/signin")}
-              >
-                Sign In
-              </Button>
-              <Button
-                type="link"
-
-                // size="large"
-                onClick={() => navigate("/signup")}
-              >
-                Sign Up
-              </Button></>}
+              {showSignInButtons && (
+                <>
+                  <Button
+                    // size="large"
+                    type="link"
+                    onClick={() => navigate("/signin")}
+                  >
+                    Sign In
+                  </Button>
+                  <Button
+                    type="link"
+                    // size="large"
+                    onClick={() => navigate("/signup")}
+                  >
+                    Sign Up
+                  </Button>
+                </>
+              )}
             </Space>
-
-            
           </div>
 
           <div className="hamburg-menu">

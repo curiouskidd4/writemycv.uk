@@ -1,7 +1,7 @@
 import React from "react";
 import { auth } from "../services/firebase";
 import { applyActionCode } from "firebase/auth";
-import { Button, Result, Spin, Typography } from "antd";
+import { Button, Result, Row, Spin, Typography } from "antd";
 import { useNavigate } from "react-router-dom";
 
 const VerifyEmail = ({
@@ -60,7 +60,9 @@ const VerifyEmail = ({
         error: message,
         loading: false,
         success: false,
-        generateNewLink: code === "auth/expired-action-code" || code === "auth/invalid-action-code",
+        generateNewLink:
+          code === "auth/expired-action-code" ||
+          code === "auth/invalid-action-code",
       }));
     }
   };
@@ -85,6 +87,24 @@ const VerifyEmail = ({
       {state.success && (
         <div className="success">
           <Result status="success" title="Email Verified" />
+
+          <Row
+            style={{
+              width: "100%",
+              justifyContent: "center",
+            }}
+          >
+            <Button
+              onClick={() => {
+                // Refresh the page
+                window.location.reload();
+              }}
+              type="primary"
+              style={{ margin: "0px auto" }}
+            >
+              Start your Repository
+            </Button>
+          </Row>
         </div>
       )}
 
@@ -105,11 +125,10 @@ const VerifyEmail = ({
               navigate("/verification");
             }}
             type="primary"
-            style={{ margin: "0px auto"}}
+            style={{ margin: "0px auto" }}
           >
             Generate New Link
           </Button>
-          
         </div>
       )}
     </div>

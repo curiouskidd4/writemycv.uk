@@ -1,4 +1,5 @@
 import { Timestamp } from "firebase-admin/firestore";
+import { Award, Publication, Volunteering } from "./resume";
 
 interface EducationDisseration {
     title: string;
@@ -24,4 +25,25 @@ interface EducationInput {
     userId: string;
 }
 
-export { Education, EducationInput, EducationDisseration };
+interface AwardInput {
+    awardList: Award[];
+    updatedAt: Timestamp;
+    createdAt: Timestamp;
+    userId: string;
+}
+
+interface PublicationInput {
+    publicationList: Publication[];
+    updatedAt: Timestamp;
+    createdAt: Timestamp;
+    userId: string;
+}
+
+interface VolunteeringInput {
+    volunteeringList: Volunteering[];
+    updatedAt: Timestamp;
+    createdAt: Timestamp;
+    userId: string;
+}
+export { Education, EducationInput, EducationDisseration, 
+    AwardInput, PublicationInput, VolunteeringInput};

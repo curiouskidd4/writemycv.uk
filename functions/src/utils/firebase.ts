@@ -12,7 +12,7 @@ region: "us-central1",
 });
 admin.initializeApp({
   storageBucket:
-    process.env.ENV === "testing" ? "test-bucket" : "writemycv.appspot.com",
+    process.env.ENV === "testing" ? "test-bucket" : "resu-me-a5cff.appspot.com",
 });
 const db = admin.firestore();
 if (process.env.ENV === "testing") {

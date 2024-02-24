@@ -19,22 +19,6 @@ import moment from "moment";
 import SelectorSidebar from "../../../components/selectorSidebar";
 import ObjectID from "bson-objectid";
 
-const VolunteerCard = ({ volunteer }: { volunteer: Volunteering }) => {
-  let volunteerStart = volunteer.startDate
-    ? moment(volunteer.startDate.toDate()).format("MMM YYYY")
-    : "";
-  let volunteerEnd = volunteer.endDate
-    ? moment(volunteer.endDate.toDate()).format("MMM YYYY")
-    : "Current";
-  return (
-    <>
-      <div className="title">{volunteer.title}</div>
-      <div className="subtitle">
-        {volunteerStart}-{volunteerEnd}
-      </div>
-    </>
-  );
-};
 
 type VolunteerProps = {
   volunteerList: Volunteering[];
@@ -57,28 +41,40 @@ const VolunteerForm = ({
   showTitle = true,
 }: VolunteerProps) => {
   volunteerList = volunteerList || [];
+  const [newItem, setNewItem] = React.useState<Volunteering | null>(null);
+
   const [state, setState] = React.useState<VolunteerState>({
     selectedVolunteer: volunteerList.length > 0 ? volunteerList[0] : null,
     selectedId: volunteerList.length > 0 ? volunteerList[0].id : null,
   });
 
   const onSave = async (volunteer: Volunteering) => {
-    volunteer.startDate = Timestamp.fromDate(volunteer.startDate.toDate());
-    volunteer.endDate = volunteer.endDate
-      ? Timestamp.fromDate(volunteer.endDate.toDate())
-      : null;
-    
-    // publicationList[state.selectedPublicationIdx!] = publication;
-    let newVolunteerList = [...volunteerList];
-    let idx = newVolunteerList.findIndex((item) => item.id === volunteer.id);
-    if (idx > -1) {
-      newVolunteerList[idx] = volunteer;
+    if (state.isNewItem) {
+      setNewItem(null);
+      volunteer.startDate = Timestamp.fromDate(volunteer.startDate.toDate());
+      volunteer.endDate = volunteer.endDate
+        ? Timestamp.fromDate(volunteer.endDate.toDate())
+        : null;
+      await syncVolunteers([...volunteerList, volunteer]);
     } else {
-      newVolunteerList.push(volunteer);
-    }
+      volunteer.startDate = Timestamp.fromDate(volunteer.startDate.toDate());
+      volunteer.endDate = volunteer.endDate
+        ? Timestamp.fromDate(volunteer.endDate.toDate())
+        : null;
+      
+      // publicationList[state.selectedPublicationIdx!] = publication;
+      let newVolunteerList = [...volunteerList];
+      let idx = newVolunteerList.findIndex((item) => item.id === volunteer.id);
+      if (idx > -1) {
+        newVolunteerList[idx] = volunteer;
+      } else {
+        newVolunteerList.push(volunteer);
+      }
 
-    await syncVolunteers(newVolunteerList);
-    message.success("Volunteer item saved!");
+      await syncVolunteers(newVolunteerList);
+      message.success("Volunteer item saved!");
+    }
+    
   };
 
   const addNew = () => {
@@ -89,6 +85,7 @@ const VolunteerForm = ({
       endDate: null,
       description: "",
     };
+    setNewItem(newItem);
     setState((prev) => ({
       selectedVolunteer: newItem,
       selectedId: newItem.id,
@@ -170,6 +167,7 @@ const VolunteerForm = ({
                 selectedId: key,
               });
             }}
+            newItem={newItem ? true : false}
           />
         </Col>
         <Col

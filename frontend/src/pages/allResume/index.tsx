@@ -241,6 +241,7 @@ const ResumeItemV3 = ({ resume }: { resume: Resume }) => {
   const resumeId = resume.id;
   const { user } = useAuth();
   const utils = useUtils();
+  const navigate = useNavigate();
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [state, setState] = useState({
     error: "",
@@ -254,12 +255,10 @@ const ResumeItemV3 = ({ resume }: { resume: Resume }) => {
 
   let publicResumeMutation = useMutateDoc("publicResume", "new");
 
-
-
   const handlePublicLink = async () => {
     // Get public link
     let resumeRef = doc(db, "resumes", resumeId);
-  
+
     let docId = await publicResumeMutation.mutate({
       resumeId: resumeId,
       userId: user.uid,
@@ -290,18 +289,17 @@ const ResumeItemV3 = ({ resume }: { resume: Resume }) => {
 
   const getPublicLink = async () => {
     if (resume.publicResumeId) {
-      let publicLink = window.location.origin + "/public-resume/" + resume.publicResumeId;
+      let publicLink =
+        window.location.origin + "/public-resume/" + resume.publicResumeId;
       navigator.clipboard.writeText(publicLink);
       message.success("Public link copied to clipboard");
-    }else{
+    } else {
       let id = await handlePublicLink();
       let publicLink = window.location.origin + "/public-resume/" + id;
       navigator.clipboard.writeText(publicLink);
       message.success("Public link copied to clipboard");
-
     }
-  }
-
+  };
 
   const softDeleteResume = async () => {
     let resumeRef = doc(db, "resumes", resumeId);
@@ -355,7 +353,6 @@ const ResumeItemV3 = ({ resume }: { resume: Resume }) => {
     window.open(url, "_blank");
   };
 
-
   const downloadResumeDocx = async (e: any) => {
     // e.preventDefault();
     let res = await utils.exportResumeToDoc({ resumeId: resume.id });
@@ -366,7 +363,7 @@ const ResumeItemV3 = ({ resume }: { resume: Resume }) => {
   return (
     <>
       <Modal
-      className="default-modal"
+        className="default-modal"
         title="Are you sure you want to delete this resume?"
         open={deleteModalVisible}
         footer={null}
@@ -379,16 +376,17 @@ const ResumeItemV3 = ({ resume }: { resume: Resume }) => {
         }
       >
         {/* <p>Are you sure you want to delete this resume?</p> */}
-        <Space style={{
-          marginTop: "1rem"
-        }}
-        size="large"
+        <Space
+          style={{
+            marginTop: "1rem",
+          }}
+          size="large"
         >
           <Button
             type="primary"
             danger
             onClick={(e) => {
-                e.preventDefault();
+              e.preventDefault();
               softDeleteResume();
             }}
           >
@@ -397,10 +395,10 @@ const ResumeItemV3 = ({ resume }: { resume: Resume }) => {
 
           <Button
             style={{
-              height: "41px"
+              height: "41px",
             }}
             onClick={(e) => {
-                e.preventDefault();
+              e.preventDefault();
 
               setDeleteModalVisible(false);
             }}
@@ -421,7 +419,12 @@ const ResumeItemV3 = ({ resume }: { resume: Resume }) => {
           <img src={state.imgURL} style={{ width: "100%" }}></img>
         </div>
       </Modal>
-      <Card key={resume.id} className="resume-card-new">
+      <Card key={resume.id} className="resume-card-new" onClick={
+        () => {
+          navigate(`/resumes/${resume.id}/edit`)
+        }
+      
+      }>
         <Row>
           <Col span={10}>
             <Row justify="center" className="preview-container">
@@ -462,12 +465,12 @@ const ResumeItemV3 = ({ resume }: { resume: Resume }) => {
               <div className="resume-card-details">
                 <div className="resume-card-header">
                   <div className="title">
-                    <Typography.Title
-                      level={4}
+                    {/* <Typography.Title
+                      level={5}
                       style={{ marginBottom: "0rem" }}
-                    >
+                    > */}
                       {resume.name}
-                    </Typography.Title>
+                    {/* </Typography.Title> */}
                   </div>
                   <div className="sub-title">
                     <Typography.Text type="secondary">
@@ -501,9 +504,7 @@ const ResumeItemV3 = ({ resume }: { resume: Resume }) => {
                   <Button
                     size="small"
                     type="link"
-                    onClick={
-                      getPublicLink
-                    }
+                    onClick={getPublicLink}
                     className="resume-action"
                   >
                     <i className="fa-solid fa-share-from-square"></i> Share
@@ -511,11 +512,9 @@ const ResumeItemV3 = ({ resume }: { resume: Resume }) => {
                   <Button
                     size="small"
                     type="link"
-                    onClick={
-                      () => {
-                        setDeleteModalVisible(true);
-                      }
-                    }
+                    onClick={() => {
+                      setDeleteModalVisible(true);
+                    }}
                     className="resume-action"
                   >
                     <i className="fa-solid fa-trash-can"></i> Delete
@@ -558,8 +557,7 @@ const ResumeBodyHeader = ({
           </Typography.Title>
           <div>
             <span className="subtitle">
-              This is the space to craft, manage and update your CVs to keep
-              them sharp and up-to-date.
+            You can organise and manage your CVs here.
             </span>
           </div>
         </div>
@@ -615,6 +613,7 @@ const ResumeListView = () => {
 
   const createNewResume = () => {
     setState((prev) => ({ ...prev, newResumeFlag: true }));
+    
   };
   return (
     <>
@@ -623,8 +622,9 @@ const ResumeListView = () => {
         visible={state.newResumeFlag}
         onCancel={() => setState((prev) => ({ ...prev, newResumeFlag: false }))}
         onConfirm={(id: string) => {
-          setState((prev) => ({ ...prev, newResumeFlag: false }));
           navigate(`/resumes/${id}/edit`);
+          setState((prev) => ({ ...prev, newResumeFlag: false }));
+
         }}
       />
       <div className="all-resume">

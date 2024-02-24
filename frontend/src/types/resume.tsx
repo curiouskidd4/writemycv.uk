@@ -166,6 +166,22 @@ interface aiSkillSuggestions {
   role: string;
 }
 
+interface CandidateDetails {
+  firstName: string;
+  lastName: string;
+  currentRole: string;
+  location?: string;
+  salaryExpectation?: string;
+  availability?: string;
+}
+
+interface OtherInformation {
+  id: string;
+  title: string;
+  description: string;
+}
+
+
 interface Resume {
   id: string;
   targetRole: string | null;
@@ -173,6 +189,7 @@ interface Resume {
   name: string;
   role: string;
   personalInfo: PersonalInfo;
+  candidateDetails?: CandidateDetails;
   educationList: Education[];
   experienceList: Experience[];
   awardList: Award[];
@@ -180,6 +197,7 @@ interface Resume {
   volunteeringList: Volunteering[];
   languageList: Language[];
   skillList: Skill[];
+  otherInformationList?: OtherInformation[];
   skillSuggestions: aiSkillSuggestions | null;
   professionalSummary: string | null;
   updatedAt: Timestamp;

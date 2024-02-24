@@ -65,6 +65,7 @@ const generatePdfnScreenShot = async (
   const bucket = storage().bucket();
   const pdfFile = bucket.file(pdfPath);
   const screenshotFile = bucket.file(screenshotPath);
+  console.log("pdfPath", pdfPath, bucket);
 
   await pdfFile.save(pdf);
   await screenshotFile.save(screenshot);

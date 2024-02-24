@@ -39,47 +39,52 @@ const EducationCard = ({
 type EducationProps = {
   educationList: Education[];
   saveLoading?: boolean;
-  onFinish?: (values: any) => Promise<void>;
+  // onFinish?: (values: any) => Promise<void>;
   syncEducation: (values: any) => Promise<void>;
   showTitle: boolean;
 };
 
 type EducationState = {
   selectedEducation: Education | null;
-  selectedEducationIdx: number | null;
   selectedId: string | null;
 };
 
 const EducationForm = ({
   educationList,
   saveLoading,
-  onFinish,
+  // onFinish,
   syncEducation,
   showTitle = true,
 }: EducationProps) => {
+  const [newItem, setNewItem] = React.useState<Education | null>(null);
+
   educationList = educationList || [];
   const [state, setState] = React.useState<EducationState>({
     selectedEducation: educationList.length > 0 ? educationList[0] : null,
-    selectedEducationIdx: educationList.length > 0 ? 0 : null,
     selectedId: educationList.length > 0 ? educationList[0].id : null,
   });
 
   const onSave = async (education: Education) => {
+    if (newItem) {
+      setNewItem(null);
+
+      await syncEducation([...educationList, education]);
+      // await onFinish(experience);
+      message.success("Experience saved");
+    }else{
     // Update based on id
     let newEducationList = educationList.map((item) => {
       if (item.id === education.id) {
         return { ...education };
       }
       return item;
-    }
-    );
-
+    });
 
     await syncEducation(newEducationList);
-    if (onFinish) {
-      await onFinish(education);
-    }
+  
+
     message.success("Education saved");
+  }
   };
 
   const addNew = () => {
@@ -96,9 +101,9 @@ const EducationForm = ({
       modules: [],
       isNew: true,
     };
+    setNewItem(newItem);
     setState((prev) => ({
       selectedEducation: newItem,
-      selectedEducationIdx: educationList.length,
       selectedId: newItem.id,
     }));
   };
@@ -134,10 +139,10 @@ const EducationForm = ({
                 selectedEducation: educationList.filter(
                   (item) => item.id === key
                 )[0],
-                selectedEducationIdx: parseInt(key),
                 selectedId: key,
               });
             }}
+            newItem={newItem ? true : false}
           />
         </Col>
         <Col

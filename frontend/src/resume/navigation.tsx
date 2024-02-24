@@ -27,6 +27,8 @@ import Adjustment from "./components/adjustment";
 import AwardForm from "./components/awards/awardsEditForm";
 import PublicationForm from "./components/publication/publicationEditForm";
 import VolunteerForm from "./components/volunteering/volunteerEditForm";
+import CandidateDetails from "./components/candidateSummary";
+import OtherInformation from "./components/otherDetails";
 
 type NavigationProps = {
   current: number | null;
@@ -106,13 +108,14 @@ const Navigation = ({
     // message.success("Progress Saved!");
   };
 
+  console.log("resume", resume);
   if (current === 0) {
     return (
       <>
         <CVGoals
           initialValues={{
             name: resume.name,
-            targetRole: resume.targetRole,
+            targetRole: resume.targetRole || resume.role,
             jobDescription: resume.jobDescription,
           }}
           
@@ -127,7 +130,11 @@ const Navigation = ({
     );
   } else if (current === 1) {
     return (
-      <PersonalDetails
+      // <PersonalDetails
+      //   initialValues={resume.personalInfo}
+      //   syncPersonalInfo={syncPersonalInfo}
+      // />
+      <CandidateDetails
         initialValues={resume.personalInfo}
         syncPersonalInfo={syncPersonalInfo}
       />
@@ -181,7 +188,19 @@ const Navigation = ({
         }}
       />
     );
-  } else if (current == 6) {
+  }else if (current == 6) {
+    return (
+      <OtherInformation 
+      otherInformationList={[] }
+      syncOtherInformation={async (items: any) => {
+        console.log("Syncing other information", items);
+      }}
+      showTitle={false}
+            
+        
+      />
+    );
+  } else if (current == 7) {
     return (
       // <AwardFlow
       //   awardList={resume.awardList || []}
@@ -198,7 +217,7 @@ const Navigation = ({
         showTitle={false}
       />
     );
-  } else if (current == 7) {
+  } else if (current == 8) {
     return (
       <PublicationForm
       showTitle={false}
@@ -209,7 +228,7 @@ const Navigation = ({
         syncPublications={syncPublications}
       />
     );
-  } else if (current == 8) {
+  } else if (current == 9) {
     return (
       <VolunteerForm
         showTitle={false}
@@ -220,7 +239,7 @@ const Navigation = ({
         syncVolunteers={syncVolunteering}
       />
     );
-  } else if (current == 9) {
+  } else if (current == 10) {
     return (
       <LanguageFlow
         languageList={resume.languageList || []}
@@ -230,7 +249,7 @@ const Navigation = ({
         syncLanguages={syncLanguages}
       />
     );
-  } else if (current == 10) {
+  } else if (current == 11) {
     return (
       <Adjustment
       // onFinish={() => {

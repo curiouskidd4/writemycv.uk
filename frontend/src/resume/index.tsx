@@ -43,6 +43,9 @@ const ResumeEditSteps = ({
       title: "Professional Summary",
     },
     {
+      title: "Other Information",
+    },
+    {
       title: "Awards",
     },
     {

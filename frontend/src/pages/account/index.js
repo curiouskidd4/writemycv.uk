@@ -108,7 +108,7 @@ const ProfileDetails = ({ user, firestoreUser }) => {
         </Row>
 
         <Form.Item>
-          <Button htmlType="submit" loading={userMutation.loading}>
+          <Button htmlType="submit" loading={userMutation.loading} type="primary">
             Save
           </Button>
         </Form.Item>
@@ -205,7 +205,7 @@ const ChangePassword = ({ user }) => {
         </Row>
 
         <Form.Item>
-          <Button htmlType="submit" loading={loading}>
+          <Button htmlType="submit" loading={loading} type="primary">
             Save
           </Button>
         </Form.Item>
@@ -254,7 +254,11 @@ const DeleteConfirmModal = ({ visible, onOk, onCancel, email, user }) => {
     <>
       {" "}
       {state.deleteCompleted && (
-        <Modal visible={visible} title="Account Deleted">
+        <Modal
+          visible={visible}
+          title="Account Deleted"
+          className="default-modal"
+        >
           <Typography.Text type="secondary">
             Your account has been successfully deleted. We are sorry to see you
             go. You will be redirected to the home page. You would be logged out
@@ -264,14 +268,16 @@ const DeleteConfirmModal = ({ visible, onOk, onCancel, email, user }) => {
       )}
       {!state.deleteCompleted && (
         <Modal
+          className="default-modal"
           visible={visible}
           onCancel={onCancel}
-          title="Delete Account"
+          // title="Delete Account"
           footer={[
-            <Button key="cancel" onClick={onCancel}>
+            <Button type="link" key="cancel" onClick={onCancel} className="black">
               Cancel
             </Button>,
             <Button
+            type="primary"
               key="delete"
               danger
               disabled={state.email != email}
@@ -287,24 +293,34 @@ const DeleteConfirmModal = ({ visible, onOk, onCancel, email, user }) => {
             </Button>,
           ]}
         >
-          <Typography.Text type="secondary">
+          <Typography.Title level={3}>
             Are you sure you want to delete your account?
-          </Typography.Text>
+          </Typography.Title>
           <br />
-          <Typography.Text type="secondary">
-            This action is irreversible. We will delete all your data from our
-            servers.
-          </Typography.Text>
+          <div style={{
+            padding: "20px 20px", 
+            borderRadius: "10px", 
+            backgroundColor: "var(--accent-2-light)"
+          }}>
+            <Typography.Text>
+              This action is irreversible. We will delete all your data from our
+              servers.
+            </Typography.Text>
+          </div>
 
           <div
             style={{
               marginTop: "1rem",
             }}
           >
-            <Typography.Text type="secondary">
+            <div  style={{
+              marginBottom: "0.5rem",
+            }}>
+            <Typography.Text >
               Please enter your email address to confirm that you want to delete
               your account.
             </Typography.Text>
+            </div>
             <Input
               value={state.email}
               onChange={(e) => {
@@ -345,7 +361,7 @@ const AccountSettings = () => {
 
   console.log(firestoreUser.data?.subscriptionId, isExpired);
   return (
-    <div>
+    <div className="settings-view">
       <DeleteConfirmModal
         user={user}
         visible={state.deleteModalVisible}
@@ -476,7 +492,7 @@ const AccountSettings = () => {
                   </Typography.Text>
                 </Col>
                 <Col>
-                  <Button danger onClick={toggleDeleteModal}>
+                  <Button danger onClick={toggleDeleteModal} type="primary">
                     Delete Account
                   </Button>
                 </Col>

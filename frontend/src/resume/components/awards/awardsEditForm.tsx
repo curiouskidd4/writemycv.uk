@@ -19,7 +19,6 @@ import moment from "moment";
 import SelectorSidebar from "../../../components/selectorSidebar";
 import ObjectID from "bson-objectid";
 
-
 type AwardProps = {
   awardList: Award[];
   saveLoading?: boolean;
@@ -41,6 +40,8 @@ const AwardForm = ({
   syncAwards,
   showTitle = true,
 }: AwardProps) => {
+  const [newItem, setNewItem] = React.useState<Award | null>(null);
+
   awardList = awardList || [];
   const [state, setState] = React.useState<AwardState>({
     selectedAward: awardList.length > 0 ? awardList[0] : null,
@@ -48,27 +49,27 @@ const AwardForm = ({
     selectedId: awardList.length > 0 ? awardList[0].id : null,
   });
 
+  const onSave = async (award: Award) => {
+    if (newItem) {
+      setNewItem(null);
+      award.date = Timestamp.fromDate(award.date.toDate());
 
-  const onSave = async (publication: Award) => {
-    publication.date = Timestamp.fromDate(publication.date.toDate());
-    // publicationList[state.selectedPublicationIdx!] = publication;
-    let newAwardList = [...awardList];
-    let idx = newAwardList.findIndex(
-      (item) => item.id === publication.id
-    );
-    if (idx > -1) {
-      newAwardList[idx] = publication;
+      await syncAwards([...awardList, award]);
     } else {
-      newAwardList.push(publication);
+      award.date = Timestamp.fromDate(award.date.toDate());
+      // publicationList[state.selectedPublicationIdx!] = publication;
+      const newAwardList = awardList.map((item) => {
+        if (item.id === award.id) {
+          return award;
+        } else {
+          return item;
+        }
+      });
+
+      await syncAwards(newAwardList);
+      message.success("Awards saved!");
     }
-
-    await syncAwards(newAwardList);
-    message.success("Awards saved!");
-    // if (onFinish) {
-    //   await onFinish(publicationList);
-    // }
   };
-
 
   const addNew = () => {
     const newItem: Award = {
@@ -78,6 +79,7 @@ const AwardForm = ({
       description: "",
       organization: "",
     };
+    setNewItem(newItem);
     setState((prev) => ({
       selectedAward: newItem,
       // selectedAwardIdx: awardList.length,
@@ -149,9 +151,8 @@ const AwardForm = ({
                 selectedId: key,
               });
             }}
+            newItem={newItem ? true : false}
           />
-
-          
         </Col>
         <Col
           flex="auto"
@@ -172,7 +173,7 @@ const AwardForm = ({
               />
             )} */}
 
-          {state.selectedAward != null  ? (
+          {state.selectedAward != null ? (
             <>
               {/* <div>
                 <Typography.Title level={5}>

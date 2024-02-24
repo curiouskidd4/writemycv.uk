@@ -56,8 +56,10 @@ const useProvideAuth = () => {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
+      
       //
       if (user) {
+        console.log(user.refreshToken)
         saveUserToFirebase(user);
       } else {
         setState({
@@ -81,9 +83,11 @@ const useProvideAuth = () => {
     const userRef = doc(db, "users", user.uid);
     let firstName = user.displayName?.split(" ")[0];
     let lastName = user.displayName?.split(" ")[1];
+    
     const userDoc = await getDoc(userRef);
     if (userDoc.exists()) {
       let userData = userDoc.data();
+
 
       if (userData.isRepoCompleted == undefined) {
         // Check if all the repos exist
@@ -198,7 +202,7 @@ const useProvideAuth = () => {
       await updateProfile(user, { displayName: `${first_name} ${last_name}` });
       // Create a user in the backend
       const userRef = doc(db, "users", user.uid);
-      await sendVerificationEmail(user);
+      await sendVerificationEmailCustom(user, first_name);
       // Check if user exists in backend
       await setDoc(userRef, {
         first_name: first_name,
@@ -247,13 +251,14 @@ const useProvideAuth = () => {
     await sendEmailVerification(auth.currentUser);
   };
 
-  const sendVerificationEmailCustom = async (email) => {
+  const sendVerificationEmailCustom = async (first_name) => {
     let user = auth.currentUser;
     let token = await user.getIdToken();
     let res = await axios.post(
       `${baseUrl}/send-verification-email`,
       {
-        email: email,
+        email: user.email,
+        name: first_name,
       },
       {
         headers: {
@@ -261,6 +266,7 @@ const useProvideAuth = () => {
         },
       }
     );
+    return res 
   };
 
   const markProfileCompleted = async () => {

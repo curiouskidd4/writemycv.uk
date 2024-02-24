@@ -57,6 +57,8 @@ const MenuBar = ({ editor }) => {
     return null;
   }
 
+  console.log(editor.can().chain().focus());
+
   return (
     <Space
       direction="horizontal"
@@ -74,7 +76,7 @@ const MenuBar = ({ editor }) => {
         className={editor.isActive("bold") ? "is-active" : ""}
         type={editor.isActive("bold") ? "primary" : undefined}
       >
-        bold
+        <i className="fa-solid fa-bold"></i>
       </Button>
       <Button
         size="small"
@@ -83,8 +85,59 @@ const MenuBar = ({ editor }) => {
         className={editor.isActive("italic") ? "is-active" : ""}
         type={editor.isActive("italic") ? "primary" : undefined}
       >
-        italic
+        <i className="fa-solid fa-italic"></i>
       </Button>
+     
+
+      {/* <i class="fa-solid fa-list-ol"></i> */}
+      <Button
+        size="small"
+        onClick={() => editor.chain().focus().toggleBulletList().run()}
+        disabled={!editor.can().chain().focus().toggleBulletList().run()}
+        className={editor.isActive("bulletList") ? "is-active" : ""}
+        type={editor.isActive("bulletList") ? "primary" : undefined}
+      >
+        <i class="fa-solid fa-list"></i>
+      </Button>
+      <Button
+        size="small"
+        onClick={() => editor.chain().focus().toggleOrderedList().run()}
+        disabled={!editor.can().chain().focus().toggleOrderedList().run()}
+        className={editor.isActive("orderedList") ? "is-active" : ""}
+        type={editor.isActive("orderedList") ? "primary" : undefined}
+      >
+        <i class="fa-solid fa-list-ol"></i>
+      </Button>
+
+      {/* <i class="fa-solid fa-align-left"></i> */}
+      {/* <Button
+        size="small"
+        onClick={() => editor.chain().focus().toggleAlignLeft().run()}
+        disabled={!editor.can().chain().focus()}
+        className={editor.isActive("alignLeft") ? "is-active" : ""}
+        type={editor.isActive("alignLeft") ? "primary" : undefined}
+      >
+        <i class="fa-solid fa-align-left"></i>
+      </Button>
+      <Button
+        size="small"
+        onClick={() => editor.chain().focus().toggleAlignCenter().run()}
+        disabled={!editor.can().chain().focus().toggleAlignCenter().run()}
+        className={editor.isActive("alignCenter") ? "is-active" : ""}
+        type={editor.isActive("alignCenter") ? "primary" : undefined}
+      >
+        <i class="fa-solid fa-align-center"></i>
+      </Button>
+      <Button
+        size="small"
+        onClick={() => editor.chain().focus().toggleAlignRight().run()}
+        disabled={!editor.can().chain().focus().toggleAlignRight().run()}
+        className={editor.isActive("alignRight") ? "is-active" : ""}
+        type={editor.isActive("alignRight") ? "primary" : undefined}
+      >
+        <i class="fa-solid fa-align-right"></i>
+      </Button> */}
+
       {/* <button
         onClick={() => editor.chain().focus().toggleStrike().run()}
         disabled={
@@ -251,7 +304,7 @@ const Tiptap = ({ content, onChange }) => {
       // console.log(editor.getHTML());
       onChange(editor.getHTML());
     },
-  
+
     slotBefore: <MenuBar />,
   });
 
@@ -261,7 +314,6 @@ const Tiptap = ({ content, onChange }) => {
       editor.commands.setContent(content);
     }
   }, [content]);
-
 
 
   return (
@@ -284,14 +336,14 @@ const Tiptap = ({ content, onChange }) => {
     // </EditorProvider>
     <>
       <MenuBar editor={editor} />
-      <EditorContent editor={editor} />
+      <EditorContent editor={editor}  />
     </>
   );
 };
 
 export const EDITOR_JS_TOOLS = {
   // NOTE: Paragraph is default tool. Declare only when you want to change paragraph option.
-  // paragraph: Paragraph,
+  paragraph: Paragraph,
   // embed: Embed,
   // table: Table,
   list: List,

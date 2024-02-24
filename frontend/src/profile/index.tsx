@@ -187,7 +187,7 @@ const ProfileV2_ = () => {
                 educationList={
                   profileData.profile?.education?.educationList || []
                 }
-                onFinish={async () => {}}
+                // onFinish={async () => {}}
                 showTitle={false}
                 syncEducation={syncEducation}
               />
@@ -206,7 +206,7 @@ const ProfileV2_ = () => {
                 experienceList={
                   profileData.profile?.experience?.experienceList || []
                 }
-                onFinish={async () => {}}
+                // onFinish={async () => {}}
                 syncExperience={syncExperience}
                 showTitle={false}
               />

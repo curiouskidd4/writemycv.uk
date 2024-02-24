@@ -12,7 +12,7 @@ const EmailVerification = () => {
 
   const onResendEmail = () => {
     setLoading(true);
-    auth.sendVerificationEmail()
+    auth.sendVerificationEmailCustom()
       .then(() => {
         setLoading(false);
         message.success("Email sent successfully");

@@ -51,7 +51,7 @@ const ExperienceCard = ({
 type ExperienceProps = {
   experienceList: Experience[];
   saveLoading?: boolean;
-  onFinish?: (values: any) => Promise<void>;
+  // onFinish: (values: any) => Promise<void>;
   syncExperience: (values: any) => Promise<void>;
   showTitle: boolean;
 };
@@ -64,10 +64,11 @@ type ExperienceState = {
 const ExperienceForm = ({
   experienceList,
   saveLoading,
-  onFinish,
+  // onFinish,
   syncExperience,
   showTitle = true,
 }: ExperienceProps) => {
+  const [newItem, setNewItem] = React.useState<Experience | null>(null);
   const [state, setState] = React.useState<ExperienceState>({
     selectedExperience:
       experienceList && experienceList.length > 0 ? experienceList[0] : null,
@@ -76,20 +77,27 @@ const ExperienceForm = ({
   });
 
   const onSave = async (experience: Experience) => {
-    experienceList = experienceList.map((item) => {
-      if (item.id === experience.id) {
-        return { ...experience };
-      }
-      return item;
-    });
-    await syncExperience(experienceList);
-    if (onFinish) {
-      await onFinish(experience);
+    if (newItem) {
+      setNewItem(null);
+
+      await syncExperience([...experienceList, experience]);
+      // await onFinish(experience);
+      message.success("Experience saved");
+    } else {
+      experienceList = experienceList.map((item) => {
+        if (item.id === experience.id) {
+          return { ...experience };
+        }
+        return item;
+      });
+      await syncExperience(experienceList);
+      // await onFinish(experience);
+      message.success("Experience saved");
     }
-    message.success("Experience saved");
   };
 
   const addNewExperience = () => {
+    debugger;
     const newExperience: Experience = {
       id: ObjectID().toHexString(),
       employerName: "",
@@ -100,9 +108,10 @@ const ExperienceForm = ({
       achievements: [],
       aiSuggestions: null,
     };
+    setNewItem(newExperience);
     setState((prev) => ({
       selectedExperience: newExperience,
-      selectedId: newExperience.id,
+      selectedId: "new",
     }));
   };
 
@@ -123,7 +132,6 @@ const ExperienceForm = ({
           }}
           className="education-history-selector selector-col"
         >
-          
           <SelectorSidebar
             items={experienceList}
             detailExtractor={detailExtractor}
@@ -142,6 +150,7 @@ const ExperienceForm = ({
                 selectedId: key,
               }));
             }}
+            newItem={newItem ? true : false}
           />
         </Col>
         <Col
@@ -155,8 +164,7 @@ const ExperienceForm = ({
             paddingBottom: "12px",
           }}
         >
-          
-          {state.selectedExperience  && (
+          {state.selectedExperience && (
             <SingleExperienceForm
               key={state.selectedExperience.id}
               initialValues={state.selectedExperience}

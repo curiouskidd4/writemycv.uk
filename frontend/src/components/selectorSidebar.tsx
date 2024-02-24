@@ -37,6 +37,8 @@ const SelectorSidebar = ({
   detailExtractor,
   selectedKey,
   onSelect,
+  newItem,
+  addButtonText = null
 }: {
   items: unknown[];
   onReorder: (newOrder: any[]) => void;
@@ -45,9 +47,11 @@ const SelectorSidebar = ({
   detailExtractor: (item: any) => any;
   selectedKey?: string | null;
   onSelect?: (key: string) => void;
+  newItem?: boolean;
+  addButtonText?: string | null;
 }) => {
   const renderFn = (item: any, dragHandle: any) => {
-    let detail = detailExtractor(item);
+    let detail = item.id === "new" ? item:  detailExtractor(item);
     return (
       <div
         className={
@@ -76,7 +80,13 @@ const SelectorSidebar = ({
           {entityTitle}
         </div>
       <SortableComponent
-        items={items}
+        items={newItem ? [...items, 
+          {
+            id: "new",
+            title: `(New  ${entityTitle})`,
+            subtitle: " ",
+          }
+        ] : items}
         onReorder={onReorder}
         renderFn={renderFn}
       />
@@ -84,7 +94,7 @@ const SelectorSidebar = ({
 
       <Row justify="start">
         <Button style={{ margin: "8px 24px" }} onClick={addNew}>
-          <PlusOutlined /> Add {entityTitle}
+          <PlusOutlined /> Add {addButtonText || entityTitle}
         </Button>
       </Row>
     </div>

@@ -1,5 +1,5 @@
 import { Button, Form, Modal, Input, Select, message, Typography } from "antd";
-import React from "react";
+import React, { useState } from "react";
 import { doc, setDoc } from "firebase/firestore";
 import { db } from "../../services/firebase";
 import { useNavigate } from "react-router-dom";
@@ -9,6 +9,7 @@ import { AIWizardIcon, MagicWandIcon } from "../../components/faIcons";
 
 const ObjectId = require("bson-objectid");
 export const NewResumeModal = ({ visible, onCancel, onConfirm }) => {
+  const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
   const auth = useAuth();
   const userId = auth.user.uid;
@@ -17,7 +18,10 @@ export const NewResumeModal = ({ visible, onCancel, onConfirm }) => {
     form.resetFields();
   };
 
+
+
   const onFinish = async (values) => {
+    setLoading(true);
     // uuid for resume
     let data = {
       ...values,
@@ -33,11 +37,14 @@ export const NewResumeModal = ({ visible, onCancel, onConfirm }) => {
     try {
       await setDoc(doc(db, "resumes", data.id), data);
       await copyProfileToResume(data.id);
+      setLoading(false);
+
       // Copy data from profile
       onConfirm(data.id);
       message.success("Resume created successfully");
     } catch (err) {
       console.log(err);
+      setLoading(false);
       message.error("Something went wrong");
     }
   };
@@ -84,7 +91,7 @@ export const NewResumeModal = ({ visible, onCancel, onConfirm }) => {
           <Input size="large" placeholder="Resume Name" />
         </Form.Item>
 
-        <Form.Item label="Job Title (optional)" name="jobTitle">
+        <Form.Item label="Job Title (optional)" name="targetRole">
           <Input size="large" placeholder="Paste the job description of a position you aspire to" />
         </Form.Item>
 
@@ -100,6 +107,9 @@ export const NewResumeModal = ({ visible, onCancel, onConfirm }) => {
             type="primary"
             htmlType="submit"
             style={{ margin: "0px auto", width: "200px" }}
+            loading={
+              loading
+            }
           >
             Create CV
           </Button>

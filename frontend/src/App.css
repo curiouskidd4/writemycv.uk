@@ -848,8 +848,16 @@ select {
   margin: 16px 0;
   padding-left: 20px;
 }
+
+
 .selector-item {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+
   height: auto;
+  min-height: 56px;
   line-height: normal;
   width: unset;
   background: var(--unnamed-color-ffffff) 0% 0% no-repeat padding-box;
@@ -863,12 +871,15 @@ select {
 
   position: relative;
   cursor: pointer;
+  
 
 
   .drag-grip {
     position: absolute;
     left: 12px;
-    top: 14px;
+    /* top: 14px; */
+    top: 50%;
+    transform: translateY(-50%);
   }
 }
 
@@ -956,4 +967,10 @@ select {
   .editor-container:focus-within {
     border: 1px solid var(--black) !important;
   }
+}
+
+.settings-view {
+  padding-top: 2rem;
+  max-width: 1200px;
+  margin: 0px auto;
 }

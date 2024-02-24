@@ -89,7 +89,7 @@
   }
 
   .title {
-    height: 22px;
+    /* height: 22px; */
     text-align: left;
     font: normal normal bold 16px/18px DM Sans;
     letter-spacing: 0px;

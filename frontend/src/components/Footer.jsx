@@ -6,7 +6,7 @@ export default function Footer() {
   return (
     <footer>
       <div className="wrapper">
-        <p>&copy; Resu.me {new Date().getFullYear()}</p>
+        <p>&copy; WriteMyCV {new Date().getFullYear()}</p>
 
         <div className="options">
           <Link to="/terms-service">Terms of Service</Link>
