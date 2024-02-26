@@ -2,6 +2,7 @@ import { Button, Col, Form, Input, Row, Select, Typography } from "antd";
 import React, { useCallback } from "react";
 import { PhoneInput } from "../../../pages/coolForm/inputs/phoneInput";
 import _ from "lodash";
+import EditorJsInput from "../../../components/editor";
 
 type PersonalDetailsProps = {
   initialValues?: any;
@@ -41,6 +42,8 @@ const CandidateDetails = ({
 
   const handleChange = async (value: any, changedValues: any) => {
     // Check if the value has changed
+    // Make sure required fields are there
+    // console.log("Changed values", changedValues);
 
     if (JSON.stringify(initialValues) !== JSON.stringify(changedValues)) {
       setLoading(true);
@@ -57,7 +60,9 @@ const CandidateDetails = ({
   };
   return (
     <div className="personal-info-form resume-edit-detail padding">
-      <div className="detail-form-header">
+      <div className="detail-form-header" style={{
+        marginBottom: "0px",
+      }}>
         {/* <Typography.Title level={4}>Personal Info</Typography.Title>
          */}
         <Row align="middle" justify="space-between" style={{ width: "70%" }}>
@@ -66,6 +71,7 @@ const CandidateDetails = ({
               level={4}
               style={{
                 marginBottom: "0px",
+
               }}
             >
               Candidate Details
@@ -82,7 +88,9 @@ const CandidateDetails = ({
           )}
         </Row>
       </div>
-      <div className="detail-form-body">
+      <div className="detail-form-body" style={{
+        marginTop: "12px",
+      }}>
         <Form
           name="personal_info"
           // onFinish={onSubmit}
@@ -92,6 +100,7 @@ const CandidateDetails = ({
           onValuesChange={handleChange}
           scrollToFirstError
           layout="vertical"
+
         >
           <div className="cv-input">
             <Row gutter={24}>
@@ -162,21 +171,31 @@ const CandidateDetails = ({
                   <Input />
                 </Form.Item>
               </Col>
+              <div className="profile-input-section-title">
+                <Typography.Title
+                  level={4}
+                  style={{
+                    marginLeft: "8px",
+                    marginTop: "24px",
+                  }}
+                >
+                  Candidate Summary
+                </Typography.Title>
+              </div>
+              <Col span={24}>
+                <Form.Item name="summary" label="" rules={[]}>
+                  <EditorJsInput
+                    name="summary"
+                    value={initialValues?.summary}
+                    onChange={(summary: string) =>
+                      handleChange("summary", { summary })
+                    }
+                  />
+                </Form.Item>
+              </Col>
             </Row>
           </div>
-          <div>
-            <div className="profile-input-section-title">
-              <Typography.Title
-                level={4}
-                style={{
-                  marginBottom: "0px",
-                }}
-              >
-                Candidate Summary
-              </Typography.Title>
-            </div>
-            <Input.TextArea rows={10} />
-          </div>
+          <div>{/* <Input.TextArea rows={10} /> */}</div>
         </Form>
       </div>
     </div>

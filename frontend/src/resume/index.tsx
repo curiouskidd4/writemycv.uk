@@ -27,7 +27,8 @@ const ResumeEditSteps = ({
       title: "CV Goals",
     },
     {
-      title: "Personal Details",
+      // title: "Personal Details",
+      title: "Candidate Details",
     },
     {
       title: "Education",

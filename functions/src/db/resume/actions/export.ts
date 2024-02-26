@@ -4,6 +4,7 @@ import nunjucks from "nunjucks";
 import puppeteer from "puppeteer";
 import { Resume } from "../../../types/resume";
 import hash from "object-hash";
+import { footerTemplate, headerTemplate } from "./pdfExtra";
 // import inlinCss from "inline-css";
 
 let PATH_TO_TEMPLATE = "data/resume-templates";
@@ -34,9 +35,8 @@ const generatePdfnScreenShot = async (
   // Wait for all images to load
   await page.evaluateHandle("document.fonts.ready");
   // Make sure no network requests are pending
-  try{
-    await page.waitForNavigation({ waitUntil: "networkidle2", timeout: 2000,
-  });
+  try {
+    await page.waitForNavigation({ waitUntil: "networkidle2", timeout: 2000 });
   } catch (error) {
     console.log(error);
   }
@@ -47,11 +47,14 @@ const generatePdfnScreenShot = async (
     format: "A4",
     printBackground: true,
     margin: {
-      top: "16px",
-      bottom: "20px",
-      left: "20px",
-      right: "20px",
+      top: "96px",
+      bottom: "60px",
+      left: "32px",
+      right: "32px",
     },
+    headerTemplate: headerTemplate,
+    footerTemplate : footerTemplate, 
+    displayHeaderFooter: true,
   });
   // Now generate screenshot in portrain mode as a4
   await page.setViewport({ width: 595, height: 842 });
@@ -65,7 +68,6 @@ const generatePdfnScreenShot = async (
   const bucket = storage().bucket();
   const pdfFile = bucket.file(pdfPath);
   const screenshotFile = bucket.file(screenshotPath);
-  console.log("pdfPath", pdfPath, bucket);
 
   await pdfFile.save(pdf);
   await screenshotFile.save(screenshot);
@@ -80,8 +82,9 @@ const exportResume = async (resumeId: string, userId: string) => {
     if (resumeData.personalInfo) {
       resumeData.personalInfo.phoneString = `${resumeData.personalInfo?.phone.countryCode}-${resumeData.personalInfo?.phone.number}`;
     }
-    console.log("resumeData.personalInfo", resumeData.personalInfo);
     let relevantData = {
+      candidateDetails: resumeData.candidateDetails,
+      otherInformationList: resumeData.otherInformationList,
       experienceList: resumeData.experienceList,
       educationList: resumeData.educationList,
       skillList: resumeData.skillList,
@@ -102,7 +105,9 @@ const exportResume = async (resumeId: string, userId: string) => {
     // If hash has changed, then export resume
     // console.log(resumeData);
     if (resumeData && newHash != resumeHash) {
-      const resumeTemplate = "simple/resume";
+      // const resumeTemplate = "simple/resume";
+      const resumeTemplate = "howell/resume";
+
       let experienceList = resumeData.experienceList?.map((experience) => {
         // Convert start date and end date to "MMM YYYY" format
         let startDate = experience.startDate
@@ -119,17 +124,20 @@ const exportResume = async (resumeId: string, userId: string) => {
           ...experience,
           isSubDetailAvailable: true,
 
-          startDate: startDate? startDate.toLocaleString("default", {
-            month: "short",
-            year: "numeric",
-          }) : startDate,
-          endDate:
-          endDate ? endDate != "Current"
+          startDate: startDate
+            ? startDate.toLocaleString("default", {
+                month: "short",
+                year: "numeric",
+              })
+            : startDate,
+          endDate: endDate
+            ? endDate != "Current"
               ? endDate.toLocaleString("default", {
                   month: "short",
                   year: "numeric",
                 })
-              : endDate: endDate,
+              : endDate
+            : endDate,
         };
       });
 
@@ -144,10 +152,12 @@ const exportResume = async (resumeId: string, userId: string) => {
         return {
           ...education,
           isSubDetailAvailable: startDate && endDate ? true : false,
-          startDate: startDate? startDate.toLocaleString("default", {
-            // month: "short",
-            year: "numeric",
-          }) : null,
+          startDate: startDate
+            ? startDate.toLocaleString("default", {
+                // month: "short",
+                year: "numeric",
+              })
+            : null,
           endDate:
             endDate != "Current"
               ? endDate.toLocaleString("default", {
@@ -182,8 +192,7 @@ const exportResume = async (resumeId: string, userId: string) => {
               })
             : null,
         };
-      }
-      );
+      });
 
       let awardList = resumeData.awardList?.map((award) => {
         // Convert start date and end date to "MMM YYYY" format
@@ -205,34 +214,41 @@ const exportResume = async (resumeId: string, userId: string) => {
         };
       });
 
-      let volunteeringList = resumeData.volunteeringList?.map((volunteering) => {
-        // Convert start date and end date to "MMM YYYY" format
-        let startDate = volunteering.startDate
-          ? volunteering.startDate.toDate()
-          : null;
-        let endDate = volunteering.endDate
-          ? volunteering.endDate.toDate()
-          : "Current";
-        return {
-          ...volunteering,
-          isSubDetailAvailable: startDate && endDate ? true : false,
-          startDate: startDate? startDate.toLocaleString("default", {
-            // month: "short",
-            year: "numeric",
-          }) : null,
-          endDate:
-            endDate != "Current"
-              ? endDate.toLocaleString("default", {
+      let volunteeringList = resumeData.volunteeringList?.map(
+        (volunteering) => {
+          // Convert start date and end date to "MMM YYYY" format
+          let startDate = volunteering.startDate
+            ? volunteering.startDate.toDate()
+            : null;
+          let endDate = volunteering.endDate
+            ? volunteering.endDate.toDate()
+            : "Current";
+          return {
+            ...volunteering,
+            isSubDetailAvailable: startDate && endDate ? true : false,
+            startDate: startDate
+              ? startDate.toLocaleString("default", {
                   // month: "short",
                   year: "numeric",
                 })
-              : endDate,
-        };
-      });
-
+              : null,
+            endDate:
+              endDate != "Current"
+                ? endDate.toLocaleString("default", {
+                    // month: "short",
+                    year: "numeric",
+                  })
+                : endDate,
+          };
+        }
+      );
 
       const data = {
         ...resumeData,
+        personalInfo: {
+          ...resumeData.personalInfo,
+          ...resumeData.candidateDetails,
+        },
         professionalSummary: resumeData.professionalSummary || "",
         experienceList,
         educationList,
@@ -240,8 +256,10 @@ const exportResume = async (resumeId: string, userId: string) => {
         publicationList,
         languageList,
         volunteeringList,
-        skillText : resumeData.skillList?.map((skill) => skill.name).join(", ") || "",
-      }
+        otherInformationList: resumeData.otherInformationList || [],
+        skillText:
+          resumeData.skillList?.map((skill) => skill.name).join(", ") || "",
+      };
       console.log("data", data);
       const resumeTemplateHtml = nunjucks.render(`${resumeTemplate}.njk`, data);
 

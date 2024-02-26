@@ -64,7 +64,10 @@ const CustomHeader = () => {
             display: "flex" }} className="logo">
             {/* <Typography.Title level={3}>Resu.me</Typography.Title>
              */}
-            <img src="/WriteMyCV-light-background.png" style={{ height: "40px" }} />
+            <img src="/WriteMyCV-light-background.png" style={{ height: "40px", cursor: "pointer" }} 
+            onClick={
+              () => { navigate("/resumes") }
+            }/>
           </Col>
           <Col span={16}>
             <div style={{ float: "right" }} className="nav-menu">

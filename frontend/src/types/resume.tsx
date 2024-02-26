@@ -173,6 +173,7 @@ interface CandidateDetails {
   location?: string;
   salaryExpectation?: string;
   availability?: string;
+  candidateSummary?: string;
 }
 
 interface OtherInformation {
@@ -207,6 +208,8 @@ interface Resume {
   userId: string;
   publicResumeId: string | null;
 }
+
+
 export type {
   PersonalInfo,
   Education,
@@ -224,4 +227,6 @@ export type {
   Publication, PublicationList,
   Volunteering, VolunteeringList,
   LanguageList,
+  CandidateDetails,
+  OtherInformation,
 };

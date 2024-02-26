@@ -15,7 +15,7 @@ import {
 
 import LoginSignupPage from "./pages/signInUp/index.js";
 import CustomHeader from "./components/header.js";
-import Footer from "./components/footer.jsx";
+import Footer from "./components/Footer.jsx";
 import PrivacyPolicy from "./legal/PrivacyPolicy.jsx";
 // import Contact from "./communication/Contact";
 import TermsService from "./legal/TermsService.jsx";

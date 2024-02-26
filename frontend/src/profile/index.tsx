@@ -159,9 +159,12 @@ const ProfileV2_ = () => {
             >
               <div>
                 {!basicDetailsCompleted ? (
-                  <div>
+                  <div style={{
+                    paddingLeft: "32px",
+                    paddingTop: "16px",
+                  }}>
                     <Typography.Text type="secondary">
-                      Please complete your following details before proceeding
+                    <i className="fa-solid fa-triangle-exclamation" style={{"color": "#FFD43B"}}></i> Please complete your following details before proceeding
                     </Typography.Text>
                   </div>
                 ) : null}

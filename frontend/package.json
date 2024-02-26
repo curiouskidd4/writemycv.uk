@@ -45,6 +45,7 @@
     "mixpanel-browser": "^2.48.1",
     "moment": "^2.29.4",
     "object-hash": "^3.0.0",
+    "pdfjs-dist": "^4.0.379",
     "react": "^18.0.0",
     "react-beautiful-dnd": "^13.1.1",
     "react-dom": "^18.0.0",

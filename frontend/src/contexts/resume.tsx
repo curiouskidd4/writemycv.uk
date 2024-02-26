@@ -20,9 +20,11 @@ import {
 } from "firebase/firestore";
 import {
   Award,
+  CandidateDetails,
   Education,
   Experience,
   Language,
+  OtherInformation,
   PersonalInfo,
   Publication,
   Resume,
@@ -49,6 +51,8 @@ type ResumeContextType = {
   copyPublicLink: () => Promise<string>;
   markResumeComplete: () => Promise<void>;
   getResumeURL: () => Promise<string>;
+  saveCandidateDetails: (candidateDetails: CandidateDetails) => Promise<void>;
+  saveOtherInformation: (otherInformationList: OtherInformation[]) => Promise<void>;
 
   loading: boolean;
   resumeHTMLLoading: boolean;
@@ -89,6 +93,8 @@ const ResumeContext = createContext<ResumeContextType>({
   saveVolunteering: async () => {},
   saveLanguages: async () => {},
   getResumeURL: async () => "",
+  saveCandidateDetails: async () => {},
+  saveOtherInformation: async () => {},
 });
 
 const useResumeProvider = () => {
@@ -462,6 +468,53 @@ const useResumeProvider = () => {
     }
   }
 
+  const saveOtherInformation = async (otherInformationList: OtherInformation[]) => {
+    if (resumeId) {
+      const docRef = doc(db, RESUME_COLLECTION, resumeId);
+      await updateDoc(docRef, {
+        otherInformationList: otherInformationList,
+        updatedAt: Timestamp.now(),
+      });
+
+      // Update the local state
+      setState((prev) => ({
+        ...prev,
+        resume: {
+          ...prev.resume!,
+          otherInformationList: otherInformationList,
+        },
+      }));
+    }
+  }
+
+  const saveCandidateDetails = async (candidateDetails: CandidateDetails) => {
+    // Remove any undefined fields
+    candidateDetails = _fixUndefined(candidateDetails);
+    if (resumeId) {
+      const docRef = doc(db, RESUME_COLLECTION, resumeId);
+      await updateDoc(docRef, {
+        candidateDetails: candidateDetails,
+        personalInfo : {
+          firstName: candidateDetails.firstName,
+          lastName: candidateDetails.lastName,
+          currentRole: candidateDetails.currentRole,
+          location: candidateDetails.location,
+          ...state.resume?.personalInfo
+        },
+        updatedAt: Timestamp.now(),
+      });
+
+      // Update the local state
+      setState((prev) => ({
+        ...prev,
+        resume: {
+          ...prev.resume!,
+          candidateDetails: candidateDetails,
+        },
+      }));
+    }
+  }
+
   const copyPublicLink = async () => {
     // Get public link
     let publicItemId = state.resume?.publicResumeId;
@@ -567,6 +620,8 @@ const useResumeProvider = () => {
     saveVolunteering,
     saveLanguages,
     getResumeURL,
+    saveCandidateDetails, 
+    saveOtherInformation,
     ...state,
   };
 };

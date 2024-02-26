@@ -659,7 +659,7 @@ const ResumeListView = () => {
                 align="middle"
                 justify="center"
               >
-                <Empty description="No resumes yet">
+                <Empty description="No CVs yet">
                   <Button type="primary" onClick={createNewResume}>
                     Create New
                   </Button>
@@ -668,6 +668,7 @@ const ResumeListView = () => {
             )}
 
             {
+              state.resumes.length > 0 &&
               <List
                 style={{
                   marginTop: "1rem",
@@ -681,6 +682,7 @@ const ResumeListView = () => {
                   xl: 2,
                   xxl: 2,
                 }}
+                
                 dataSource={state.resumes}
                 renderItem={(item) => (
                   <List.Item key={item.id}>

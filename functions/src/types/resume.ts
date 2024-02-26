@@ -59,7 +59,7 @@ interface Resume {
   createdAt: string;
   updatedAt?: string;
   candidateDetails?: CandidateDetails;
-  otherInformation?: OtherInformation[];
+  otherInformationList?: OtherInformation[];
   experienceList?: Experience[];
   personalInfo?: PersonalInfo;
   educationList?: Education[];

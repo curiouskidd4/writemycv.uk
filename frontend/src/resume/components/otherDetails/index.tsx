@@ -11,9 +11,9 @@ import {
   } from "antd";
   import React from "react";
   import { PlusOutlined } from "@ant-design/icons";
-  import { Publication, PublicationList } from "../../../types/resume";
+  import { OtherInformation  } from "../../../types/resume";
 //   import "./index.css";
-  import SinglePublicationsFrom from "./editForm";
+  import SingleOtherInformationsFrom from "./editForm";
   import { Timestamp } from "firebase/firestore";
   import moment from "moment";
   import SelectorSidebar from "../../../components/selectorSidebar";
@@ -22,7 +22,7 @@ import {
   
   
   type OtherInformationProps = {
-    otherInformationList: Publication[];
+    otherInformationList: OtherInformation[];
     saveLoading?: boolean;
     onFinish?: (values: any) => Promise<void>;
     syncOtherInformation: (values: any) => Promise<void>;
@@ -30,36 +30,34 @@ import {
   };
   
   type OtherInformationState = {
-    selected: Publication | null;
+    selected: OtherInformation | null;
     isNewItem?: boolean;
     selectedId: string | null;
   };
   
-  const OtherInformation = ({
+  const OtherInformationForm = ({
     otherInformationList,
     saveLoading,
     onFinish,
     syncOtherInformation,
     showTitle = true,
   }: OtherInformationProps) => {
-    const [newItem, setNewItem] = React.useState<Publication | null>(null);
+    const [newItem, setNewItem] = React.useState<OtherInformation | null>(null);
   
     otherInformationList = otherInformationList || [];
     const [state, setState] = React.useState<OtherInformationState>({
       selected: otherInformationList.length > 0 ? otherInformationList[0] : null,
-      // selectedPublicationIdx: publicationList.length > 0 ? 0 : null,
+      // selectedOtherInformationIdx: OtherInformationList.length > 0 ? 0 : null,
       selectedId: otherInformationList.length > 0 ? otherInformationList[0].id : null,
     });
   
-    const onSave = async (item: Publication) => {
+    const onSave = async (item: OtherInformation) => {
       if (newItem) {
         setNewItem(null);
-        item.date = Timestamp.fromDate(item.date.toDate());
   
         await syncOtherInformation([...otherInformationList, item]);
       } else {
-        item.date = Timestamp.fromDate(item.date.toDate());
-        const newPublicationList = otherInformationList.map((item) => {
+        const newOtherInformationList = otherInformationList.map((item) => {
           if (item.id === item.id) {
             return item;
           } else {
@@ -67,19 +65,17 @@ import {
           }
         });
   
-        await syncOtherInformation(newPublicationList);
-        message.success("Publication saved!");
+        await syncOtherInformation(newOtherInformationList);
+        message.success("OtherInformation saved!");
   
       }
     };
   
     const addNew = () => {
-      const newItem: Publication = {
+      const newItem: OtherInformation = {
         id: ObjectID().toHexString(),
         title: "",
-        date: Timestamp.fromDate(new Date()),
         description: "",
-        link: "",
       };
       setNewItem(newItem);
       setState((prev) => ({
@@ -89,8 +85,8 @@ import {
       }));
     };
   
-    const detailExtractor = (publication: Publication) => {
-      return { title: publication.title, subtitle: "" };
+    const detailExtractor = (OtherInformation: OtherInformation) => {
+      return { title: OtherInformation.title, subtitle: "" };
     };
   
     return (
@@ -108,13 +104,13 @@ import {
               minWidth: "250px",
               width: "250px",
             }}
-            className="publication-history-selector  selector-col"
+            className="OtherInformation-history-selector  selector-col"
           >
      
             <SelectorSidebar
               items={otherInformationList}
               detailExtractor={detailExtractor}
-              onReorder={(newOrder: Publication[]) => {
+              onReorder={(newOrder: OtherInformation[]) => {
                 syncOtherInformation(newOrder);
               }}
               addNew={addNew}
@@ -147,7 +143,7 @@ import {
             {state.selected != null ? (
               <>
   
-                <SinglePublicationsFrom
+                <SingleOtherInformationsFrom
                   isNewItem={state.isNewItem}
                   key={state.selected.id}
                   initialValues={state.selected}
@@ -162,5 +158,5 @@ import {
     );
   };
   
-  export default OtherInformation;
+  export default OtherInformationForm;
   

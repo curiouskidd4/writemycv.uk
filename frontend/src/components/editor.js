@@ -57,7 +57,7 @@ const MenuBar = ({ editor }) => {
     return null;
   }
 
-  console.log(editor.can().chain().focus());
+  // console.log(editor.can().chain().focus());
 
   return (
     <Space

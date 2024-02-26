@@ -10,6 +10,8 @@ import {
   Resume,
   Skill,
   Volunteering,
+  CandidateDetails as CandidateDetType,
+  OtherInformation as OtherInfoType,
 } from "../types/resume";
 import PersonalDetails from "./components/personalDetails";
 import EducationFlow from "./components/education";
@@ -29,6 +31,7 @@ import PublicationForm from "./components/publication/publicationEditForm";
 import VolunteerForm from "./components/volunteering/volunteerEditForm";
 import CandidateDetails from "./components/candidateSummary";
 import OtherInformation from "./components/otherDetails";
+import { useAuth } from "../authContext";
 
 type NavigationProps = {
   current: number | null;
@@ -58,7 +61,21 @@ const Navigation = ({
     isFinished: false,
   });
 
+  const { user } = useAuth();
+  const isHowellUser = true;
+
   const resumeContext = useResume();
+
+  const syncOtherInformation = async (otherInformationList: any) => {
+    await resumeContext.saveOtherInformation(otherInformationList);
+    // message.success("Progress Saved!");
+  };
+
+  const syncCandidateDetails = async (candidateDetails: CandidateDetType) => {
+    await resumeContext.saveCandidateDetails(candidateDetails);
+
+    // message.success("Progress Saved!");
+  };
 
   const syncResumeDetails = async (resume: Resume) => {
     await resumeContext.saveResumeDetails(resume);
@@ -118,7 +135,6 @@ const Navigation = ({
             targetRole: resume.targetRole || resume.role,
             jobDescription: resume.jobDescription,
           }}
-          
           syncResumeDetails={syncResumeDetails}
         />
         {/* <SaveButton
@@ -130,15 +146,20 @@ const Navigation = ({
     );
   } else if (current === 1) {
     return (
-      // <PersonalDetails
-      //   initialValues={resume.personalInfo}
-      //   syncPersonalInfo={syncPersonalInfo}
-      // />
-      <CandidateDetails
+      isHowellUser ? (
+        <CandidateDetails
+        initialValues={resume.candidateDetails}
+        syncPersonalInfo={syncCandidateDetails}
+      />
+      ) : (
+        <PersonalDetails
         initialValues={resume.personalInfo}
         syncPersonalInfo={syncPersonalInfo}
       />
-    );
+      ))
+
+      
+    
   } else if (current === 2) {
     return (
       <EducationFlow
@@ -188,16 +209,14 @@ const Navigation = ({
         }}
       />
     );
-  }else if (current == 6) {
+  } else if (current == 6) {
     return (
-      <OtherInformation 
-      otherInformationList={[] }
-      syncOtherInformation={async (items: any) => {
-        console.log("Syncing other information", items);
-      }}
-      showTitle={false}
-            
-        
+      <OtherInformation
+        otherInformationList={
+          resume.otherInformationList || []
+        }
+        syncOtherInformation={syncOtherInformation}
+        showTitle={false}
       />
     );
   } else if (current == 7) {
@@ -220,7 +239,7 @@ const Navigation = ({
   } else if (current == 8) {
     return (
       <PublicationForm
-      showTitle={false}
+        showTitle={false}
         publicationList={resume.publicationList || []}
         // onFinish={async () => {
         //   setCurrent(6);
