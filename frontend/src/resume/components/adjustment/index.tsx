@@ -1,9 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Checkbox, Col, Row, Tabs, Typography } from "antd";
 import "./index.css";
 import SortableComponent from "../../../components/sortableList";
 import PDFViewer from "../../../components/pdfViewer";
 import { useResume } from "../../../contexts/resume";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { db } from "../../../services/firebase";
+import Template from "../../../types/template";
 
 let templates = [
   {
@@ -80,7 +83,9 @@ let sections = [
 const Adjustment = () => {
   const [currentOrder, setCurrentOrder] = React.useState(sections);
   const [resumeURL, setResumeURL] = React.useState("");
+  const [templates, setTemplates] = React.useState<Template[]>([]); // [
   const { getResumeURL } = useResume();
+  const { resume, updateTemplate, saveResumeOrder } = useResume();
 
   React.useEffect(() => {
     const fetchResumeURL = async () => {
@@ -88,7 +93,30 @@ const Adjustment = () => {
       setResumeURL(url);
     };
     fetchResumeURL();
+    loadTemplates();
   }, []);
+
+  useEffect(() => {
+    if (currentOrder) {
+      saveResumeOrder(currentOrder.map((item) => item.key));
+    }
+  }, [currentOrder]);
+
+  const loadTemplates = async () => {
+    // Howell Specific changes
+    const queryRef = query(
+      collection(db, "templates"),
+      where("isPublic", "==", false)
+    );
+
+    const querySnapshot = await getDocs(queryRef);
+    let templateList: any = [];
+    querySnapshot.forEach((doc) => {
+      let template = doc.data() as Template;
+      templateList.push(template);
+    });
+    setTemplates(templateList);
+  };
 
   const onReorder = (newOrder: any) => {
     setCurrentOrder(newOrder);
@@ -111,7 +139,9 @@ const Adjustment = () => {
       <div className="section-item">
         {/* <dragHandle className="drag-handle">:::</dragHandle> */}
         <Row align="middle">
-          <span style={{width: "12px", marginRight: "8px"}}>{dragHandle}</span>
+          <span style={{ width: "12px", marginRight: "8px" }}>
+            {dragHandle}
+          </span>
           <Typography.Text>{item.name}</Typography.Text>
         </Row>
         <Checkbox
@@ -124,6 +154,10 @@ const Adjustment = () => {
     );
   };
 
+  const handleTemplateSelect = (templateId: string) => {
+    updateTemplate(templateId);
+  };
+
   return (
     <div className="personal-info-form resume-edit-detail">
       <Row className="adjustment-section">
@@ -134,13 +168,27 @@ const Adjustment = () => {
                 <Row wrap gutter={[24, 24]}>
                   {templates.map((template, idx) => {
                     return (
-                      <Col span={12} key={idx} className="template-card">
-                        <div className="template-card-container">
-                          <img src={template.img} alt={template.name} />
+                      <Col
+                        span={12}
+                        key={idx}
+                        className={
+                          resume?.templateId === template.id
+                            ? "template-card selected"
+                            : "template-card"
+                        }
+                      >
+                        <div
+                          className="template-card-container"
+                          style={{
+                            cursor: "pointer",
+                          }}
+                          onClick={() => handleTemplateSelect(template.id)}
+                        >
+                          <img src={template.imgUrl} alt={template.name} />
                           <div className="name">
                             <Typography.Text>{template.name}</Typography.Text>
                           </div>
-                          <div className="tags">Tags, Keywords</div>
+                          {/* <div className="tags">Tags, Keywords</div> */}
                         </div>
                       </Col>
                     );
@@ -160,10 +208,13 @@ const Adjustment = () => {
             </Tabs.TabPane>
           </Tabs>
         </Col>
-        <Col span={14} style={{
-          overflow: "scroll", 
-          height: "100%"
-        }}>
+        <Col
+          span={14}
+          style={{
+            overflow: "scroll",
+            height: "100%",
+          }}
+        >
           {resumeURL ? <PDFViewer documentURL={resumeURL} /> : null}
         </Col>
       </Row>

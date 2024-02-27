@@ -11,9 +11,8 @@ interface PersonalInfo {
     lastName: string;
     email: string;
     phone: PhoneNumber;
-    phoneString: string;
-    phoneNumber: PhoneNumber;
     currentRole?: string;
+    phoneString?: string;
 }
 
 export { PersonalInfo };

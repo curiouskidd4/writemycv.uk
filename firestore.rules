@@ -69,6 +69,11 @@ service cloud.firestore {
     match /language/{userId} {
       allow write, read: if request.auth.uid == userId;
     }
+
+    match /templates/{templateID} {
+      allow read: if true;
+      allow write: if false;
+    }
     
   }
 }

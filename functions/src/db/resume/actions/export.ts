@@ -53,7 +53,7 @@ const generatePdfnScreenShot = async (
       right: "32px",
     },
     headerTemplate: headerTemplate,
-    footerTemplate : footerTemplate, 
+    footerTemplate: footerTemplate,
     displayHeaderFooter: true,
   });
   // Now generate screenshot in portrain mode as a4
@@ -95,6 +95,7 @@ const exportResume = async (resumeId: string, userId: string) => {
       professionalSummary: resumeData.professionalSummary,
       sectionOrder: resumeData.sectionOrder,
       personalInfo: resumeData.personalInfo,
+      templateId: resumeData.templateId,
     };
 
     // Compute hash of relevant data
@@ -107,6 +108,31 @@ const exportResume = async (resumeId: string, userId: string) => {
     if (resumeData && newHash != resumeHash) {
       // const resumeTemplate = "simple/resume";
       const resumeTemplate = "howell/resume";
+
+      let templateMeta: any = null;
+      // Load template Meta
+      if (resumeData.templateId) {
+        const templateRef = db
+          .collection("templates")
+          .doc(resumeData.templateId);
+        const templateDoc = await templateRef.get();
+        const templateData = templateDoc.data();
+        if (templateData) {
+          // PATH_TO_TEMPLATE = `data/resume-templates/${templateData.folder}`;
+          // nunjucks.configure([PATH_TO_TEMPLATE], { autoescape: true });
+          templateMeta = templateData.meta;
+        } else {
+          templateMeta = {
+            contact: "07943388003",
+            recruiter: "Lucy Chapman",
+          };
+        }
+      }else{
+        templateMeta = {
+          contact: "07943388003",
+          recruiter: "Lucy Chapman",
+        };
+      }
 
       let experienceList = resumeData.experienceList?.map((experience) => {
         // Convert start date and end date to "MMM YYYY" format
@@ -259,6 +285,8 @@ const exportResume = async (resumeId: string, userId: string) => {
         otherInformationList: resumeData.otherInformationList || [],
         skillText:
           resumeData.skillList?.map((skill) => skill.name).join(", ") || "",
+        templateMeta,
+        sectionOrder
       };
       console.log("data", data);
       const resumeTemplateHtml = nunjucks.render(`${resumeTemplate}.njk`, data);

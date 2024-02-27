@@ -25,8 +25,30 @@ const useResumeAPI = () => {
     );
   };
 
+  const importResume = async (resumeId: string, file: any) => {
+    const token = await auth.user.getIdToken();
+
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("resumeId", resumeId);
+
+    return axios.post(
+      `${BASE_URL}/openai/importToCV`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+  }
+
+
   return {
     copyProfileToResume,
+    importResume
+    
   };
 };
 

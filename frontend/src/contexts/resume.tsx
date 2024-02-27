@@ -53,7 +53,8 @@ type ResumeContextType = {
   getResumeURL: () => Promise<string>;
   saveCandidateDetails: (candidateDetails: CandidateDetails) => Promise<void>;
   saveOtherInformation: (otherInformationList: OtherInformation[]) => Promise<void>;
-
+  updateTemplate: (template: string) => Promise<void>;
+  saveResumeOrder: (sectionOrder: string[]) => Promise<void>;
   loading: boolean;
   resumeHTMLLoading: boolean;
   resumeHTML: string;
@@ -95,6 +96,8 @@ const ResumeContext = createContext<ResumeContextType>({
   getResumeURL: async () => "",
   saveCandidateDetails: async () => {},
   saveOtherInformation: async () => {},
+  updateTemplate: async () => {},
+  saveResumeOrder: async () => {},
 });
 
 const useResumeProvider = () => {
@@ -207,6 +210,25 @@ const useResumeProvider = () => {
     }
   };
 
+  const updateTemplate = async (template: string) => {
+    if (resumeId){
+      const docRef = doc(db, RESUME_COLLECTION, resumeId);
+      await updateDoc(docRef, {
+        templateId: template,
+      });
+
+      // Update the local state
+      setState((prev) => ({
+        ...prev,
+        resume: {
+          ...prev.resume!,
+          templateId: template,
+        },
+      }));
+
+    }
+  }
+
   const loadResumeHTML = async () => {
     setState((prev) => ({ ...prev, resumeHTMLLoading: true }));
     const gsRef = ref(
@@ -297,6 +319,25 @@ const useResumeProvider = () => {
       }));
     }
   };
+
+  const saveResumeOrder = async (sectionOrder: string[]) => {
+    if (resumeId) {
+      const docRef = doc(db, RESUME_COLLECTION, resumeId);
+      await updateDoc(docRef, {
+        sectionOrder: sectionOrder,
+        updatedAt: Timestamp.now(),
+      });
+
+      // Update the local state
+      setState((prev) => ({
+        ...prev,
+        resume: {
+          ...prev.resume!,
+          sectionOrder: sectionOrder,
+        },
+      }));
+    }
+  }
 
   const saveExperience = async (experiences: Experience[]) => {
     let experiencesFixed = experiences.map((exp) => {
@@ -622,6 +663,8 @@ const useResumeProvider = () => {
     getResumeURL,
     saveCandidateDetails, 
     saveOtherInformation,
+    updateTemplate,
+    saveResumeOrder,
     ...state,
   };
 };

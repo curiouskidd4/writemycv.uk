@@ -18,7 +18,7 @@ const db = admin.firestore();
 if (process.env.ENV === "testing") {
   db.settings({
     ignoreUndefinedProperties: true,
-    host: "localhost:5002",
+    host: "127.0.0.1:8080",
     ssl: false,
   });
 }

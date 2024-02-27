@@ -23,7 +23,7 @@ import {
 } from "../controllers/openai/professionalSummary";
 import { CustomRequest } from "../../types/requests";
 import resumeExtraction from "../controllers/openai/resumeParsing";
-
+import resumeExtractionForCV from "../controllers/openaiV2/resumeParsing";
 
 const router = Router();
 
@@ -166,7 +166,6 @@ router.post("/experienceSummary", async (req: Request, res: Response) => {
   }
 });
 
-
 router.post("/resumeSummary", async (req: Request, res: Response) => {
   const resumeId = req.body.resumeId;
   const resume = await db.collection("resumes").doc(resumeId).get();
@@ -215,8 +214,8 @@ router.post("/achievementHelper", async (req: Request, res: Response) => {
   }
 
   if (rewrite) {
-    if (!theme){
-      theme = "Unknown"
+    if (!theme) {
+      theme = "Unknown";
     }
     let suggestion = await achievementRewrite(theme, existingAchievement!, 3);
     console.log(suggestion);
@@ -264,13 +263,27 @@ router.post(
 
 router.post("/parseResume", async (req: CustomRequest, res: Response) => {
   let userId = req.user?.uid;
-    console.log(req.files)
+  console.log(req.files);
   if (!userId) {
     res.status(400).json({ message: "userId is required" });
     return;
   }
 
-  await resumeExtraction(req.files['file'][0], userId, res);
+  await resumeExtraction(req.files["file"][0], userId, res);
 });
 
+router.post("/importToCV", async (req: CustomRequest, res: Response) => {
+  let userId = req.user?.uid;
+  let resumeId = req.body.resumeId;
+  if (!userId) {
+    res.status(400).json({ message: "userId is required" });
+    return;
+  }
+  if (!resumeId) {
+    res.status(400).json({ message: "resumeId is required" });
+    return;
+  }
+  // await importToCV(resumeId, userId, res);
+  await resumeExtractionForCV(req.files["file"][0], userId, resumeId, res);
+});
 export default router;

@@ -207,6 +207,9 @@ interface Resume {
   isDeleted: boolean;
   userId: string;
   publicResumeId: string | null;
+  templateId: string | null;
+  sectionOrder?: string[];
+
 }
 
 

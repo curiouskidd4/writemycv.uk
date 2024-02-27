@@ -16,6 +16,7 @@
   "main": "lib/index.js",
   "dependencies": {
     "@adobe/pdfservices-node-sdk": "^3.4.2",
+    "bson-objectid": "^2.0.4",
     "busboy": "^1.6.0",
     "cors": "^2.8.5",
     "express-json-validator-middleware": "^3.0.1",

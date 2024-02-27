@@ -57,6 +57,11 @@
   }
 }
 
+.template-card.selected{
+  .template-card-container {
+    background-color: var(--primary);
+  }
+}
 .section-item {
   margin: 1rem 0rem;
   background: var(--unnamed-color-ffffff) 0% 0% no-repeat padding-box;

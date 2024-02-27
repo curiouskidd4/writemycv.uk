@@ -40,6 +40,8 @@ interface CandidateDetails {
   location?: string;
   salaryExpectation?: string;
   availability?: string;
+  candidateSummary?: string;
+
 }
 
 interface OtherInformation {
@@ -72,6 +74,7 @@ interface Resume {
   sectionOrder?: string[];
   exportHash?: string;
   jobDescription?: string;
+  templateId?: string;
 }
 
 export { Resume, Volunteering, Publication, Language, Award, 

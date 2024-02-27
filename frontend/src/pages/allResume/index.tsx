@@ -44,7 +44,8 @@ import { ref } from "firebase/storage";
 import { downloadStorageContent } from "../../helpers";
 import "./index.css";
 import MoreOptions from "./moreOptions";
-import { NewResumeModal } from "./newResumeModal";
+// import { NewResumeModal } from "./newResumeModal";
+import {NewResumeModal} from "./newResumeHowell";
 import useUtils from "../../utils/download";
 import {
   DownloadIcon,
@@ -627,6 +628,7 @@ const ResumeListView = () => {
 
         }}
       />
+
       <div className="all-resume">
         <Row align="middle" className="title-header">
           <Col>
