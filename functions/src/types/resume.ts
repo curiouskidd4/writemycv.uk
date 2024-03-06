@@ -51,6 +51,7 @@ interface OtherInformation {
 }
 
 interface Resume {
+  copyFromProfile?: boolean;
   id: string;
   name: string;
   userId: string;

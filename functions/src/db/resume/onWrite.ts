@@ -25,7 +25,10 @@ export const onWrite = onDocumentWritten(
 
       // Check if resume is newly created
       if (!oldData && newData) {
-        await populateResumeDetails(resumeId, newData.userId);
+        if (newData.copyFromProfile != false) {
+          await populateResumeDetails(resumeId, newData.userId);
+
+        }
         await exportResume(resumeId, newData.userId);
         return;
       }

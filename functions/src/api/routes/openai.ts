@@ -284,6 +284,8 @@ router.post("/importToCV", async (req: CustomRequest, res: Response) => {
     return;
   }
   // await importToCV(resumeId, userId, res);
-  await resumeExtractionForCV(req.files["file"][0], userId, resumeId, res);
+  let result = await resumeExtractionForCV(req.files["file"][0], userId, resumeId);
+  res.status(200).json(result);
 });
+
 export default router;

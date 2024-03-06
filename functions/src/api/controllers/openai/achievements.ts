@@ -10,13 +10,20 @@ const _ACHIEVEMENT_GUIDELINES = `Follow the following guidelines:
   - Make sure to lead sentence with the impact created i.e. the numeber if mentioned and the then the method and then the action . 
   - If the given already follows the above guidelines, then don't change much
   - Effectively communicate the acievement in the start of the sentence
-`
-
-
+`;
 
 const themeSuggestion = async (role: string, alreadyAdded: string[]) => {
   let alreadyAddedStr = alreadyAdded.join(", ");
-  let prompt = `Suggest top 10 themes for a ${role}, each theme should be unique and short (max 4 words), also keep them very granualar, Keep in mind this is to add achievements under experience section. Use british english for spellings , don't use pronouns like "I/We".\nAlready added themes: ${alreadyAddedStr}\nSuggested Themes:\n1. `;
+  let prompt = `Suggest top 5 themes for a ${role}, each theme should be unique and short (max 4 words), also keep them very granualar, 
+  Keep in mind this is to add achievements under experience section. 
+  Use british english for spellings , don't use pronouns like "I/We".
+  Already added themes: ${alreadyAddedStr}
+  
+  Follow json list output format: 
+  ["theme1", "theme2", "theme3", "theme4", "theme5"]
+
+  JSON List Output: 
+  `;
   const response = await openai.chat.completions.create({
     messages: [
       {
@@ -32,9 +39,14 @@ const themeSuggestion = async (role: string, alreadyAdded: string[]) => {
   let responseArray: string[] = [];
   if (responseString) {
     // Split and remove the \d\. from the response
-    responseArray = responseString.split("\n").map((item) => {
-      return item.replace(/\d+\./, "").trim();
-    });
+    // responseArray = responseString.split("\n").map((item) => {
+    //   return item.replace(/\d+\./, "").trim();
+    // });
+    try {
+      responseArray = JSON.parse(responseString);
+    } catch (e) {
+      console.log(e);
+    }
   } else {
     responseArray = [];
   }
@@ -44,7 +56,8 @@ const themeSuggestion = async (role: string, alreadyAdded: string[]) => {
 const themeDescriptionSuggestion = async (role: string, theme: string) => {
   //write 2-3 sentence on how one should write an achievement for "Data Visualization" theme in a resume under work experience section and suggest one possible example
 
-  let prompt = `Write 2-3 sentence on how one should write an achievement for "${theme}" theme in a resume under work experience section and suggest three possible examples.
+  let prompt =
+    `Write 2-3 sentence on how one should write an achievement for "${theme}" theme in a resume under work experience section and suggest three possible examples.
   Follow the following guidelines:
   {{guidelines}}
   Follow this JSON format exactly : 
@@ -90,7 +103,8 @@ const achievementRewrite = async (
   existingAchievement: string,
   n: number
 ) => {
-  let prompt = `ReWrite 2-3 sentence for the following existing achievement for a job role in resume for "${theme}" theme in a resume under work experience section and suggest three possible examples.
+  let prompt =
+    `ReWrite 2-3 sentence for the following existing achievement for a job role in resume for "${theme}" theme in a resume under work experience section and suggest three possible examples.
   {{guidelines}}}
   existing achievement: ${existingAchievement}
   Rewrite above achievement following the guidelines exactly and suggest three possible examples, make sure to rewrite cohesively, keep it simple and try to make it better.

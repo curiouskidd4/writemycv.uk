@@ -1,6 +1,6 @@
 import PDFParser, { Output } from "pdf2json";
 import { File } from "../../../types/requests";
-import { openai, DEFAULT_MODEL } from "../../../utils/openai";
+import { openai, DEFAULT_MODEL , OPENAI_MODELS} from "../../../utils/openai";
 import { Router, Request, Response } from "express";
 import moment from "moment";
 import mammoth from "mammoth";
@@ -11,6 +11,7 @@ const ov = `You are a helpful AI assistant expert at extracting details from res
 {{resumeText}}
 *************
 
+NOTE: EXTRACT THE INFORMATION AS IS, DO NOT MODIFY IT.  MAKE SURE TO EXTRACT ALL DETAILS MENTIONED IN WORK EXPERIENCE SECTION, DONT CHANGE THE CONTENT JUST EXACTLY COPY IT.
 Format of each section should be as follows, follow exactly the same format: Any endDate which is not present should be set to null. 
 {
     "personalInfo": {
@@ -45,8 +46,8 @@ Format of each section should be as follows, follow exactly the same format: Any
             "position": "",
             "startDate": "", # Format should be "MM/YYYY"
             "endDate": "", # Format should be "MM/YYYY" (null if currently here)
-            "description": "",  # Use markdown for formatting, if not mentioned leave blank
-            "achievements": [ # If no achievements, set as empty array, make sure to extract all the achievements mentioned 
+            "description": "",  # Use markdown for formatting, if not mentioned leave blank, content which are not in bullets generally go here 
+            "achievements": [ # If no achievements, set as empty array, make sure to extract all the achievements mentioned (extract multiple bullet points if mentioned), bullets go here 
                 {
                     "description": ""
                 }
@@ -89,7 +90,6 @@ const parseDate = (date: string | null) => {
 const parseResume = async (
   resumeText: string,
   userId: string,
-  res: Response
 ) => {
   let md = new MarkdownIt();
   // Configure prompt
@@ -97,14 +97,14 @@ const parseResume = async (
   console.log(prompt);
   // Call openai
   let response = await openai.chat.completions.create({
-    model: DEFAULT_MODEL,
+    model: OPENAI_MODELS.GPT_4,
     temperature: 0,
     n: 1,
     messages: [
       {
         role: "system",
         content:
-          "You are a helpul AI that helps people write impressive resumes.",
+          "You are a helpul AI that is expert at parsing resume, make sure to extract exact info mentioned in resume, don't change anything.",
       },
       {
         role: "user",
@@ -118,8 +118,7 @@ const parseResume = async (
     !response.choices[0].message.content ||
     response.choices[0].message.content.includes("Error")
   ) {
-    res.status(400).json({ message: "Error in parsing resume" });
-    return;
+    return {"error": "Error in parsing resume"}
   }
   try {
     let result = null;
@@ -253,19 +252,17 @@ const parseResume = async (
         { merge: true }
       );
 
-    res.status(200).json({
-      result: {
+    return  {
         personalInfo: profilePersonalInfo,
         education: profileEducation,
         experience: profileExperience,
         skills: profileSkills,
         professionalSummary: result.professionalSummary,
-      },
-      message: "success",
-    });
+      }
   } catch (e) {
     console.log(e);
-    res.status(400).json({ message: "Error in parsing resume" });
+    return { message: "Error in parsing resume" , 
+  }
   }
 };
 
@@ -284,7 +281,8 @@ const resumeExtraction = async (file: File, userId: string, res: Response) => {
         ).join("")
       ).join("\n");
 
-      await parseResume(resumeText, userId, res);
+      let result = await parseResume(resumeText, userId);
+      return result;
     });
   } else if (
     file?.filename?.endsWith(".docx") ||
@@ -293,7 +291,8 @@ const resumeExtraction = async (file: File, userId: string, res: Response) => {
     const result = await mammoth.convertToHtml({ path: file.path });
     const text = result.value; // The raw text
     const messages = result.messages;
-    await parseResume(text, userId, res);
+    let parsedResult = await parseResume(text, userId);
+    return parsedResult;
   }
 };
 

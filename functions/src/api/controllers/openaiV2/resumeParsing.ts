@@ -12,7 +12,7 @@ const ov = `You are a helpful AI assistant expert at extracting details from res
 *************
 {{resumeText}}
 *************
-
+NOTE: EXTRACT THE INFORMATION AS IS, DO NOT MODIFY IT.  MAKE SURE TO EXTRACT ALL DETAILS MENTIONED IN WORK EXPERIENCE SECTION, DONT CHANGE THE CONTENT JUST EXACTLY COPY IT.
 Format of each section should be as follows, follow exactly the same format: Any endDate which is not present should be set to null. 
 {
     "personalInfo": {
@@ -47,8 +47,8 @@ Format of each section should be as follows, follow exactly the same format: Any
             "position": "",
             "startDate": "", # Format should be "MM/YYYY"
             "endDate": "", # Format should be "MM/YYYY" (null if currently here)
-            "description": "",  # Use markdown for formatting, if not mentioned leave blank
-            "achievements": [ # If no achievements, set as empty array, make sure to extract all the achievements mentioned 
+            "description": "",  # Use markdown for formatting, if not mentioned leave blank, content which are not in bullets generally go here 
+            "achievements": [ # If no achievements, set as empty array, make sure to extract all the achievements mentioned (extract multiple bullet points if mentioned), bullets go here 
                 {
                     "description": ""
                 }
@@ -92,7 +92,6 @@ const parseResumeToCV = async (
   resumeText: string,
   userId: string,
   resumeId: string,
-  res: Response
 ) => {
   let md = new MarkdownIt();
   // Configure prompt
@@ -121,8 +120,8 @@ const parseResumeToCV = async (
     !response.choices[0].message.content ||
     response.choices[0].message.content.includes("Error")
   ) {
-    res.status(400).json({ message: "Error in parsing resume" });
-    return;
+    return { message: "Error in parsing resume" } ;
+    
   }
   try {
     let result = null;
@@ -254,7 +253,7 @@ const parseResumeToCV = async (
 
 
 
-    res.status(200).json({
+    return {
       result: {
         personalInfo: profilePersonalInfo,
         education: profileEducation,
@@ -263,14 +262,14 @@ const parseResumeToCV = async (
         professionalSummary: result.professionalSummary,
       },
       message: "success",
-    });
+    }
   } catch (e) {
     console.log(e);
-    res.status(400).json({ message: "Error in parsing resume" });
+    return { message: "Error in parsing resume" }
   }
 };
 
-const resumeExtractionForCV = async (file: File, userId: string, resumeId: string, res: Response) => {
+const resumeExtractionForCV = async (file: File, userId: string, resumeId: string) => {
   // Check if file is pdf
   if (file?.filename?.endsWith(".pdf")) {
     let pdfParser = new PDFParser();
@@ -285,7 +284,7 @@ const resumeExtractionForCV = async (file: File, userId: string, resumeId: strin
         ).join("")
       ).join("\n");
 
-      await parseResumeToCV(resumeText, userId,resumeId, res);
+      return parseResumeToCV(resumeText, userId,resumeId, );
     });
   } else if (
     file?.filename?.endsWith(".docx") ||
@@ -294,7 +293,7 @@ const resumeExtractionForCV = async (file: File, userId: string, resumeId: strin
     const result = await mammoth.convertToHtml({ path: file.path });
     const text = result.value; // The raw text
     const messages = result.messages;
-    await parseResumeToCV(text, userId, resumeId, res);
+    return parseResumeToCV(text, userId, resumeId, );
   }
 };
 
