@@ -19,7 +19,6 @@ import moment from "moment";
 import SelectorSidebar from "../../../components/selectorSidebar";
 import ObjectID from "bson-objectid";
 
-
 type VolunteerProps = {
   volunteerList: Volunteering[];
   saveLoading?: boolean;
@@ -61,7 +60,7 @@ const VolunteerForm = ({
       volunteer.endDate = volunteer.endDate
         ? Timestamp.fromDate(volunteer.endDate.toDate())
         : null;
-      
+
       // publicationList[state.selectedPublicationIdx!] = publication;
       let newVolunteerList = [...volunteerList];
       let idx = newVolunteerList.findIndex((item) => item.id === volunteer.id);
@@ -74,7 +73,6 @@ const VolunteerForm = ({
       await syncVolunteers(newVolunteerList);
       message.success("Volunteer item saved!");
     }
-    
   };
 
   const addNew = () => {
@@ -90,6 +88,22 @@ const VolunteerForm = ({
       selectedVolunteer: newItem,
       selectedId: newItem.id,
       isNewItem: true,
+    }));
+  };
+
+  const onDelete = async (id: string | undefined) => {
+    if (id === newItem?.id) {
+      setNewItem(null);
+    } else {
+      let newVolunteerList = volunteerList.filter((item) => item.id !== id);
+      await syncVolunteers(newVolunteerList);
+      message.success("Volunteer item deleted!");
+    }
+    setState((prev) => ({
+      ...prev,
+
+      selectedVolunteer: null,
+      selectedId: null,
     }));
   };
 
@@ -197,12 +211,12 @@ const VolunteerForm = ({
                 </Typography.Title>
               </div> */}
               <SingleVolunteersFrom
-              isNewItem = {state.isNewItem}
-
+                isNewItem={state.isNewItem}
                 key={state.selectedVolunteer.id}
                 initialValues={{ ...state.selectedVolunteer }}
                 onFinish={onSave}
                 saveLoading={saveLoading}
+                onDelete={() => onDelete(state.selectedVolunteer?.id)}
               />
             </>
           ) : null}

@@ -10,7 +10,7 @@ import {
   Typography,
   message,
 } from "antd";
-import { PhoneInput } from "../coolForm/inputs/phoneInput";
+import { PhoneInput } from "../../components/phoneInput";
 import { useAuth } from "../../authContext";
 import { useDoc, useMutateDoc } from "../../firestoreHooks";
 import { useEffect, useState } from "react";

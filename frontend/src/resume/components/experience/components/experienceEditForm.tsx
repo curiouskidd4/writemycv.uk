@@ -1,4 +1,13 @@
-import { Divider, Menu, Row, Select, Steps, Typography } from "antd";
+import {
+  Button,
+  Divider,
+  Menu,
+  Modal,
+  Row,
+  Select,
+  Steps,
+  Typography,
+} from "antd";
 import React, { useCallback, useEffect } from "react";
 import {
   MinusCircleOutlined,
@@ -16,6 +25,7 @@ import { DetailForm } from "./DetailForm";
 import { AchievementForm } from "./AchievementForm";
 import { DescriptionForm } from "./DescriptionForm";
 import _ from "lodash";
+import ConfirmItemDelete from "../../../../components/itemDelete";
 
 export const colSpan = {
   xs: 24,
@@ -30,12 +40,14 @@ export const fullColSpan = 24;
 type SingleExperienceFormProps = {
   initialValues?: any;
   onFinish: (values: any) => void;
+  onDelete?: () => void;
   saveLoading?: boolean;
 };
 
 const SingleExperienceForm = ({
   initialValues,
   onFinish,
+  onDelete,
   saveLoading,
 }: SingleExperienceFormProps) => {
   let startDate = initialValues.startDate
@@ -57,6 +69,7 @@ const SingleExperienceForm = ({
     finished: false,
     loading: false,
     showSaved: false,
+    showDeleteModal: false,
   });
 
   const debounceSave = useCallback(
@@ -148,7 +161,7 @@ const SingleExperienceForm = ({
             </div>
           ) : null}
         </Row>
-        <div>
+        <>
           <DetailForm
             initialValues={experienceData}
             onChange={(details) => onSave(details)}
@@ -167,7 +180,10 @@ const SingleExperienceForm = ({
             onChange={(details) => onSave(details)}
             saveLoading={saveLoading}
           />
-        </div>
+        </>
+
+        <ConfirmItemDelete onDelete={onDelete}
+        text="Delete Experience" />
       </Row>
     </div>
   );

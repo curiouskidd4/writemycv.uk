@@ -3,15 +3,18 @@ import React, { useCallback, useEffect } from "react";
 import { Button, Col, DatePicker, Form, Input, Row, Typography } from "antd";
 import dayjs from "dayjs";
 import _, { set } from "lodash";
+import ConfirmItemDelete from "../../../../components/itemDelete";
 
 const fullColSpan = 24;
 type DetailFormProps = {
   initialValues?: any;
   onFinish: (values: any) => void;
   saveLoading?: boolean;
+  onDelete?: () => void;
 };
 
-export const DetailForm = ({ initialValues, onFinish }: DetailFormProps) => {
+export const DetailForm = ({ initialValues, onFinish , 
+onDelete}: DetailFormProps) => {
   const [form] = Form.useForm();
   if (initialValues?.date) {
     initialValues = {
@@ -131,6 +134,9 @@ export const DetailForm = ({ initialValues, onFinish }: DetailFormProps) => {
 
        
       </Form>
+
+      <ConfirmItemDelete onDelete={onDelete} 
+      text="Delete Award"/>
     </div>
   );
 };

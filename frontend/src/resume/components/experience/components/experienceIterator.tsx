@@ -134,6 +134,13 @@ const ExperienceIterator = ({
     }));
   };
 
+  const onDelete = async (
+    id : string
+  ) => {
+    let newExperienceList = experienceList.filter((item) => item.id !== id);
+    await syncExperience(newExperienceList);
+  }
+
   if (state.currentEditIdx === null && !state.finished) {
     return (
       <div className="detail-form-body">
@@ -213,6 +220,7 @@ const ExperienceIterator = ({
           <SingleExperienceForm
             initialValues={experienceList[state.currentEditIdx]}
             onFinish={saveExperience}
+
           />
         </Space>
       </div>

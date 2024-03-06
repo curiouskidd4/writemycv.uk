@@ -52,13 +52,14 @@ const useSkillHelper = () => {
       let skillDocRef = doc(db, RESUME_COLLECTION, resumeId);
       await setDoc(skillDocRef, {
         skillSuggestions: skillSuggestions,
-      });
+        
+      }, {merge: true});
     } else {
       let skillDocRef = doc(db, SKILLS_COLLECTION, auth.user.uid);
 
       await setDoc(skillDocRef, {
         skillSuggestions: skillSuggestions,
-      });
+      }, {merge: true});
     }
   };
 

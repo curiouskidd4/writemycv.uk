@@ -18,8 +18,6 @@ export const NewResumeModal = ({ visible, onCancel, onConfirm }) => {
     form.resetFields();
   };
 
-
-
   const onFinish = async (values) => {
     setLoading(true);
     // uuid for resume
@@ -92,28 +90,33 @@ export const NewResumeModal = ({ visible, onCancel, onConfirm }) => {
         </Form.Item>
 
         <Form.Item label="Job Title (optional)" name="targetRole">
-          <Input size="large" placeholder="Paste the job description of a position you aspire to" />
+          <Input
+            size="large"
+            placeholder="Paste the job description of a position you aspire to"
+          />
         </Form.Item>
 
         <Form.Item label="Job Description (optional)" name="jobDescription">
-          <Input.TextArea style={{
-            minHeight: "200px"
-          }} size="large" placeholder="Paste the job description of a position you aspire to" />
+          <Input.TextArea
+            style={{
+              minHeight: "200px",
+            }}
+            size="large"
+            placeholder="Paste the job description of a position you aspire to"
+          />
         </Form.Item>
 
         <div className="submit-btn">
-        <Form.Item>
-          <Button
-            type="primary"
-            htmlType="submit"
-            style={{ margin: "0px auto", width: "200px" }}
-            loading={
-              loading
-            }
-          >
-            Create CV
-          </Button>
-        </Form.Item>
+          <Form.Item>
+            <Button
+              type="primary"
+              htmlType="submit"
+              style={{ margin: "0px auto", width: "200px" }}
+              loading={loading}
+            >
+              Create CV
+            </Button>
+          </Form.Item>
         </div>
       </Form>
     </Modal>

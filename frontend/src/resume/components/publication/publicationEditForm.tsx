@@ -99,6 +99,21 @@ const PublicationForm = ({
     }));
   };
 
+  const onDelete = async (id: string | undefined) => {
+    if (id === newItem?.id) {
+      setNewItem(null);
+    } else {
+      const newPublicationList = publicationList.filter((item) => item.id !== id);
+      await syncPublications(newPublicationList);
+    }
+
+    setState((prev) => ({
+      selectedPublication: null,
+      // selectedPublicationIdx: null,
+      selectedId: null,
+    }));
+  }
+
   const detailExtractor = (publication: Publication) => {
     return { title: publication.title, subtitle: "" };
   };
@@ -162,6 +177,7 @@ const PublicationForm = ({
                 initialValues={state.selectedPublication}
                 onFinish={onSave}
                 saveLoading={saveLoading}
+                onDelete={() => onDelete(state.selectedPublication?.id)}
               />
             </>
           ) : null}

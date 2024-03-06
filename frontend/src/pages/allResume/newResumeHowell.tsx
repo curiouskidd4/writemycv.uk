@@ -36,7 +36,7 @@ export const NewResumeModal = ({
   const [form] = Form.useForm();
   const auth = useAuth();
   const userId = auth.user.uid;
-  const { copyProfileToResume, importResume } = useResumeAPI();
+  const { copyProfileToResume, importResume, exportResume } = useResumeAPI();
   const onReset = () => {
     form.resetFields();
   };
@@ -55,15 +55,16 @@ export const NewResumeModal = ({
       userId,
       isDeleted: false,
       createdAt: new Date(),
-      // copyFromProfile: true,
+      copyFromProfile: false,
       isComplete: false,
     };
     // Drop empty fields
     Object.keys(data).forEach((key) => data[key] == null && delete data[key]);
     try {
       await setDoc(doc(db, "resumes", data.id), data);
-      await copyProfileToResume(data.id);
+      // await copyProfileToResume(data.id);
       await importResume(data.id, file);
+      await exportResume(data.id);
       setState((prev) => ({
         ...prev,
         loading: false,

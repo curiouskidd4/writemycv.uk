@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Checkbox, Col, Row, Tabs, Typography } from "antd";
+import { Checkbox, Col, Row, Spin, Tabs, Typography } from "antd";
 import "./index.css";
 import SortableComponent from "../../../components/sortableList";
 import PDFViewer from "../../../components/pdfViewer";
@@ -84,7 +84,8 @@ const Adjustment = () => {
   const [currentOrder, setCurrentOrder] = React.useState(sections);
   const [resumeURL, setResumeURL] = React.useState("");
   const [templates, setTemplates] = React.useState<Template[]>([]); // [
-  const { getResumeURL } = useResume();
+  const { getResumeURL, exportResume } = useResume();
+  const [updatingPreview, setUpdatingPreview] = React.useState(true);
   const { resume, updateTemplate, saveResumeOrder } = useResume();
 
   React.useEffect(() => {
@@ -96,9 +97,18 @@ const Adjustment = () => {
     loadTemplates();
   }, []);
 
+  const updatePreview = async () => {
+    setUpdatingPreview(true);
+    await exportResume();
+    const url = await getResumeURL();
+    setResumeURL(url);
+    setUpdatingPreview(false);
+  };
+
   useEffect(() => {
     if (currentOrder) {
       saveResumeOrder(currentOrder.map((item) => item.key));
+      updatePreview();
     }
   }, [currentOrder]);
 
@@ -154,8 +164,9 @@ const Adjustment = () => {
     );
   };
 
-  const handleTemplateSelect = (templateId: string) => {
-    updateTemplate(templateId);
+  const handleTemplateSelect = async (templateId: string) => {
+    await updateTemplate(templateId);
+    updatePreview();
   };
 
   return (
@@ -215,7 +226,39 @@ const Adjustment = () => {
             height: "100%",
           }}
         >
-          {resumeURL ? <PDFViewer documentURL={resumeURL} /> : null}
+          <div
+            className=""
+            style={{
+              // display: "flex",
+              // justifyContent: "center",
+              // alignItems: "center",
+              // height: "100%",
+              zIndex: 1000,
+              // Overlay
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+            }}
+          >
+            
+            {updatingPreview ? (
+              <i
+                className="fa-solid fa-spinner fa-circle fa-spin-pulse"
+                style={{
+                  fontSize: "32px",
+                  color: "var(--accent-1)",
+                }}
+              ></i>
+            ) : null}
+          </div>
+          <div
+            style={{
+              overflow: "scroll",
+              height: "100%",
+            }}
+          >
+            {resumeURL ? <PDFViewer documentURL={resumeURL} /> : null}
+          </div>
         </Col>
       </Row>
     </div>

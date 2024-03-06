@@ -5,6 +5,13 @@
 
 }
 
+.ant-btn-default {
+  color: black !important;
+  font: normal normal normal 16px/12px DM Sans !important;
+  height: 41px;
+
+}
+
 .ant-btn-primary.ant-btn-dangerous {
   color: white !important;
 }
@@ -101,6 +108,12 @@ a {
   opacity: 1;
 }
 
+.small-link-btn.danger {
+  color: red !important;
+}
+
+
+
 .ant-btn-default:hover {
   color: var(--dark-grey) !important;
   border-color: var(--dark-grey) !important;
@@ -146,5 +159,13 @@ border-radius: 5px;
     width: 3em; 
     height: 3em;
     color: var(--primary) !important;
+  }
+}
+
+.delete-modal {
+
+  .ant-btn-primary {
+    background-color: red !important;
+    color: white !important;
   }
 }

@@ -132,10 +132,11 @@
     opacity: 1;
     color: var(--unnamed-color-ffffff);
     text-align: left;
-    font: normal normal bold 12px/12px DM Sans;
+    font: normal normal bold 12px/12px DM Sans !important;
     letter-spacing: 0px;
-    color: #ffffff;
+    color: #ffffff !important;
     opacity: 1;
+    height: 30px;
   }
 
   .ant-btn-default:hover{

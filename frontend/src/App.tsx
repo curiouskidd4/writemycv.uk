@@ -29,7 +29,7 @@ import Profile from "./pages/profile/index.js";
 import EditResume from "./pages/allResume/editor/index.js";
 import ResumePreview from "./pages/publicResume/index.js";
 import LandingPage from "./pages/landing/index.js";
-import CoolForm from "./pages/coolForm/index.js";
+// import CoolForm from "./pages/coolForm/index.js";
 import AccountSettings from "./pages/account/index.js";
 import FAQs from "./pages/faqs/index.js";
 import Upgrade from "./pages/upgrade/index.js";
@@ -123,7 +123,7 @@ const protectedRouter = createBrowserRouter([
       },
       { path: "terms-service", element: <TermsService /> },
       { path: "privacy-policy", element: <PrivacyPolicy /> },
-      { path: "cool-form", element: <CoolForm /> },
+      // { path: "cool-form", element: <CoolForm /> },
       // { path: "contact", element: <Contact /> },
       // { path: "use", element: <Help /> },
       // { path: "superadmin", element: <SuperAdmin /> },
@@ -211,14 +211,14 @@ const baseRouter = createBrowserRouter([
     element: <GenPublicLayout />,
 
     children: [
-      {
-        path: "",
-        element: (
-          <div>
-            <LandingPage />
-          </div>
-        ),
-      },
+      // {
+      //   path: "",
+      //   element: (
+      //     <div>
+      //       <LandingPage />
+      //     </div>
+      //   ),
+      // },
       {
         path: "signin",
         element: (
@@ -260,7 +260,15 @@ const baseRouter = createBrowserRouter([
         path: "*",
         element: (
           <div>
-            <Navigate to="/" />
+            <Navigate to="/signin" />
+          </div>
+        ),
+      },
+      {
+        path: "",
+        element: (
+          <div>
+            <Navigate to="/signin" />
           </div>
         ),
       },

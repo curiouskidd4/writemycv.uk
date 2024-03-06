@@ -1,6 +1,6 @@
 import { Button, Col, Form, Input, Row, Select, Typography } from "antd";
 import React, { useCallback } from "react";
-import { PhoneInput } from "../../../pages/coolForm/inputs/phoneInput";
+import { PhoneInput } from "../../../components/phoneInput";
 import _ from "lodash";
 import EditorJsInput from "../../../components/editor";
 

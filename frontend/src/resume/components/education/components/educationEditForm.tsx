@@ -10,16 +10,19 @@ import { CourseForm } from "./courseForm";
 import { DescriptionForm } from "./descriptionForm";
 import _ from "lodash";
 import openAI from "../../../../hooks/openai";
+import ConfirmItemDelete from "../../../../components/itemDelete";
 
 type SingleEducationFormProps = {
   initialValues?: any;
   onFinish: (values: any) => Promise<void>;
+  onDelete?: () => void;
   saveLoading?: boolean;
 };
 
 const SingleEducationForm = ({
   initialValues,
   onFinish,
+  onDelete,
   saveLoading,
 }: SingleEducationFormProps) => {
   let startDate = initialValues.startDate
@@ -92,7 +95,6 @@ const SingleEducationForm = ({
       return;
     }
 
-
     if (JSON.stringify(finalData) == JSON.stringify(initialValues)) {
       return;
     }
@@ -163,29 +165,32 @@ const SingleEducationForm = ({
           ) : null}
         </Row>
 
-          <DetailForm
-            value={educationData}
-            onChange={(details) => onSave(details)}
-            saveLoading={saveLoading}
-          />
-          <Divider className="profile-input-section-divider" />
-          <CourseForm
-            value={educationData}
-            onChange={(details) => onSave(details)}
-            saveLoading={saveLoading}
-            courseSuggestions={
-              educationHelper.courseSuggestions
-                ? educationHelper.courseSuggestions
-                : null
-            }
-            suggestionsLoading={educationHelper.loading}
-          />
-          <Divider className="profile-input-section-divider" />
-          <DescriptionForm
-            value={educationData}
-            onChange={(details) => onSave(details)}
-            saveLoading={saveLoading}
-          />
+        <DetailForm
+          value={educationData}
+          onChange={(details) => onSave(details)}
+          saveLoading={saveLoading}
+        />
+        <Divider className="profile-input-section-divider" />
+        <CourseForm
+          value={educationData}
+          onChange={(details) => onSave(details)}
+          saveLoading={saveLoading}
+          courseSuggestions={
+            educationHelper.courseSuggestions
+              ? educationHelper.courseSuggestions
+              : null
+          }
+          suggestionsLoading={educationHelper.loading}
+        />
+        <Divider className="profile-input-section-divider" />
+        <DescriptionForm
+          value={educationData}
+          onChange={(details) => onSave(details)}
+          saveLoading={saveLoading}
+        />
+        <ConfirmItemDelete onDelete={onDelete}
+        text="Delete Education"
+         />
       </Row>
     </div>
   );

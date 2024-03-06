@@ -25,6 +25,24 @@ const useResumeAPI = () => {
     );
   };
 
+  const exportResume = async (resumeId: string) => {
+    try {
+      const authToken = await auth.user.getIdToken();
+      const res = await axios.post(
+        `${BASE_URL}/resume/${resumeId}/export-resume`,
+        {}, 
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      );
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+
   const importResume = async (resumeId: string, file: any) => {
     const token = await auth.user.getIdToken();
 
@@ -47,7 +65,8 @@ const useResumeAPI = () => {
 
   return {
     copyProfileToResume,
-    importResume
+    importResume, 
+    exportResume
     
   };
 };

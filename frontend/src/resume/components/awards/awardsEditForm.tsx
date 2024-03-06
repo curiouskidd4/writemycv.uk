@@ -71,6 +71,23 @@ const AwardForm = ({
     }
   };
 
+  const onDelete = async (id: string | undefined) => {
+    if (id === newItem?.id) {
+      setNewItem(null);
+    }else{
+      const newAwardList = awardList.filter((item) => item.id !== id);
+      await syncAwards(newAwardList);
+    }
+
+    setState((prev) => ({
+      ...prev,
+      selectedAward: null,
+      selectedId: null,
+    }));
+  }
+
+
+
   const addNew = () => {
     const newItem: Award = {
       id: ObjectID().toHexString(),
@@ -185,6 +202,9 @@ const AwardForm = ({
                 initialValues={state.selectedAward}
                 onFinish={onSave}
                 saveLoading={saveLoading}
+                onDelete={
+                  () => onDelete( state.selectedAward?.id)
+                }
               />
             </>
           ) : null}

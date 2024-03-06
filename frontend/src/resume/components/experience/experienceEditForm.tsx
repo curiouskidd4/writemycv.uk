@@ -115,6 +115,21 @@ const ExperienceForm = ({
     }));
   };
 
+  const onDelete = async (id: string | undefined) => {
+    if (id == newItem?.id) {
+      // Remove new item 
+      setNewItem(null);
+    }else{
+      let newExperienceList = experienceList.filter((item) => item.id !== id);
+      await syncExperience(newExperienceList);
+    }
+
+    setState((prev) => ({
+      ...prev,
+      selectedExperience: null,
+      selectedId: null,
+    }));
+  };
   const detailExtractor = (education: Experience) => {
     return { title: education.employerName, subtitle: education.position };
   };
@@ -170,6 +185,7 @@ const ExperienceForm = ({
               initialValues={state.selectedExperience}
               onFinish={onSave}
               saveLoading={saveLoading}
+              onDelete={() => onDelete(state.selectedExperience?.id)}
             />
           )}
         </Col>

@@ -112,6 +112,22 @@ const EducationForm = ({
     return { title: education.degree, subtitle: education.school };
   };
 
+  const onDelete = async (id: string | undefined) => {
+    if (id == newItem?.id) {
+      // Remove new item 
+      setNewItem(null);
+    }else{
+      let newEducationList = educationList.filter((item) => item.id !== id);
+      await syncEducation(newEducationList);
+    }
+
+    setState((prev) => ({
+      ...prev,
+      selectedEducation: null,
+      selectedId: null,
+    }));
+  }
+
   return (
     <>
       {showTitle ? (
@@ -163,6 +179,8 @@ const EducationForm = ({
                 initialValues={state.selectedEducation}
                 onFinish={onSave}
                 saveLoading={saveLoading}
+                onDelete={() => onDelete(state.selectedEducation?.id)}
+
               />
             </>
           ) : null}

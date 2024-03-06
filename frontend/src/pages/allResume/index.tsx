@@ -45,7 +45,7 @@ import { downloadStorageContent } from "../../helpers";
 import "./index.css";
 import MoreOptions from "./moreOptions";
 // import { NewResumeModal } from "./newResumeModal";
-import {NewResumeModal} from "./newResumeHowell";
+import { NewResumeModal } from "./newResumeHowell";
 import useUtils from "../../utils/download";
 import {
   DownloadIcon,
@@ -420,12 +420,13 @@ const ResumeItemV3 = ({ resume }: { resume: Resume }) => {
           <img src={state.imgURL} style={{ width: "100%" }}></img>
         </div>
       </Modal>
-      <Card key={resume.id} className="resume-card-new" onClick={
-        () => {
-          navigate(`/resumes/${resume.id}/edit`)
-        }
-      
-      }>
+      <Card
+        key={resume.id}
+        className="resume-card-new"
+        onClick={() => {
+          navigate(`/resumes/${resume.id}/edit`);
+        }}
+      >
         <Row>
           <Col span={10}>
             <Row justify="center" className="preview-container">
@@ -470,7 +471,7 @@ const ResumeItemV3 = ({ resume }: { resume: Resume }) => {
                       level={5}
                       style={{ marginBottom: "0rem" }}
                     > */}
-                      {resume.name}
+                    {resume.name}
                     {/* </Typography.Title> */}
                   </div>
                   <div className="sub-title">
@@ -489,7 +490,13 @@ const ResumeItemV3 = ({ resume }: { resume: Resume }) => {
                   <Button
                     size="small"
                     type="link"
-                    onClick={downloadResume}
+                    // onClick={downloadResume}
+                    onClick={
+                      (e) => {
+                        downloadResume(e);
+                        e.stopPropagation();
+                      }
+                    }
                     className="resume-action"
                   >
                     <i className="fa-regular fa-copy"></i> Duplicate
@@ -497,7 +504,14 @@ const ResumeItemV3 = ({ resume }: { resume: Resume }) => {
                   <Button
                     size="small"
                     type="link"
-                    onClick={downloadResume}
+                    // onClick={downloadResume}
+                    onClick={
+                      (e) => {
+                        downloadResume(e);
+                        e.stopPropagation();
+
+                      }
+                    }
                     className="resume-action"
                   >
                     <i className="fa-solid fa-download"></i> Download
@@ -505,7 +519,11 @@ const ResumeItemV3 = ({ resume }: { resume: Resume }) => {
                   <Button
                     size="small"
                     type="link"
-                    onClick={getPublicLink}
+                    onClick={(e) => {
+                      getPublicLink();
+                      e.stopPropagation();
+
+                    }}
                     className="resume-action"
                   >
                     <i className="fa-solid fa-share-from-square"></i> Share
@@ -513,8 +531,10 @@ const ResumeItemV3 = ({ resume }: { resume: Resume }) => {
                   <Button
                     size="small"
                     type="link"
-                    onClick={() => {
+                    onClick={(e) => {
                       setDeleteModalVisible(true);
+                      e.stopPropagation();
+
                     }}
                     className="resume-action"
                   >
@@ -558,7 +578,7 @@ const ResumeBodyHeader = ({
           </Typography.Title>
           <div>
             <span className="subtitle">
-            You can organise and manage your CVs here.
+              You can organise and manage your CVs here.
             </span>
           </div>
         </div>
@@ -614,7 +634,6 @@ const ResumeListView = () => {
 
   const createNewResume = () => {
     setState((prev) => ({ ...prev, newResumeFlag: true }));
-    
   };
   return (
     <>
@@ -625,7 +644,6 @@ const ResumeListView = () => {
         onConfirm={(id: string) => {
           navigate(`/resumes/${id}/edit`);
           setState((prev) => ({ ...prev, newResumeFlag: false }));
-
         }}
       />
 
@@ -669,8 +687,7 @@ const ResumeListView = () => {
               </Row>
             )}
 
-            {
-              state.resumes.length > 0 &&
+            {state.resumes.length > 0 && (
               <List
                 style={{
                   marginTop: "1rem",
@@ -684,7 +701,6 @@ const ResumeListView = () => {
                   xl: 2,
                   xxl: 2,
                 }}
-                
                 dataSource={state.resumes}
                 renderItem={(item) => (
                   <List.Item key={item.id}>
@@ -693,7 +709,7 @@ const ResumeListView = () => {
                   </List.Item>
                 )}
               />
-            }
+            )}
           </div>
         </div>
       </div>

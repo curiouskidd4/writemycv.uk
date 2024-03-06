@@ -33,6 +33,11 @@ import {
 } from "../types/resume";
 import { message } from "antd";
 import ObjectID from "bson-objectid";
+import axios from "axios";
+
+const BASE_URL =
+  process.env.REACT_APP_BASE_URL ||
+  "http://127.0.0.1:5001/resu-me-a5cff/us-central1/api";
 
 type ResumeContextType = {
   loadResumeHTML: () => Promise<void>;
@@ -52,9 +57,13 @@ type ResumeContextType = {
   markResumeComplete: () => Promise<void>;
   getResumeURL: () => Promise<string>;
   saveCandidateDetails: (candidateDetails: CandidateDetails) => Promise<void>;
-  saveOtherInformation: (otherInformationList: OtherInformation[]) => Promise<void>;
+  saveOtherInformation: (
+    otherInformationList: OtherInformation[]
+  ) => Promise<void>;
   updateTemplate: (template: string) => Promise<void>;
   saveResumeOrder: (sectionOrder: string[]) => Promise<void>;
+  debouncedExportResume: () => Promise<void>;
+  exportResume: () => Promise<void>;
   loading: boolean;
   resumeHTMLLoading: boolean;
   resumeHTML: string;
@@ -98,6 +107,8 @@ const ResumeContext = createContext<ResumeContextType>({
   saveOtherInformation: async () => {},
   updateTemplate: async () => {},
   saveResumeOrder: async () => {},
+  debouncedExportResume: async () => {},
+  exportResume: async () => {},
 });
 
 const useResumeProvider = () => {
@@ -118,12 +129,18 @@ const useResumeProvider = () => {
     }
   }, [resumeId]);
 
+  useEffect(() => {
+    if (state.resume) {
+      debouncedExportResume();
+    }
+  }, [state.resume]);
+
   const _fixId = (data: any): any => {
-    if (!data.id){
+    if (!data.id) {
       data.id = ObjectID().toHexString();
     }
     return data;
-  }
+  };
 
   const _fixUndefined = (data: any): any => {
     // Replace any underfined with null
@@ -154,13 +171,16 @@ const useResumeProvider = () => {
     if (firebaseData) {
       const resumeData = firebaseData as Resume;
 
-      resumeData.awardList = (resumeData.awardList || []).map(_fixId)
-      resumeData.educationList = (resumeData.educationList || []).map(_fixId)
-      resumeData.experienceList = (resumeData.experienceList || []).map(_fixId)
-      
-      resumeData.publicationList = (resumeData.publicationList || []).map(_fixId)
-      resumeData.volunteeringList = (resumeData.volunteeringList || []).map(_fixId)
+      resumeData.awardList = (resumeData.awardList || []).map(_fixId);
+      resumeData.educationList = (resumeData.educationList || []).map(_fixId);
+      resumeData.experienceList = (resumeData.experienceList || []).map(_fixId);
 
+      resumeData.publicationList = (resumeData.publicationList || []).map(
+        _fixId
+      );
+      resumeData.volunteeringList = (resumeData.volunteeringList || []).map(
+        _fixId
+      );
 
       // Check if all the mandatory fields are present in the resume
       // If not, create them
@@ -168,8 +188,6 @@ const useResumeProvider = () => {
       let educationList = resumeData.educationList;
       let skillList = resumeData.skillList;
       let personalInfo = resumeData.personalInfo;
-      
-
 
       if (!experienceList) {
         experienceList = [];
@@ -211,7 +229,7 @@ const useResumeProvider = () => {
   };
 
   const updateTemplate = async (template: string) => {
-    if (resumeId){
+    if (resumeId) {
       const docRef = doc(db, RESUME_COLLECTION, resumeId);
       await updateDoc(docRef, {
         templateId: template,
@@ -225,9 +243,8 @@ const useResumeProvider = () => {
           templateId: template,
         },
       }));
-
     }
-  }
+  };
 
   const loadResumeHTML = async () => {
     setState((prev) => ({ ...prev, resumeHTMLLoading: true }));
@@ -270,8 +287,7 @@ const useResumeProvider = () => {
     // Get the download URL
     let url = await getDownloadURL(gsRef);
     return url;
-  }
-
+  };
 
   const saveEducation = async (educations: Education[]) => {
     let educationsFixed = educations.map((edu) => {
@@ -337,7 +353,7 @@ const useResumeProvider = () => {
         },
       }));
     }
-  }
+  };
 
   const saveExperience = async (experiences: Experience[]) => {
     let experiencesFixed = experiences.map((exp) => {
@@ -440,7 +456,7 @@ const useResumeProvider = () => {
         },
       }));
     }
-  }
+  };
 
   const savePublication = async (publications: Publication[]) => {
     let publicationsFixed = publications.map((pub) => {
@@ -462,7 +478,7 @@ const useResumeProvider = () => {
         },
       }));
     }
-  }
+  };
 
   const saveVolunteering = async (volunteerings: Volunteering[]) => {
     let volunteeringsFixed = volunteerings.map((vol) => {
@@ -483,9 +499,9 @@ const useResumeProvider = () => {
           volunteeringList: volunteeringsFixed,
         },
       }));
-      debugger
+      debugger;
     }
-  }
+  };
 
   const saveLanguages = async (languages: Language[]) => {
     let languagesFixed = languages.map((lang) => {
@@ -507,9 +523,11 @@ const useResumeProvider = () => {
         },
       }));
     }
-  }
+  };
 
-  const saveOtherInformation = async (otherInformationList: OtherInformation[]) => {
+  const saveOtherInformation = async (
+    otherInformationList: OtherInformation[]
+  ) => {
     if (resumeId) {
       const docRef = doc(db, RESUME_COLLECTION, resumeId);
       await updateDoc(docRef, {
@@ -526,7 +544,7 @@ const useResumeProvider = () => {
         },
       }));
     }
-  }
+  };
 
   const saveCandidateDetails = async (candidateDetails: CandidateDetails) => {
     // Remove any undefined fields
@@ -535,12 +553,12 @@ const useResumeProvider = () => {
       const docRef = doc(db, RESUME_COLLECTION, resumeId);
       await updateDoc(docRef, {
         candidateDetails: candidateDetails,
-        personalInfo : {
+        personalInfo: {
           firstName: candidateDetails.firstName,
           lastName: candidateDetails.lastName,
           currentRole: candidateDetails.currentRole,
           location: candidateDetails.location,
-          ...state.resume?.personalInfo
+          ...state.resume?.personalInfo,
         },
         updatedAt: Timestamp.now(),
       });
@@ -554,7 +572,7 @@ const useResumeProvider = () => {
         },
       }));
     }
-  }
+  };
 
   const copyPublicLink = async () => {
     // Get public link
@@ -562,12 +580,11 @@ const useResumeProvider = () => {
     let item: DocumentReference;
 
     if (!publicItemId) {
-
       console.log({
         resumeId: resumeId,
         userId: auth.user.uid,
         createdAt: Timestamp.now(),
-      })
+      });
       item = await addDoc(collection(db, "publicResume"), {
         resumeId: resumeId,
         userId: auth.user.uid,
@@ -594,7 +611,6 @@ const useResumeProvider = () => {
       item = doc(db, "publicResume", publicItemId);
     }
 
-
     if (publicItemId) {
       let publicLink =
         window.location.origin + "/public-resume/" + publicItemId;
@@ -602,7 +618,7 @@ const useResumeProvider = () => {
       return publicLink;
     } else {
       message.error("Something went wrong");
-      return "";  
+      return "";
     }
   };
 
@@ -623,7 +639,6 @@ const useResumeProvider = () => {
         },
       }));
     }
-    
   };
 
   const markResumeComplete = async () => {
@@ -642,7 +657,35 @@ const useResumeProvider = () => {
         },
       }));
     }
-  }
+  };
+
+  const exportResume = async () => {
+    try {
+      const authToken = await auth.user.getIdToken();
+      const res = await axios.post(
+        `${BASE_URL}/resume/${resumeId}/export-resume`,
+        {}, 
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      );
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const debouncedExportResume = async () => {
+    // Debounce the export resume function
+    // This is needed because the export resume function is called multiple times
+    // when the resume is updated
+    let timeout: any;
+    clearTimeout(timeout);
+    timeout = setTimeout(() => {
+      exportResume();
+    }, 30000);
+  };
 
   return {
     saveResumeDetails,
@@ -653,7 +696,7 @@ const useResumeProvider = () => {
     savePersonalInfo,
     loadResumeHTML,
     downloadResume,
-    softDeleteResume, 
+    softDeleteResume,
     copyPublicLink,
     markResumeComplete,
     saveAwards,
@@ -661,10 +704,12 @@ const useResumeProvider = () => {
     saveVolunteering,
     saveLanguages,
     getResumeURL,
-    saveCandidateDetails, 
+    saveCandidateDetails,
     saveOtherInformation,
     updateTemplate,
     saveResumeOrder,
+    debouncedExportResume, 
+    exportResume,
     ...state,
   };
 };

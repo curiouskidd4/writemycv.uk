@@ -3,16 +3,18 @@ import React, { useCallback, useEffect } from "react";
 import { Button, Col, DatePicker, Form, Input, Row, Typography } from "antd";
 import dayjs from "dayjs";
 import _ from "lodash";
+import ConfirmItemDelete from "../../../../components/itemDelete";
 
 const fullColSpan = 24;
 type DetailFormProps = {
   isNewItem?: boolean;
   initialValues?: any;
   onFinish: (values: any) => void;
+  onDelete?: () => void;
   saveLoading?: boolean;
 };
 
-export const DetailForm = ({isNewItem, initialValues, onFinish }: DetailFormProps) => {
+export const DetailForm = ({isNewItem, initialValues, onFinish, onDelete }: DetailFormProps) => {
   const [state, setState] = React.useState({
     loading: false,
     showSaved: false,
@@ -156,6 +158,10 @@ export const DetailForm = ({isNewItem, initialValues, onFinish }: DetailFormProp
           Save
         </Button> */}
       </Form>
+      <ConfirmItemDelete onDelete={onDelete}
+      text="Delete Publication"
+       />
+
     </div>
   );
 };

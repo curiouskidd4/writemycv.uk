@@ -35,6 +35,7 @@ import CVWizardBadge from "../../../../components/cvWizardBadge";
 import { PlusOutlined } from "@ant-design/icons";
 import SortableComponent from "../../../../components/sortableList";
 import ObjectID from "bson-objectid";
+import "./achievement.css";
 type AchievementStep1Props = {
   selectedTheme: string | null;
   themeDescription: any;
@@ -127,12 +128,14 @@ const AchievementStep1 = ({
 type AchievementStep2Props = {
   selectedTheme: string | null;
   achievement: string;
+  loadWizardSuggestions: boolean;
   onChange: (value: string) => void;
   onSave: () => void;
 };
 const AchievementStep2 = ({
   selectedTheme,
   achievement,
+  loadWizardSuggestions,
   onChange,
   onSave,
 }: AchievementStep2Props) => {
@@ -142,14 +145,22 @@ const AchievementStep2 = ({
   const [state, setState] = useState<_state>({
     wizardMode: null,
   });
+
+  useEffect(() => {
+    if (loadWizardSuggestions) {
+      handleRewrite();
+    }
+  }, []);
+
   let openai = useOpenAI();
-  const handleGenSummary = () => {
-    setState((prev) => ({ ...prev, wizardMode: "summary" }));
-    openai.getThemeDescription({
-      theme: selectedTheme,
-      existingAchievement: achievement,
-    });
-  };
+
+  // const handleGenSummary = () => {
+  //   setState((prev) => ({ ...prev, wizardMode: "summary" }));
+  //   openai.getThemeDescription({
+  //     theme: selectedTheme,
+  //     existingAchievement: achievement,
+  //   });
+  // };
 
   const handleRewrite = () => {
     setState((prev) => ({ ...prev, wizardMode: "rewrite" }));
@@ -440,7 +451,8 @@ const AchievementRewrite = ({
 const AllAchievements = (
   value: any,
   onChange: (value: any) => void,
-  onEditAchievement: (id: string) => void
+  onEditAchievement: (id: string) => void,
+  onRephraseAchievement: (id: string) => void
 ) => {
   const renderFn = (item: any, dragHandle: any) => {
     return (
@@ -459,6 +471,7 @@ const AllAchievements = (
               key={item.id}
               item={item}
               onEditAchievement={onEditAchievement}
+              onRephraseAchievement={onRephraseAchievement}
               onDelete={(id) => {
                 let newValue = [...value];
                 newValue = newValue.filter((item: any) => item.id !== id);
@@ -486,10 +499,12 @@ const AllAchievements = (
 const AchievementCard = ({
   item,
   onEditAchievement,
+  onRephraseAchievement,
   onDelete,
 }: {
   item: Achievement;
   onEditAchievement: (id: string) => void;
+  onRephraseAchievement: (id: string) => void;
   onDelete: (id: string) => void;
 }) => {
   const [state, setState] = useState<{
@@ -532,7 +547,11 @@ const AchievementCard = ({
             />
           }
         >
-          <Button type="link" size="small" onClick={loadSuggestions}>
+          <Button type="link" size="small" onClick={
+            () => {
+              onRephraseAchievement(item.id!);
+            }
+          }>
             <MagicWandIcon color="var(--black)" marginRight="0px" />
           </Button>
           <Button
@@ -586,6 +605,7 @@ type AchievementStateType = {
   loadedTheme: string | null;
   loadedThemeDescription: string | null;
   currentAchievement: string | null;
+  loadWizardSuggestions: boolean;
   selectedTheme: string | null;
   editIdx: number | null;
   isAtStep1?: boolean | null;
@@ -614,6 +634,7 @@ const Achievements = ({
     selectedTheme: null,
     editIdx: null,
     showAIWizard: false,
+    loadWizardSuggestions: false,
   });
 
   useEffect(() => {
@@ -714,6 +735,20 @@ const Achievements = ({
     }));
   };
 
+  const onRephraseAchievement = (id: string) => {
+    let index = value.findIndex((item: any) => item.id === id);
+    setState((prev) => ({
+      ...prev,
+      modalVisible: true,
+      selectedTheme: value[index].theme,
+      currentAchievement: value[index].description,
+      isAtStep1: false,
+      loadWizard: true,
+      loadWizardSuggestions: true,
+      editIdx: index,
+    }));
+  };
+
   return (
     <>
       <Modal
@@ -744,6 +779,7 @@ const Achievements = ({
             achievement={
               state.currentAchievement ? state.currentAchievement : ""
             }
+            loadWizardSuggestions={state.loadWizardSuggestions}
             onChange={(value) => {
               setState((prev) => ({
                 ...prev,
@@ -805,7 +841,7 @@ const Achievements = ({
                     }}
                   />
                 ))} */}
-                {AllAchievements(value, onChange, onEditAchievement)}
+                {AllAchievements(value, onChange, onEditAchievement, onRephraseAchievement)}
               </>
             )}
           </Row>
