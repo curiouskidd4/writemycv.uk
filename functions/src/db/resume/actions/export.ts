@@ -194,7 +194,8 @@ const exportResume = async (resumeId: string, userId: string) => {
         };
       });
       console.log("educationList", educationList);
-      const sectionOrder = resumeData.sectionOrder || [
+      const sectionOrder = resumeData.sectionOrder? ["candidateSummary", ...resumeData.sectionOrder] : [
+        "candidateSummary",
         "professionalSummary",
         "education",
         "experience",

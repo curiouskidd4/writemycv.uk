@@ -1,6 +1,6 @@
 import PDFParser, { Output } from "pdf2json";
 import { File } from "../../../types/requests";
-import { openai, DEFAULT_MODEL } from "../../../utils/openai";
+import { openai, DEFAULT_MODEL, OPENAI_MODELS } from "../../../utils/openai";
 import { Router, Request, Response } from "express";
 import moment from "moment";
 import mammoth from "mammoth";
@@ -99,7 +99,7 @@ const parseResumeToCV = async (
   console.log(prompt);
   // Call openai
   let response = await openai.chat.completions.create({
-    model: DEFAULT_MODEL,
+    model: OPENAI_MODELS.GPT_4,
     temperature: 0,
     n: 1,
     messages: [

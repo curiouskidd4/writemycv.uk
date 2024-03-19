@@ -45,18 +45,25 @@ const eductionCoursesHelper = async (
 ) => {
   let prompt;
   if (instructions) {
-    prompt = `Suggest few courses (comma separated, at most 10) for a ${degree} degree from ${school} for the role of ${role}.  Use british english for spellings, don't use pronouns like "I/We". Make sure courses are relevant to the role and are short (max 4 words), also keep them very granualar. \nFollow the following instructions carefully: ${instructions}  \nDegree: ${degree}\nSchool: ${school}, 
+    prompt = `Suggest few courses (comma separated, at most 10) for a ${degree} degree from ${school} for the role of ${role}.  Use british english for spellings, don't use pronouns like "I/We". Make sure courses are relevant to the role and are short (max 4 words), also keep them very granualar. \nFollow the following instructions carefully: ${instructions}  
+    Degree: ${degree}
+    School: ${school}, 
     Output Format: 
     {"courses": ["course 1", "course 2", "course 3", ...]}
     Courses:\n`;
   } else {
-    prompt = `Suggest few courses (comma separated, at most 10) for a ${degree} degree from ${school} for the role of ${role}.  Use british english for spellings, don't use pronouns like "I/We". Make sure courses are relevant to the role and are short (max 4 words), also keep them very granualar. (generate comma separated, at most 5)\n \nDegree: ${degree}\nSchool: ${school}
+    prompt = `Suggest few courses (comma separated, at most 10) for a ${degree} degree from ${school}.  Use british english for spellings, don't use pronouns like "I/We". Make sure courses are relevant to the role and are short (max 4 words), also keep them very granualar. (generate comma separated, at most 5)
+    Degree: ${degree}
+    School: ${school}
+    Current Role: ${role}
+    Try suggesting courses which might be relevant for current role, if possible.
     Output Format: 
     {"courses": ["course 1", "course 2", "course 3", ...]}
     
     Courses:\n`;
   }
 
+  console.log(prompt);
   const response = await openai.chat.completions.create({
     model: DEFAULT_MODEL,
     n: 1,

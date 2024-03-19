@@ -19,6 +19,7 @@ const CandidateDetails = ({
 }: PersonalDetailsProps) => {
   const [loading, setLoading] = React.useState(false);
 
+  const [form] = Form.useForm();
   const debounceSave = useCallback(
     _.debounce(async (values: any) => {
       setLoading(true);
@@ -60,9 +61,12 @@ const CandidateDetails = ({
   };
   return (
     <div className="personal-info-form resume-edit-detail padding">
-      <div className="detail-form-header" style={{
-        marginBottom: "0px",
-      }}>
+      <div
+        className="detail-form-header"
+        style={{
+          marginBottom: "0px",
+        }}
+      >
         {/* <Typography.Title level={4}>Personal Info</Typography.Title>
          */}
         <Row align="middle" justify="space-between" style={{ width: "70%" }}>
@@ -71,7 +75,6 @@ const CandidateDetails = ({
               level={4}
               style={{
                 marginBottom: "0px",
-
               }}
             >
               Candidate Details
@@ -88,10 +91,14 @@ const CandidateDetails = ({
           )}
         </Row>
       </div>
-      <div className="detail-form-body" style={{
-        marginTop: "12px",
-      }}>
+      <div
+        className="detail-form-body"
+        style={{
+          marginTop: "12px",
+        }}
+      >
         <Form
+          form={form}
           name="personal_info"
           // onFinish={onSubmit}
           initialValues={{
@@ -100,7 +107,6 @@ const CandidateDetails = ({
           onValuesChange={handleChange}
           scrollToFirstError
           layout="vertical"
-
         >
           <div className="cv-input">
             <Row gutter={24}>
@@ -188,7 +194,10 @@ const CandidateDetails = ({
                     name="summary"
                     value={initialValues?.summary}
                     onChange={(summary: string) =>
-                      handleChange("summary", { summary })
+                      handleChange("summary", {
+                        ...form.getFieldsValue(),
+                        candidateSummary: summary,
+                      })
                     }
                   />
                 </Form.Item>
