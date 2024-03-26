@@ -8,11 +8,11 @@ const client = new googleFirestore.v1.FirestoreAdminClient();
 
 setGlobalOptions({
 //   region: process.env.ENV == "dev" ? "us-central1" : "europe-west1",
-region: "us-central1",
+region: "europe-west1",
 });
 admin.initializeApp({
   storageBucket:
-    process.env.ENV === "testing" ? "test-bucket" : "resu-me-a5cff.appspot.com",
+    process.env.ENV === "testing" ? "test-bucket" : "writemycv.appspot.com",
 });
 const db = admin.firestore();
 if (process.env.ENV === "testing") {
@@ -29,7 +29,7 @@ const bucket = admin
   .bucket(
     process.env.ENV === "testing"
       ? "test-bucket"
-      : process.env.STORAGE_BUCKET || "resu-me-a5cff.appspot.com"
+      : process.env.STORAGE_BUCKET || "writemycv.appspot.com"
   );
 
 export { functions, admin, db, client, bucket };
