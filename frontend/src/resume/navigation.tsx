@@ -32,6 +32,7 @@ import VolunteerForm from "./components/volunteering/volunteerEditForm";
 import CandidateDetails from "./components/candidateSummary";
 import OtherInformation from "./components/otherDetails";
 import { useAuth } from "../authContext";
+import { isHowellUser } from "../config";
 
 type NavigationProps = {
   current: number | null;
@@ -62,7 +63,7 @@ const Navigation = ({
   });
 
   const { user } = useAuth();
-  const isHowellUser = true;
+  
 
   const resumeContext = useResume();
 

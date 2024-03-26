@@ -10,6 +10,7 @@ import {
   DownloadIcon,
 } from "../components/faIcons";
 import PDFViewer from "../components/pdfViewer";
+import { isHowellUser } from "../config";
 
 type ResumeEditStepsProps = {
   current?: number;
@@ -28,7 +29,7 @@ const ResumeEditSteps = ({
     },
     {
       // title: "Personal Details",
-      title: "Candidate Details",
+      title: isHowellUser? "Candidate Details" : "Personal Details",
     },
     {
       title: "Education",
