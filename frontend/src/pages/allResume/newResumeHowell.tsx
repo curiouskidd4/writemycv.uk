@@ -205,7 +205,7 @@ export const NewResumeModal = ({
                 textAlign: "center",
               }}
             >
-              Importing your CV
+              Uploading your CV
             </Typography.Text>
             <br />
             <Typography.Text
@@ -216,10 +216,22 @@ export const NewResumeModal = ({
                 textAlign: "center",
               }}
             >
-              Please hold on a moment while we securely import your CV. This may
-              take a few seconds.
+              Please hold on a moment while we’re securely uploading your CV. 
             </Typography.Text>
           </div>
+
+          <Typography.Text
+            type="secondary"
+            style={{
+              color: "var(--black)",
+              font: "normal normal normal 16px/24px DM Sans",
+              textAlign: "center",
+              marginTop: "32px",
+              fontWeight: 600
+            }}
+          >
+            Estimated time: 120 seconds
+          </Typography.Text>
         </div>
       )}
     </Modal>

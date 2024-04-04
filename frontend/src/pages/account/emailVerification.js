@@ -54,7 +54,7 @@ const EmailVerification = () => {
           <Row style={{marginTop: "1rem"}}>
             <Typography.Text type="secondary">
               We have sent you an email. Please click on the link in the email
-              to verify your email address.
+              to verify your email address. Make sure to check your spam folder if you don't see the email in your inbox.
             </Typography.Text>
           </Row>
 

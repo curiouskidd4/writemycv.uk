@@ -28,13 +28,31 @@ const SingleEducationForm = ({
   let startDate = initialValues.startDate
     ? dayjs(initialValues.startDate.toDate())
     : null;
+
   let endDate = initialValues.endDate
     ? dayjs(initialValues.endDate.toDate())
     : null;
+
   initialValues = {
     ...initialValues,
     dateRange: [startDate, endDate],
   };
+
+  useEffect(() => {
+    // TODO: Move this to add modules tip component itself 
+    // For running the AI suggestion 
+
+    checkAISuggestions({
+      prevVal: {
+        ...initialValues,
+        school: "",
+        degree: "",
+      },
+      newVal: initialValues,
+    });
+  
+
+  }, [])
   const [educationData, setEducationData] = React.useState<any>(
     initialValues || {}
   );
@@ -94,11 +112,9 @@ const SingleEducationForm = ({
     if (!finalData.degree || !finalData.school || !finalData.dateRange) {
       return;
     }
-
     if (JSON.stringify(finalData) == JSON.stringify(initialValues)) {
       return;
     }
-
     setEducationData((prev: any) => ({
       ...prev,
       ...details,
@@ -188,9 +204,7 @@ const SingleEducationForm = ({
           onChange={(details) => onSave(details)}
           saveLoading={saveLoading}
         />
-        <ConfirmItemDelete onDelete={onDelete}
-        text="Delete Education"
-         />
+        <ConfirmItemDelete onDelete={onDelete} text="Delete Education" />
       </Row>
     </div>
   );

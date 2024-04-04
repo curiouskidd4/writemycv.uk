@@ -100,9 +100,7 @@ const ImportCVToProfile = () => {
           </Typography.Title>
         </Row>
         <Row>
-          <Typography.Text>
-          Welcome to Write My CV
-          </Typography.Text>
+          <Typography.Text>Welcome to Write My CV</Typography.Text>
         </Row>
 
         <Modal
@@ -119,12 +117,10 @@ const ImportCVToProfile = () => {
               <>
                 <CVWizardBadge />{" "}
                 <div className="content-header">
-                  Do you already have a CV you'd like to bring in?
+                Start your repository.
                 </div>
                 <div className="content-subtitle">
-                  Start your repository by importing your existing resume from
-                  LinkedIn or other sources, or begin creating a brand-new one
-                  from scratch.
+                You can upload an existing CV to automatically populate your repository or you can start from scratch
                 </div>
                 <Upload.Dragger {...props}>
                   <p className="ant-upload-drag-icon">
@@ -151,7 +147,7 @@ const ImportCVToProfile = () => {
                     overrideFlag({ reload: true });
                   }}
                 >
-                  Start from scratch
+                  Create new
                 </Button>
               </>
             )}
@@ -187,7 +183,7 @@ const ImportCVToProfile = () => {
                       textAlign: "center",
                     }}
                   >
-                    Importing your CV
+                    Uploading your CV
                   </Typography.Text>
                   <br />
                   <Typography.Text
@@ -198,8 +194,20 @@ const ImportCVToProfile = () => {
                       textAlign: "center",
                     }}
                   >
-                    Please hold on a moment while we securely import your CV.
-                    This may take a few seconds.
+                    Please hold on a moment while we’re securely uploading your CV. 
+                    
+                  </Typography.Text>
+                  <Typography.Text
+                    type="secondary"
+                    style={{
+                      color: "var(--black)",
+                      font: "normal normal normal 16px/24px DM Sans",
+                      textAlign: "center",
+                      marginTop: "32px",
+                      fontWeight: 600,
+                    }}
+                  >
+                    Estimated time: 120 seconds
                   </Typography.Text>
                 </div>
               </div>
@@ -268,7 +276,6 @@ const ImportCVToProfile = () => {
           </div>
         </Modal>
 
-
         <Modal
           visible={howItWorks}
           footer={null}
@@ -293,7 +300,9 @@ const ImportCVToProfile = () => {
                 the quality of your future tailored CVs. This is a one-time
                 effort.
               </p> */}
-              <p className="para-title">🧙‍♂️Use CV Wizard to optimise and tailor your CV </p>
+              <p className="para-title">
+                🧙‍♂️Use CV Wizard to optimise and tailor your CV{" "}
+              </p>
               <p>
                 <b>- Automatic Tailoring:</b> After completing your repository,
                 our CV Wizard crafts customized CVs for different roles and
@@ -309,32 +318,39 @@ const ImportCVToProfile = () => {
                 Feel free to make adjustments. Follow the CV Wizard’s
                 suggestions to fill in gaps or enhance existing content.
               </p>
-              <p className="para-title">🚀Export and Achieve Your Career Goals</p>
-              <p>
-                <b>- Easy Export Options:</b> Download as PDF or create a shareable link.
+              <p className="para-title">
+                🚀Export and Achieve Your Career Goals
               </p>
               <p>
-                <b>- ATS Compliant:</b> Your resume adheres to Applicant Tracking System (ATS) guidelines, maximizing its opportunity to be seen by a human recruiter.
+                <b>- Easy Export Options:</b> Download as PDF or create a
+                shareable link.
+              </p>
+              <p>
+                <b>- ATS Compliant:</b> Your resume adheres to Applicant
+                Tracking System (ATS) guidelines, maximizing its opportunity to
+                be seen by a human recruiter.
               </p>
             </div>
-            <div className="modal-body-action" >
-              <Button type="primary" onClick={
-                () => {
+            <div className="modal-body-action">
+              <Button
+                type="primary"
+                onClick={() => {
                   setHowItWorks(false);
                   setShowModal(true);
-                }
-              
-              }>Create my repository</Button>
+                }}
+              >
+                Create my repository
+              </Button>
             </div>
           </div>
         </Modal>
         <div className="content">
-          <div className="content-header">
-          Create your Career Repository
-          </div>
+          <div className="content-header">Create your Career Repository</div>
 
           <div className="content-body">
-          Creating your career repository is a one-time step that will allow you to create as many CVs as you need and enable you to seamlessly update your CV for as long as you need.
+            Creating your career repository is a one-time step that will allow
+            you to create as many CVs as you need and enable you to seamlessly
+            update your CV for as long as you need.
           </div>
 
           <div className="action">

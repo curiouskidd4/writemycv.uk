@@ -157,6 +157,8 @@ const EducationForm = ({
                 )[0],
                 selectedId: key,
               });
+              setNewItem(null);
+
             }}
             newItem={newItem ? true : false}
           />

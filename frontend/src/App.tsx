@@ -295,6 +295,7 @@ const queryClient = new QueryClient();
 const BaseApp = () => {
   const auth = useAuth();
 
+  console.log("USER", auth.user);
   return (
     <React.StrictMode>
       {auth.loading ? (

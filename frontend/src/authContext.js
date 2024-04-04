@@ -89,6 +89,7 @@ const useProvideAuth = () => {
       let userData = userDoc.data();
 
 
+      console.log("USER DATA", userData)
       if (userData.isRepoCompleted == undefined) {
         // Check if all the repos exist
         let educationRef = doc(db, "education", user.uid);

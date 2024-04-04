@@ -17,7 +17,7 @@ interface PhoneNumber {
 interface ProfilePersonalInfo {
   city: string | null;
   country: string | null;
-  linkedIn: string | null;
+  linkedin: string | null;
   firstName: string;
   lastName: string;
   email: string;

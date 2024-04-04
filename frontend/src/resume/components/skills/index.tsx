@@ -344,11 +344,11 @@ const SkillFlow = ({
           </div>
           <div className="ai-wizard-area">
             <CVWizardBox
-              title="Add skills"
-              subtitle="List all your skills to add them in future resumes"
+              title="Tip"
+              subtitle="Include 10-20 keywords and phrases that best reflect your skills."
             >
               <Typography.Text type="secondary">
-                Try the following suggestions:
+              CV Wizard has some suggestions. Click on these to add to your list.
               </Typography.Text>
               {skillHelper.loading && <Skeleton active></Skeleton>}
 

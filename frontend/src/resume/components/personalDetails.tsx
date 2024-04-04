@@ -18,7 +18,6 @@ const PersonalDetails = ({
   showTitle = true,
 }: PersonalDetailsProps) => {
   const [loading, setLoading] = React.useState(false);
-
   const debounceSave = useCallback(
     _.debounce(async (values: any) => {
       setLoading(true);

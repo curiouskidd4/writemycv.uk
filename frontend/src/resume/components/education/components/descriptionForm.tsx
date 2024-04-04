@@ -277,8 +277,8 @@ export const DescriptionForm = ({ value, onChange }: DescriptionFormProps) => {
       <div className="ai-wizard-area">
         <Row>
           <CVWizardBox
-            title="Description Tip"
-            subtitle="Highlighting your key achievements here, like awards, dissertations or projects"
+            title="Tip"
+            subtitle="Highlight key achievements, such as awards, scholarships, dissertations, and key projects. Experienced professionals can skip this step."
             actions={[
               <Button
                 className="black-button-small"

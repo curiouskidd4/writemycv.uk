@@ -82,7 +82,19 @@ const AchievementStep1 = ({
             }}
           >
             <Typography.Text>
-              {themeDescription.data?.result?.explanation}
+              {/* {themeDescription.data?.result?.explanation}
+               */}
+              {selectedTheme
+                ? `When describing achievements in ${selectedTheme}, start
+              with the impact created, followed by the action taken. Use past
+              tense and third-person narrative. Avoid exaggerations however do
+              use strong action verbs such as 'developed', 'increased', or
+              'transformed'.`
+                : `When describing achievements, start
+              with the impact created, followed by the action taken. Use past
+              tense and third-person narrative. Avoid exaggerations however do
+              use strong action verbs such as 'developed', 'increased', or
+              'transformed'.`}
             </Typography.Text>
           </div>
           <div
@@ -91,8 +103,7 @@ const AchievementStep1 = ({
               font: "normal normal normal 16px/24px DM Sans",
             }}
           >
-            Choose one this examples and tailor it to reflect your personal
-            achievements:
+            You can choose one of these examples and amend it to reflect your personal achievements, or you can write your own.
           </div>
           <div>
             {themeDescription.data?.result?.examples?.map(
@@ -110,10 +121,11 @@ const AchievementStep1 = ({
               key={"custom"}
               className="openai-generated-content-item"
               onClick={() =>
-                setState((prev) => ({
-                  ...prev,
-                  currentAchievement: "",
-                }))
+                // setState((prev) => ({
+                //   ...prev,
+                //   currentAchievement: "",
+                // }))
+                onSelect("")
               }
             >
               Write your own
@@ -332,8 +344,8 @@ const AchievementThemeWizard = ({
 
   return showAIWizard ? (
     <CVWizardBox
-      title="Achievement Topics"
-      subtitle="Highlighting your key achievements here"
+      title="Tip"
+      subtitle="This section should include details of your top 3-8 achievements in this role. This could be strategies, projects, or initiatives you delivered or helped to deliver that had a positive impact on the organisation. If possible, measure the success using facts and figures."
     >
       <>
         {/* <Row>
@@ -343,9 +355,14 @@ const AchievementThemeWizard = ({
             </Typography.Text>
           </Col>
         </Row> */}
-        <Row>
+        <Row
+          style={{
+            paddingBottom: "0.5rem",
+          }}
+        >
           <Typography.Text type="secondary">
-            Select your theme to get started
+            Here are themes that may be relevant to this role. Select one and
+            our CV Wizard will help you.
           </Typography.Text>
         </Row>
       </>
@@ -547,11 +564,13 @@ const AchievementCard = ({
             />
           }
         >
-          <Button type="link" size="small" onClick={
-            () => {
+          <Button
+            type="link"
+            size="small"
+            onClick={() => {
               onRephraseAchievement(item.id!);
-            }
-          }>
+            }}
+          >
             <MagicWandIcon color="var(--black)" marginRight="0px" />
           </Button>
           <Button
@@ -686,7 +705,6 @@ const Achievements = ({
   const addAchievement = () => {
     let mode =
       state.editIdx != null && state.editIdx !== undefined ? "edit" : "add";
-    debugger;
     if (mode === "edit") {
       if (state.editIdx == null) {
         return;
@@ -841,7 +859,12 @@ const Achievements = ({
                     }}
                   />
                 ))} */}
-                {AllAchievements(value, onChange, onEditAchievement, onRephraseAchievement)}
+                {AllAchievements(
+                  value,
+                  onChange,
+                  onEditAchievement,
+                  onRephraseAchievement
+                )}
               </>
             )}
           </Row>

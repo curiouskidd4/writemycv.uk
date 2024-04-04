@@ -91,27 +91,6 @@ export const CourseForm = ({
     });
   };
 
-  const loadSuggestions = async ({
-    school,
-    degree,
-  }: {
-    school: string;
-    degree: string;
-  }) => {
-    setState((prev) => ({
-      ...prev,
-      loadingSuggestions: true,
-    }));
-    await educationHelper.suggestCourses({
-      school: school,
-      degree: degree,
-    });
-
-    setState((prev) => ({
-      ...prev,
-      loadingSuggestions: false,
-    }));
-  };
 
   const onDelete = (index: number) => {
     let newModules = state.existinModules;
@@ -197,8 +176,8 @@ export const CourseForm = ({
       </div>
       <div className="ai-wizard-area">
         <CVWizardBox
-          title="Add modules"
-          subtitle="Highlighting relevant courses in your ‘Education’ section."
+          title="Experienced professionals can skip this step"
+          subtitle="Tip: If you are a graduate or early professional, including modules is an effective way of demonstrating your expertise and improving your ATS success."
         >
           <Typography.Text type="secondary">
             CV Wizard Suggestions:

@@ -98,7 +98,7 @@ const ProfileV2_ = () => {
     email: profilePersonalInfo?.email || auth.user.email || "",
     phone: profilePersonalInfo?.phone || null,
     location: profilePersonalInfo?.location || "",
-    linkedIn: profilePersonalInfo?.linkedIn || "",
+    linkedin: profilePersonalInfo?.linkedin || "",
     city: profilePersonalInfo?.city || "",
     country: profilePersonalInfo?.country || "",
     currentRole: profilePersonalInfo?.currentRole || "",
