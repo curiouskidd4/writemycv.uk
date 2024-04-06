@@ -1,7 +1,7 @@
 // app.ts
 
 import express from "express";
-import { generalRoutes, openaiRoutes, resumeDownloadRoutes, resumeRoutes, stripeRoutes, stripeWebhookRoutes, unAuth } from "./routes";
+import { generalRoutes, cvWizardRoutes, resumeDownloadRoutes, resumeRoutes, stripeRoutes, stripeWebhookRoutes, unAuth } from "./routes";
 import { db, bucket, functions } from "../utils/firebase";
 import {
   extractFiles,
@@ -28,7 +28,7 @@ app.use(validateFirebaseIdToken);
 
 // app.use(bodyParser.urlencoded({ extended: true }));
 // app.use(bodyParser.json());
-app.use("/openai", openaiRoutes);
+app.use("/cv-wizard", cvWizardRoutes);
 app.use("/", generalRoutes);
 app.use("/resume", resumeRoutes);
 

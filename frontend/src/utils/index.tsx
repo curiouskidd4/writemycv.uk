@@ -50,7 +50,7 @@ const useOpenAI = () => {
     try {
       const token = await auth.user.getIdToken();
       const response = await axios.post(
-        `${BASE_URL}/openai/educationSummary`,
+        `${BASE_URL}/cv-wizard/educationSummary`,
         data,
         {
           headers: {
@@ -83,7 +83,7 @@ const useOpenAI = () => {
     try {
       const token = await auth.user.getIdToken();
       const response = await axios.post(
-        `${BASE_URL}/openai/eductionCoursesHelper`,
+        `${BASE_URL}/cv-wizard/eductionCoursesHelper`,
         data,
         {
           headers: {
@@ -117,7 +117,7 @@ const useOpenAI = () => {
       const token = await auth.user.getIdToken();
 
       const response = await axios.post(
-        `${BASE_URL}/openai/experienceSummary`,
+        `${BASE_URL}/cv-wizard/experienceSummary`,
         data,
         {
           headers: {
@@ -151,7 +151,7 @@ const useOpenAI = () => {
       const token = await auth.user.getIdToken();
 
       const response = await axios.post(
-        `${BASE_URL}/openai/professionalSummary`,
+        `${BASE_URL}/cv-wizard/professionalSummary`,
         data,
         {
           headers: {
@@ -185,7 +185,7 @@ const useOpenAI = () => {
       const token = await auth.user.getIdToken();
 
       const response = await axios.post(
-        `${BASE_URL}/openai/skillsSuggestions`,
+        `${BASE_URL}/cv-wizard/skillsSuggestions`,
         data,
         {
           headers: {
@@ -219,7 +219,7 @@ const useOpenAI = () => {
       const token = await auth.user.getIdToken();
 
       const response = await axios.post(
-        `${BASE_URL}/openai/educationCourses`,
+        `${BASE_URL}/cv-wizard/educationCourses`,
         data,
         {
           headers: {
@@ -253,7 +253,7 @@ const useOpenAI = () => {
       const token = await auth.user.getIdToken();
 
       const response = await axios.post(
-        `${BASE_URL}/openai/experienceAchivements`,
+        `${BASE_URL}/cv-wizard/experienceAchivements`,
         data,
         {
           headers: {
@@ -287,7 +287,7 @@ const useOpenAI = () => {
       const token = await auth.user.getIdToken();
 
       const response = await axios.post(
-        `${BASE_URL}/openai/themeSuggestions`,
+        `${BASE_URL}/cv-wizard/themeSuggestions`,
         data,
         {
           headers: {
@@ -321,7 +321,7 @@ const useOpenAI = () => {
       const token = await auth.user.getIdToken();
 
       const response = await axios.post(
-        `${BASE_URL}/openai/themeDescription`,
+        `${BASE_URL}/cv-wizard/themeDescription`,
         data,
         {
           headers: {
@@ -356,7 +356,7 @@ const useOpenAI = () => {
       const token = await auth.user.getIdToken();
 
       const response = await axios.post(
-        `${BASE_URL}/openai/achievementHelper`,
+        `${BASE_URL}/cv-wizard/achievementHelper`,
         data,
         {
           headers: {
@@ -389,7 +389,7 @@ const useOpenAI = () => {
       const token = await auth.user.getIdToken();
 
       const response = await axios.post(
-        `${BASE_URL}/openai/professionalSummary`,
+        `${BASE_URL}/cv-wizard/professionalSummary`,
         data,
         {
           headers: {
@@ -421,7 +421,7 @@ const useOpenAI = () => {
     try {
       const token = await auth.user.getIdToken();
       const response = await axios.post(
-        `${BASE_URL}/openai/parseResume`,
+        `${BASE_URL}/cv-wizard/parseResume`,
         data,
         {
           headers: {

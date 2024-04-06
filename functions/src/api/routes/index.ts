@@ -1,4 +1,4 @@
-import openaiRoutes from "./openai";
+import cvWizardRoutes from "./cvWizard";
 import stripeRoutes from "./stripe";
 import stripeWebhookRoutes from "./stripeWebhook";
 import resumeDownloadRoutes from "./download";
@@ -6,7 +6,7 @@ import generalRoutes from "./general";
 import resumeRoutes from "./resume";
 import unAuth from "./unAuth";
 export {
-  openaiRoutes,
+  cvWizardRoutes,
   stripeRoutes,
   stripeWebhookRoutes,
   resumeDownloadRoutes,

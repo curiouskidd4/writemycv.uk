@@ -51,7 +51,7 @@ const useResumeAPI = () => {
     formData.append("resumeId", resumeId);
 
     return axios.post(
-      `${BASE_URL}/openai/importToCV`,
+      `${BASE_URL}/cv-wizard/importToCV`,
       formData,
       {
         headers: {

@@ -5,7 +5,9 @@ import { Router, Request, Response } from "express";
 import moment from "moment";
 import mammoth from "mammoth";
 import MarkdownIt from "markdown-it";
-import { db } from "../../../utils/firebase";
+import { bucket, db } from "../../../utils/firebase";
+import fs from "fs";
+
 const ov = `You are a helpful AI assistant expert at extracting details from resume, Extract the following details from the resume and return it in JSON format. Use british english for spellings.
 *************
 {{resumeText}}
@@ -94,7 +96,6 @@ const parseResume = async (
   let md = new MarkdownIt();
   // Configure prompt
   const prompt = ov.replace("{{resumeText}}", resumeText);
-  console.log(prompt);
   // Call openai
   let response = await openai.chat.completions.create({
     model: OPENAI_MODELS.GPT_4,
@@ -113,7 +114,6 @@ const parseResume = async (
     ],
   });
 
-  console.log(JSON.stringify(response.choices[0].message.content));
   if (
     !response.choices[0].message.content ||
     response.choices[0].message.content.includes("Error")
@@ -258,6 +258,7 @@ const parseResume = async (
         experience: profileExperience,
         skills: profileSkills,
         professionalSummary: result.professionalSummary,
+        openaiResponse: response.choices[0].message.content,
       }
   } catch (e) {
     console.log(e);
@@ -266,34 +267,120 @@ const parseResume = async (
   }
 };
 
+const saveCVToStorage = async (
+  userId: string,
+  file: File
+) => {
+  console.log("Saving file to storage...");
+  // File is a in memory file
+  const dateStr = new Date().toISOString().replace(/:/g, "-");
+  let outputFileKey = `userData/${userId}/uploaded/${dateStr}-profile-parsed.json`;
+
+  if (file?.filename?.endsWith(".pdf")) {
+    const bucketFile = bucket.file(
+      `userData/${userId}/uploaded/${dateStr}-for-resume.pdf`
+    );
+
+    const stream = bucketFile.createWriteStream({
+      metadata: {
+        contentType: "application/pdf",
+      },
+    });
+
+    return new Promise<string>((resolve, reject) => {
+      stream.on("error", (err) => {
+        reject(err);
+      });
+
+      stream.on("finish", async () => {
+        resolve(outputFileKey);
+      });
+
+      fs.createReadStream(file.path).pipe(stream);
+    });
+  } else {
+    // Upload the word document
+    const bucketFile = bucket.file(
+      `userData/${userId}/uploaded/${dateStr}-for-resume.docx`
+    );
+    console.log(bucketFile);
+
+    const stream = bucketFile.createWriteStream({
+      metadata: {
+        contentType:
+          "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      },
+    });
+
+    return new Promise<string>((resolve, reject) => {
+      stream.on("error", (err) => {
+        reject(err);
+      });
+
+      stream.on("finish", async () => {
+        resolve(outputFileKey);
+      });
+
+      fs.createReadStream(file.path).pipe(stream);
+    });
+  }
+};
+
+const saveOuputToStorage = async (outputFileKey: string, output: any) => {
+  console.log("Saving output to storage...");
+  const bucketFile = bucket.file(outputFileKey);
+  const stream = bucketFile.createWriteStream({
+    metadata: {
+      contentType: "application/json",
+    },
+  });
+
+  return new Promise<string>((resolve, reject) => {
+    stream.on("error", (err) => {
+      reject(err);
+    });
+
+    stream.on("finish", async () => {
+      resolve(outputFileKey);
+    });
+
+    stream.write(JSON.stringify(output, null, 2));
+    stream.end();
+  });
+};
+
+
 const importResumeToRepo = async (file: File, userId: string) => {
+  let outputFileKey = await saveCVToStorage( userId, file);
+
   // Check if file is pdf
   if (file?.filename?.endsWith(".pdf")) {
     let pdfParser = new PDFParser();
     await pdfParser.loadPDF(file.path);
 
-    let resumeText = "";
-    // Extract text from all pages
 
     // Convert to promise 
-    const pdfData = await new Promise((resolve, reject) => {
+    let resumeText = await new Promise<string>((resolve, reject) => {
       pdfParser.on("pdfParser_dataReady", (pdfData: Output) => {
         // resolve(pdfData);
 
-        resumeText = pdfData.Pages.map((page) =>
+        let text = pdfData.Pages.map((page) =>
           page.Texts.map((text) =>
             text.R.map((r) => decodeURIComponent(r.T)).join("")
           ).join("")
         ).join("\n");
 
-        let result = parseResume(resumeText, userId);
-        resolve(result);
+        resolve(text);
       });
 
 
     });
 
-    return pdfData;
+    let result = await parseResume(resumeText, userId);
+
+    // Save the output to storage
+    await saveOuputToStorage(outputFileKey, result);
+    return result;
   } else if (
     file?.filename?.endsWith(".docx") ||
     file?.filename?.endsWith(".doc")
@@ -302,6 +389,8 @@ const importResumeToRepo = async (file: File, userId: string) => {
     const text = result.value; // The raw text
     const messages = result.messages;
     let parsedResult = await parseResume(text, userId);
+    // Save the output to storage
+    await saveOuputToStorage(outputFileKey, parsedResult);
     return parsedResult;
 
 

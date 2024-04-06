@@ -25,22 +25,21 @@ const ImportCVToProfile = () => {
   const auth = useAuth();
   type StateType = {
     isComplete: boolean;
-    questionIdx: number;
     file: any | null;
     importSuccess: boolean;
+    importError: boolean;
   };
   const [state, setState] = useState<StateType>({
     isComplete: false,
-    questionIdx: 0,
     file: null,
     importSuccess: false,
+    importError: false,
   });
 
   const openai = useOpenAI();
 
   const handleFileChange = (e: any) => {
     const file = e.file;
-
     if (!file) {
       setState((prev) => ({ ...prev, error: "Please select a file" }));
     } else {
@@ -50,11 +49,15 @@ const ImportCVToProfile = () => {
   };
 
   const handleConfirm = async (file: any) => {
-    let formData = new FormData();
-    formData.append("file", file);
-    await openai.parseResume(formData);
-    await overrideFlag({});
-    setState((prev) => ({ ...prev, file: null, importSuccess: true }));
+    try {
+      let formData = new FormData();
+      formData.append("file", file);
+      await openai.parseResume(formData);
+      await overrideFlag({});
+      setState((prev) => ({ ...prev, file: null, importSuccess: true }));
+    } catch (e) {
+      setState((prev) => ({ ...prev, file: null, importError: true }));
+    }
   };
 
   const overrideFlag = async ({ reload = false }: { reload?: boolean }) => {
@@ -72,10 +75,10 @@ const ImportCVToProfile = () => {
       // setState((prev) => ({ ...prev, file, error: "" }));
       return false;
     },
-    action: (file) => {
-      console.log(file);
-      return Promise.resolve("ok");
-    },
+    // action: (file) => {
+    //   console.log(file);
+    //   return Promise.resolve("ok");
+    // },
     onChange: handleFileChange,
     onDrop(e) {
       console.log("Dropped files", e.dataTransfer.files);
@@ -110,17 +113,25 @@ const ImportCVToProfile = () => {
           width={state.file ? "650px" : "950px"}
           onCancel={() => {
             setShowModal(false);
+            setState((prev) => ({
+              ...prev,
+              file: null,
+              importSuccess: false,
+              importError: false,
+            }));
           }}
         >
           <div className="import-cv-modal modal-body">
-            {!state.file && !state.importSuccess && (
+            {!state.file && !state.importSuccess && !state.importError && (
               <>
                 <CVWizardBadge />{" "}
-                <div className="content-header">
-                Start your repository.
-                </div>
+                <div className="content-header">Start your repository.</div>
                 <div className="content-subtitle">
-                You can upload an existing CV to automatically populate your repository or you can start from scratch
+                  You can upload an existing CV to automatically populate your
+                  repository or you can start from scratch. We can accept
+                  uploads of most formats. If the upload fails due to an
+                  incompatible format, please use the repository tool to input
+                  your information.
                 </div>
                 <Upload.Dragger {...props}>
                   <p className="ant-upload-drag-icon">
@@ -129,11 +140,6 @@ const ImportCVToProfile = () => {
                   <p className="ant-upload-text">
                     Choose a file or drag it here
                   </p>
-                  {/* <p className="ant-upload-hint">
-                    You can upload a PDF or Word document. You can also import
-                    your profile from LinkedIn, just export from LinkedIn and
-                    upload here.
-                  </p> */}
                 </Upload.Dragger>
                 <Divider>Or </Divider>
                 <Button
@@ -152,7 +158,7 @@ const ImportCVToProfile = () => {
               </>
             )}
 
-            {state.file && !state.importSuccess && (
+            {state.file && !state.importSuccess  && !state.importError && (
               <div
                 style={{
                   display: "flex",
@@ -194,8 +200,8 @@ const ImportCVToProfile = () => {
                       textAlign: "center",
                     }}
                   >
-                    Please hold on a moment while we’re securely uploading your CV. 
-                    
+                    Please hold on a moment while we’re securely uploading your
+                    CV.
                   </Typography.Text>
                   <Typography.Text
                     type="secondary"
@@ -212,7 +218,54 @@ const ImportCVToProfile = () => {
                 </div>
               </div>
             )}
-
+            {state.importError && (
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  flexDirection: "column",
+                  alignContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <div
+                  style={{
+                    margin: "96px auto",
+                    display: "flex",
+                    justifyContent: "center",
+                  }}
+                >
+                  <i
+                    style={{ fontSize: "128px", color: "#ff5b00" }}
+                    className="fa-solid fa-circle-xmark fa-2xl"
+                  ></i>
+                </div>
+                <div className="uploading-message">
+                  <Typography.Text
+                    type="secondary"
+                    style={{
+                      color: "var(--black)",
+                      font: "normal normal bold 30px/12px DM Sans",
+                      textAlign: "center",
+                    }}
+                  >
+                    Your upload failed!
+                  </Typography.Text>
+                  <br />
+                  <Typography.Text
+                    type="secondary"
+                    style={{
+                      color: "var(--black)",
+                      font: "normal normal normal 16px/24px DM Sans",
+                      textAlign: "center",
+                    }}
+                  >
+                    Please return to the main screen and use
+                    the repository tool to input your information
+                  </Typography.Text>
+                </div>
+              </div>
+            )}
             {state.importSuccess && (
               <div className="success-message">
                 <div

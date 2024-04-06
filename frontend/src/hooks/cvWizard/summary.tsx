@@ -57,7 +57,7 @@ const useProfessionalSummaryHelper = () => {
     try {
       const token = await auth.user.getIdToken();
       const response = await axios.post(
-        `${BASE_URL}/openai/professionalSummary`,
+        `${BASE_URL}/cv-wizard/professionalSummary`,
         data,
         {
           headers: {

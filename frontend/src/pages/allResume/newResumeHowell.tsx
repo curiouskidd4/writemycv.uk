@@ -77,7 +77,11 @@ export const NewResumeModal = ({
     } catch (err) {
       console.log(err);
       setLoading(false);
-      message.error("Something went wrong");
+      setState((prev) => ({
+        ...prev,
+        loading: false,
+        isError: true,
+      }));
     }
   };
 
@@ -152,11 +156,7 @@ export const NewResumeModal = ({
                   />
                 </p>
                 <p className="ant-upload-text">Choose a file or drag it here</p>
-                {/* <p className="ant-upload-hint">
-                    You can upload a PDF or Word document. You can also import
-                    your profile from LinkedIn, just export from LinkedIn and
-                    upload here.
-                  </p> */}
+               
               </Upload.Dragger>
             </Form.Item>
             <div className="submit-btn">
@@ -216,7 +216,7 @@ export const NewResumeModal = ({
                 textAlign: "center",
               }}
             >
-              Please hold on a moment while we’re securely uploading your CV. 
+              Please hold on a moment while we’re securely uploading your CV.
             </Typography.Text>
           </div>
 
@@ -227,7 +227,7 @@ export const NewResumeModal = ({
               font: "normal normal normal 16px/24px DM Sans",
               textAlign: "center",
               marginTop: "32px",
-              fontWeight: 600
+              fontWeight: 600,
             }}
           >
             Estimated time: 120 seconds

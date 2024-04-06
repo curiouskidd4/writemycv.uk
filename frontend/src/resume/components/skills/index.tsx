@@ -18,7 +18,7 @@ import {
   DeleteOutlined,
 } from "@ant-design/icons";
 import { Skill } from "../../../types/resume";
-import useOpenAI from "../../../hooks/openai";
+import useOpenAI from "../../../hooks/cvWizard";
 import CVWizardBox from "../../../components/cvWizardBoxV2";
 import _ from "lodash";
 

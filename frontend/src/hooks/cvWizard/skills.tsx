@@ -112,7 +112,7 @@ const useSkillHelper = () => {
     try {
       const token = await auth.user.getIdToken();
       const response = await axios.post(
-        `${BASE_URL}/openai/skillsSuggestions`,
+        `${BASE_URL}/cv-wizard/skillsSuggestions`,
         data,
         {
           headers: {

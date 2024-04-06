@@ -2,28 +2,28 @@ import { Router, Request, Response } from "express";
 // import { myMiddleware } from '../middlewares';
 import { Validator } from "express-json-validator-middleware";
 import { db } from "../../utils/firebase";
-import skillSuggestion from "../controllers/openai/skillsSuggestion";
+import skillSuggestion from "../controllers/cvWizard/skillsSuggestion";
 import {
   educationSummaryRewrite,
   educationSummarySuggestion,
   eductionCoursesHelper,
-} from "../controllers/openai/education";
+} from "../controllers/cvWizard/education";
 import {
   experienceSummaryRewrite,
   experienceSummarySuggestion,
-} from "../controllers/openai/experience";
+} from "../controllers/cvWizard/experience";
 import {
   themeSuggestion,
   themeDescriptionSuggestion,
   achievementRewrite,
-} from "../controllers/openai/achievements";
+} from "../controllers/cvWizard/achievements";
 import {
   generateProfessionalSummary,
   rewriteProfessionalSummary,
-} from "../controllers/openai/professionalSummary";
+} from "../controllers/cvWizard/professionalSummary";
 import { CustomRequest } from "../../types/requests";
-import resumeExtractionForCV from "../controllers/openaiV2/resumeParsing";
-import importResumeToRepo from "../controllers/openai/resumeParsing";
+import resumeExtractionForCV from "../controllers/cvWizard/importToCV";
+import importResumeToRepo from "../controllers/cvWizard/importToRepo";
 
 const router = Router();
 

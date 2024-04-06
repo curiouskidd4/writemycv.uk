@@ -2,7 +2,7 @@ import { Button, Col, Divider, Modal, Popover, Row, Skeleton, Space, Spin, Typog
 import React, { useEffect } from "react";
 import EditorJsInput from "../../../../components/editor";
 import { BulbOutlined } from "@ant-design/icons";
-import openAI from "../../../../hooks/openai";
+import openAI from "../../../../hooks/cvWizard";
 import {
   AIWizardIcon,
   DeleteIcon,

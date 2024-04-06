@@ -35,7 +35,7 @@ export const onWrite = onDocumentWritten(
       // If new data exists
       if (newData) {
         // await populateResumeDetails(context.params.resumeId, newData.userId);
-        await exportResume(resumeId, newData.userId);
+        // await exportResume(resumeId, newData.userId);
       }
     } catch (error) {}
   }

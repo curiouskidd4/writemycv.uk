@@ -34,7 +34,7 @@ import FormLabel from "../../../components/labelWithActions";
 import { useResume } from "../../../contexts/resume";
 import CustomCarousel from "../../../components/suggestionCarousel";
 import CVWizardBox from "../../../components/cvWizardBoxV2";
-import openAI from "../../../hooks/openai";
+import openAI from "../../../hooks/cvWizard";
 import _ from "lodash";
 import ReactMarkdown from "react-markdown";
 import CVWizardBadge from "../../../components/cvWizardBadge";

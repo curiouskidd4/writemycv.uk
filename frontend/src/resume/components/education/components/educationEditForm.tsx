@@ -9,7 +9,7 @@ import { DetailForm } from "./detailForm";
 import { CourseForm } from "./courseForm";
 import { DescriptionForm } from "./descriptionForm";
 import _ from "lodash";
-import openAI from "../../../../hooks/openai";
+import openAI from "../../../../hooks/cvWizard";
 import ConfirmItemDelete from "../../../../components/itemDelete";
 
 type SingleEducationFormProps = {

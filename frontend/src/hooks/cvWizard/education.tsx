@@ -61,7 +61,7 @@ const useEducationHelper = () => {
     try {
       const token = await auth.user.getIdToken();
       const response = await axios.post(
-        `${BASE_URL}/openai/eductionCoursesHelper`,
+        `${BASE_URL}/cv-wizard/eductionCoursesHelper`,
         data,
         {
           headers: {
@@ -115,7 +115,7 @@ const useEducationHelper = () => {
     try {
       const token = await auth.user.getIdToken();
       const response = await axios.post(
-        `${BASE_URL}/openai/educationSummary`,
+        `${BASE_URL}/cv-wizard/educationSummary`,
         data,
         {
           headers: {

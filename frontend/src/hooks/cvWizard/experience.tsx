@@ -61,7 +61,7 @@ const useExperienceHelper = () => {
     try {
       const token = await auth.user.getIdToken();
       const response = await axios.post(
-        `${BASE_URL}/openai/experienceSummary`,
+        `${BASE_URL}/cv-wizard/experienceSummary`,
         data,
         {
           headers: {
@@ -146,7 +146,7 @@ const useAchievementHelper = () => {
     try {
       const token = await auth.user.getIdToken();
       const response = await axios.post(
-        `${BASE_URL}/openai/themeSuggestions`,
+        `${BASE_URL}/cv-wizard/themeSuggestions`,
         data,
         {
           headers: {
@@ -199,7 +199,7 @@ const useAchievementHelper = () => {
     try {
       const token = await auth.user.getIdToken();
       const response = await axios.post(
-        `${BASE_URL}/openai/achievementSuggestions`,
+        `${BASE_URL}/cv-wizard/achievementSuggestions`,
         data,
         {
           headers: {

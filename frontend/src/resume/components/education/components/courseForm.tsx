@@ -10,7 +10,7 @@ import {
 } from "antd";
 import React, { useEffect } from "react";
 import { ArrowRightOutlined, PlusOutlined } from "@ant-design/icons";
-import openAI from "../../../../hooks/openai";
+import openAI from "../../../../hooks/cvWizard";
 import {
   AIWizardIcon,
   DeleteIcon,

@@ -1,8 +1,8 @@
 import ObjectID from "bson-objectid";
 import Template from "../types/template";
 import { db } from "./firebase";
-import resumeExtraction from "../api/controllers/openai/resumeParsing";
-import resumeExtractionForCV from "../api/controllers/openaiV2/resumeParsing";
+import resumeExtraction from "../api/controllers/cvWizard/importToRepo";
+import resumeExtractionForCV from "../api/controllers/cvWizard/importToCV";
 import { File } from "../types/requests";
 import fs from "fs";
 // const recruiterContacts = [

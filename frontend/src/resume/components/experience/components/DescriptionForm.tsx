@@ -23,7 +23,7 @@ import {
   MagicWandIcon,
   RepharseIcon,
 } from "../../../../components/faIcons";
-import openAI from "../../../../hooks/openai";
+import openAI from "../../../../hooks/cvWizard";
 import ReactMarkdown from "react-markdown";
 import CVWizardBadge from "../../../../components/cvWizardBadge";
 
