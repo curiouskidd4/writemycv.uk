@@ -155,12 +155,12 @@ export const DetailForm = ({isNewItem, initialValues, onFinish,
             <Form.Item
               name={["description"]}
               label="Description"
-              rules={[
-                {
-                  required: true,
-                  message: "Please enter a description!",
-                },
-              ]}
+              // rules={[
+              //   {
+              //     required: true,
+              //     message: "Please enter a description!",
+              //   },
+              // ]}
             >
               <Input.TextArea />
             </Form.Item>

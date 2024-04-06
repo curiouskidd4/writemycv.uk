@@ -33,8 +33,8 @@ Format of each section should be as follows, follow exactly the same format: Any
         {
             "school": "",
             "degree": "",
-            "startDate": "", # Format should be "MM/YYYY"
-            "endDate": "", # Format should be "MM/YYYY" (null if currently here)
+            "startDate": "", # Format should be "MM/YYYY" (should be valid else output null)
+            "endDate": "", # Format should be "MM/YYYY" (null if currently here)(should be valid else output null)
             "grade": "",
             "modules": "", 
             "description": "" # Use markdown for formatting, if not mentioned leave blank
@@ -45,8 +45,8 @@ Format of each section should be as follows, follow exactly the same format: Any
             "employerName": "",
             "location": "",
             "position": "",
-            "startDate": "", # Format should be "MM/YYYY"
-            "endDate": "", # Format should be "MM/YYYY" (null if currently here)
+            "startDate": "", # Format should be "MM/YYYY" (should be valid else output null)
+            "endDate": "", # Format should be "MM/YYYY" (null if currently here) (should be valid else output null)
             "description": "",  # Use markdown for formatting, if not mentioned leave blank, content which are not in bullets generally go here 
             "achievements": [ # If no achievements, set as empty array, make sure to extract all the achievements mentioned (extract multiple bullet points if mentioned), bullets go here 
                 {
@@ -85,13 +85,17 @@ const parseDate = (date: string | null) => {
   if (!convertedDate || convertedDate.toString() == "Invalid Date") {
     convertedDate = moment(date, "MM-YYYY").toDate();
   }
+
+  if (convertedDate.toString() == "Invalid Date") {
+    return null;
+  }
   return convertedDate;
 };
 
 const parseResumeToCV = async (
   resumeText: string,
   userId: string,
-  resumeId: string,
+  resumeId: string
 ) => {
   let md = new MarkdownIt();
   // Configure prompt
@@ -120,8 +124,7 @@ const parseResumeToCV = async (
     !response.choices[0].message.content ||
     response.choices[0].message.content.includes("Error")
   ) {
-    return { message: "Error in parsing resume" } ;
-    
+    return { message: "Error in parsing resume" };
   }
   try {
     let result = null;
@@ -221,9 +224,8 @@ const parseResumeToCV = async (
     console.log(profileEducation);
     console.log(profileExperience);
     console.log(profileSkills);
-    
 
-    const resumeRef =await db.collection("resumes").doc(resumeId).get();
+    const resumeRef = await db.collection("resumes").doc(resumeId).get();
     const resumeData = resumeRef.data() as Resume;
     const data: Resume = {
       ...resumeData,
@@ -242,16 +244,12 @@ const parseResumeToCV = async (
       awardList: resumeData.awardList || [],
       publicationList: resumeData.publicationList || [],
       languageList: resumeData.languageList || [],
-      volunteeringList: resumeData.volunteeringList     || [],
+      volunteeringList: resumeData.volunteeringList || [],
       otherInformationList: resumeData.otherInformationList || [],
       skillList: profileSkills.skillList || [],
     };
 
     await db.collection("resumes").doc(resumeId).set(data, { merge: true });
-
-
-
-
 
     return {
       result: {
@@ -262,30 +260,37 @@ const parseResumeToCV = async (
         professionalSummary: result.professionalSummary,
       },
       message: "success",
-    }
+    };
   } catch (e) {
     console.log(e);
-    return { message: "Error in parsing resume" }
+    return { message: "Error in parsing resume" };
   }
 };
 
-const resumeExtractionForCV = async (file: File, userId: string, resumeId: string) => {
+const resumeExtractionForCV = async (
+  file: File,
+  userId: string,
+  resumeId: string
+) => {
   // Check if file is pdf
   if (file?.filename?.endsWith(".pdf")) {
     let pdfParser = new PDFParser();
     await pdfParser.loadPDF(file.path);
 
-    let resumeText = "";
-    // Extract text from all pages
-    pdfParser.on("pdfParser_dataReady", async (pdfData: Output) => {
-      resumeText = pdfData.Pages.map((page) =>
-        page.Texts.map((text) =>
-          text.R.map((r) => decodeURIComponent(r.T)).join("")
-        ).join("")
-      ).join("\n");
+    let resumeText = await new Promise((resolve, reject) => {
+      pdfParser.on("pdfParser_dataReady", (pdfData: Output) => {
+        let resumeText = pdfData.Pages.map((page) =>
+          page.Texts.map((text) =>
+            text.R.map((r) => decodeURIComponent(r.T)).join("")
+          ).join("")
+        ).join("\n");
+        resolve(resumeText);
 
-      return parseResumeToCV(resumeText, userId,resumeId, );
+      });
+
     });
+
+    return parseResumeToCV(resumeText as string, userId, resumeId);
   } else if (
     file?.filename?.endsWith(".docx") ||
     file?.filename?.endsWith(".doc")
@@ -293,10 +298,8 @@ const resumeExtractionForCV = async (file: File, userId: string, resumeId: strin
     const result = await mammoth.convertToHtml({ path: file.path });
     const text = result.value; // The raw text
     const messages = result.messages;
-    return parseResumeToCV(text, userId, resumeId, );
+    return parseResumeToCV(text, userId, resumeId);
   }
 };
-
-
 
 export default resumeExtractionForCV;

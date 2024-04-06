@@ -142,12 +142,13 @@ export const DetailForm = ({isNewItem, initialValues, onFinish, onDelete }: Deta
             <Form.Item
               name={["description"]}
               label="Description"
-              rules={[
-                {
-                  required: true,
-                  message: "Please enter a description!",
-                },
-              ]}
+              // Removed as per lauren's suggestion 
+              // rules={[
+              //   {
+              //     required: true,
+              //     message: "Please enter a description!",
+              //   },
+              // ]}
             >
               <Input.TextArea />
             </Form.Item>

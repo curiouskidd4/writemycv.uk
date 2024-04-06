@@ -22,8 +22,8 @@ import {
   rewriteProfessionalSummary,
 } from "../controllers/openai/professionalSummary";
 import { CustomRequest } from "../../types/requests";
-import resumeExtraction from "../controllers/openai/resumeParsing";
 import resumeExtractionForCV from "../controllers/openaiV2/resumeParsing";
+import importResumeToRepo from "../controllers/openai/resumeParsing";
 
 const router = Router();
 
@@ -269,7 +269,8 @@ router.post("/parseResume", async (req: CustomRequest, res: Response) => {
     return;
   }
 
-  await resumeExtraction(req.files["file"][0], userId, res);
+  await importResumeToRepo(req.files["file"][0], userId);
+  res.status(200).json({ message: "success" });
 });
 
 router.post("/importToCV", async (req: CustomRequest, res: Response) => {
@@ -284,8 +285,9 @@ router.post("/importToCV", async (req: CustomRequest, res: Response) => {
     return;
   }
   // await importToCV(resumeId, userId, res);
+  // Response is sent from the function
   let result = await resumeExtractionForCV(req.files["file"][0], userId, resumeId);
-  res.status(200).json(result);
+  res.status(200).json({ message: "success" });
 });
 
 export default router;

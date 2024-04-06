@@ -34,7 +34,7 @@ const themeSuggestion = async (role: string, alreadyAdded: string[]) => {
     ],
     model: DEFAULT_MODEL,
   });
-  const responseString = response.choices[0].message.content;
+  let responseString = response.choices[0].message.content;
   console.log(responseString);
   let responseArray: string[] = [];
   if (responseString) {
@@ -43,6 +43,7 @@ const themeSuggestion = async (role: string, alreadyAdded: string[]) => {
     //   return item.replace(/\d+\./, "").trim();
     // });
     try {
+      responseString = responseString.replace("```json", "").replace("```", "").replace("```", "").trim();
       responseArray = JSON.parse(responseString);
     } catch (e) {
       console.log(e);

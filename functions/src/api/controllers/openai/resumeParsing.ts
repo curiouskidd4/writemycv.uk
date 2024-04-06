@@ -35,7 +35,7 @@ Format of each section should be as follows, follow exactly the same format: Any
             "startDate": "", # Format should be "MM/YYYY"
             "endDate": "", # Format should be "MM/YYYY" (null if currently here)
             "grade": "",
-            "modules": "", 
+            "modules": [], # All modules metioned in an array  
             "description": "" # Use markdown for formatting, if not mentioned leave blank
         }
     ],
@@ -266,7 +266,7 @@ const parseResume = async (
   }
 };
 
-const resumeExtraction = async (file: File, userId: string, res: Response) => {
+const importResumeToRepo = async (file: File, userId: string) => {
   // Check if file is pdf
   if (file?.filename?.endsWith(".pdf")) {
     let pdfParser = new PDFParser();
@@ -274,16 +274,26 @@ const resumeExtraction = async (file: File, userId: string, res: Response) => {
 
     let resumeText = "";
     // Extract text from all pages
-    pdfParser.on("pdfParser_dataReady", async (pdfData: Output) => {
-      resumeText = pdfData.Pages.map((page) =>
-        page.Texts.map((text) =>
-          text.R.map((r) => decodeURIComponent(r.T)).join("")
-        ).join("")
-      ).join("\n");
 
-      let result = await parseResume(resumeText, userId);
-      return result;
+    // Convert to promise 
+    const pdfData = await new Promise((resolve, reject) => {
+      pdfParser.on("pdfParser_dataReady", (pdfData: Output) => {
+        // resolve(pdfData);
+
+        resumeText = pdfData.Pages.map((page) =>
+          page.Texts.map((text) =>
+            text.R.map((r) => decodeURIComponent(r.T)).join("")
+          ).join("")
+        ).join("\n");
+
+        let result = parseResume(resumeText, userId);
+        resolve(result);
+      });
+
+
     });
+
+    return pdfData;
   } else if (
     file?.filename?.endsWith(".docx") ||
     file?.filename?.endsWith(".doc")
@@ -293,13 +303,11 @@ const resumeExtraction = async (file: File, userId: string, res: Response) => {
     const messages = result.messages;
     let parsedResult = await parseResume(text, userId);
     return parsedResult;
+
+
   }
 };
 
-// const temp = async () => {
-//   resumeExtraction({ path: "/Users/vivekverma/Downloads/Profile (1).pdf" }, "");
-// };
 
-// temp();
 
-export default resumeExtraction;
+export default importResumeToRepo;
