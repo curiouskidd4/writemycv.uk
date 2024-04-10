@@ -108,12 +108,16 @@ export const StarIcon = () => (
   />
 );
 
-export const DownloadIcon = () => (
+export const DownloadIcon = (
+  {
+    color = "#E9AFA3",
+  }
+) => (
   <FontAwesomeIcon
     icon={faDownload}
     style={{
       marginRight: "6px",
-      color: "#E9AFA3",
+      color: color
     }}
   />
 );

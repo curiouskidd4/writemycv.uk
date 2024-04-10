@@ -8,6 +8,7 @@ import MarkdownIt from "markdown-it";
 import { bucket, db } from "../../../utils/firebase";
 import { Resume } from "../../../types/resume";
 import fs from "fs";
+import { captureException } from "../../../utils/sentry";
 const ov = `You are a helpful AI assistant expert at extracting details from resume, Extract the following details from the resume and return it in JSON format. Use british english for spellings.
 *************
 {{resumeText}}
@@ -121,19 +122,18 @@ const parseResumeToCV = async (
     !response.choices[0].message.content ||
     response.choices[0].message.content.includes("Error")
   ) {
-    return { message: "Error in parsing resume" };
+    throw new Error("Invalid response from openai");
   }
   try {
     let result = null;
     try {
-      result = JSON.parse(response.choices[0].message.content);
-    } catch (e) {
       let res = response.choices[0].message.content
+        .replace("```json", "")
         .replace("```", "")
-        .replace("```", "")
-        .replace("json", "");
-      console.log(res);
+        .replace("```", "");
       result = JSON.parse(res);
+    } catch (e) {
+      throw e;
     }
     let personalInfo = result.personalInfo;
     let education = result.education;
@@ -255,8 +255,7 @@ const parseResumeToCV = async (
       message: "success",
     };
   } catch (e) {
-    console.log(e);
-    return { message: "Error in parsing resume" };
+    throw e;
   }
 };
 
@@ -348,40 +347,54 @@ const resumeExtractionForCV = async (
   userId: string,
   resumeId: string
 ) => {
-  // Save the file to storage
-  let outputFileKey = await saveCVToStorage(resumeId, userId, file);
-  // Check if file is pdf
-  let parsedOutput : any = null;
-  if (file?.filename?.endsWith(".pdf")) {
-    let pdfParser = new PDFParser();
-    await pdfParser.loadPDF(file.path);
+  let outputFileKey = "";
+  try {
+    // Save the file to storage
+    outputFileKey = await saveCVToStorage(resumeId, userId, file);
+    // Check if file is pdf
+    let parsedOutput: any = null;
+    if (file?.filename?.endsWith(".pdf")) {
+      let pdfParser = new PDFParser();
+      await pdfParser.loadPDF(file.path);
 
-    let resumeText = await new Promise((resolve, reject) => {
-      pdfParser.on("pdfParser_dataReady", (pdfData: Output) => {
-        let resumeText = pdfData.Pages.map((page) =>
-          page.Texts.map((text) =>
-            text.R.map((r) => decodeURIComponent(r.T)).join("")
-          ).join("")
-        ).join("\n");
-        resolve(resumeText);
+      let resumeText = await new Promise((resolve, reject) => {
+        pdfParser.on("pdfParser_dataReady", (pdfData: Output) => {
+          let resumeText = pdfData.Pages.map((page) =>
+            page.Texts.map((text) =>
+              text.R.map((r) => decodeURIComponent(r.T)).join("")
+            ).join("")
+          ).join("\n");
+          resolve(resumeText);
+        });
       });
+
+      parsedOutput = await parseResumeToCV(
+        resumeText as string,
+        userId,
+        resumeId
+      );
+    } else if (
+      file?.filename?.endsWith(".docx") ||
+      file?.filename?.endsWith(".doc")
+    ) {
+      const result = await mammoth.convertToHtml({ path: file.path });
+      const text = result.value; // The raw text
+      const messages = result.messages;
+      parsedOutput = await parseResumeToCV(text, userId, resumeId);
+    }
+
+    // Save the output to storage
+    await saveOuputToStorage(outputFileKey, parsedOutput);
+  } catch (e) {
+    captureException(e as Error, {
+      src: "parseResumeToCV",
+      context: {
+        userId,
+        resumeId,
+        outputFileKey
+      },
     });
-
-    parsedOutput = await  parseResumeToCV(resumeText as string, userId, resumeId);
-  } else if (
-    file?.filename?.endsWith(".docx") ||
-    file?.filename?.endsWith(".doc")
-  ) {
-    const result = await mammoth.convertToHtml({ path: file.path });
-    const text = result.value; // The raw text
-    const messages = result.messages;
-    parsedOutput = await parseResumeToCV(text, userId, resumeId);
   }
-
-  // Save the output to storage
-  let outputKey = await saveOuputToStorage(outputFileKey, parsedOutput);
-
-
 };
 
 export default resumeExtractionForCV;

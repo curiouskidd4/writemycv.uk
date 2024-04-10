@@ -153,7 +153,7 @@ const ImportCVToProfile = () => {
                     overrideFlag({ reload: true });
                   }}
                 >
-                  Create new
+                  Create Repository Manually
                 </Button>
               </>
             )}

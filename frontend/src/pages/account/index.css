@@ -1,0 +1,50 @@
+.section-header {
+  text-align: left;
+  font: normal normal bold 16px/21px DM Sans !important;
+  letter-spacing: 0px;
+  color: #131313 !important;
+  text-transform: uppercase;
+  opacity: 1;
+}
+
+.section-header.danger {
+  color: red !important;
+}
+
+.section {
+  margin: 1rem 0rem;
+}
+
+.plan-card {
+  width: 600px;
+  background-color: var(--accent-2-light);
+  padding: 1.5rem 2rem;
+  border-radius: 10px;
+}
+
+.plan-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .heading {
+    font: normal normal bold 24px/20px DM Sans;
+  }
+}
+
+.data-item {
+  .data-item-heading {
+    font: normal normal bold 16px/20px DM Sans;
+    margin-bottom: 8px;
+  }
+  .data-item-value {
+    font: normal normal normal 16px/20px DM Sans;
+  }
+
+  margin: 1rem 0rem;
+}
+
+.invoice-header-cell {
+    font: normal normal bold 14px/18px DM Sans;
+    text-transform: uppercase;
+}

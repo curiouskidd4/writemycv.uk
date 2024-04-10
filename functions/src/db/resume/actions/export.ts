@@ -5,8 +5,8 @@ import puppeteer from "puppeteer";
 import { Resume } from "../../../types/resume";
 import hash from "object-hash";
 import { footerTemplate, headerTemplate } from "./pdfExtra";
-// import inlinCss from "inline-css";
-
+import { captureException } from "../../../utils/sentry";
+import { User } from "../../../types/user";
 let PATH_TO_TEMPLATE = "data/resume-templates";
 
 nunjucks.configure([PATH_TO_TEMPLATE], { autoescape: true });
@@ -25,7 +25,8 @@ const getResume = async (resumeId: string) => {
 const generatePdfnScreenShot = async (
   html: string,
   userId: string,
-  resumeId: string
+  resumeId: string,
+  isHowellUser: boolean
 ) => {
   const browser = await puppeteer.launch({
     args: ["--no-sandbox", "--disable-setuid-sandbox"],
@@ -38,7 +39,7 @@ const generatePdfnScreenShot = async (
   try {
     await page.waitForNavigation({ waitUntil: "networkidle2", timeout: 2000 });
   } catch (error) {
-    console.log(error);
+    
   }
 
   await page.emulateMediaType("screen");
@@ -47,14 +48,14 @@ const generatePdfnScreenShot = async (
     format: "A4",
     printBackground: true,
     margin: {
-      top: "96px",
+      top: isHowellUser? "96px": "32px",
       bottom: "60px",
       left: "32px",
       right: "32px",
     },
-    headerTemplate: headerTemplate,
-    footerTemplate: footerTemplate,
-    displayHeaderFooter: true,
+    headerTemplate: isHowellUser ? headerTemplate : undefined,
+    footerTemplate: isHowellUser ? footerTemplate : undefined,
+    displayHeaderFooter: isHowellUser ? true : false,
   });
   // Now generate screenshot in portrain mode as a4
   await page.setViewport({ width: 595, height: 842 });
@@ -103,11 +104,18 @@ const exportResume = async (resumeId: string, userId: string) => {
     let resumeHash = resumeData.exportHash || "";
     let newHash = hash(relevantDataHash);
 
+    // Load user
+    const user = await db.collection("users").doc(userId).get();
+    const userData = user.data() as User;
     // If hash has changed, then export resume
     // console.log(resumeData);
     if (resumeData && newHash != resumeHash) {
+      let resumeTemplate = "simple/resume";
+      console.log("template", resumeTemplate)
       // const resumeTemplate = "simple/resume";
-      const resumeTemplate = "howell/resume";
+      if (userData.isHowellUser) {
+        resumeTemplate = "howell/resume";
+      }
 
       let templateMeta: any = null;
       // Load template Meta
@@ -127,7 +135,7 @@ const exportResume = async (resumeId: string, userId: string) => {
             recruiter: "Lucy Chapman",
           };
         }
-      }else{
+      } else {
         templateMeta = {
           contact: "07943388003",
           recruiter: "Lucy Chapman",
@@ -193,19 +201,20 @@ const exportResume = async (resumeId: string, userId: string) => {
               : endDate,
         };
       });
-      console.log("educationList", educationList);
-      const sectionOrder = resumeData.sectionOrder? ["candidateSummary", ...resumeData.sectionOrder] : [
-        "candidateSummary",
-        "professionalSummary",
-        "education",
-        "experience",
-        "awards",
-        "publications",
-        "languages",
-        "volunteering",
-        "languages",
-        "skills",
-      ];
+      const sectionOrder = resumeData.sectionOrder
+        ? ["candidateSummary", ...resumeData.sectionOrder]
+        : [
+            "candidateSummary",
+            "professionalSummary",
+            "education",
+            "experience",
+            "awards",
+            "publications",
+            "languages",
+            "volunteering",
+            "languages",
+            "skills",
+          ];
 
       let publicationList = resumeData.publicationList?.map((publication) => {
         // Convert start date and end date to "MMM YYYY" format
@@ -287,9 +296,8 @@ const exportResume = async (resumeId: string, userId: string) => {
         skillText:
           resumeData.skillList?.map((skill) => skill.name).join(", ") || "",
         templateMeta,
-        sectionOrder
+        sectionOrder,
       };
-      console.log("data", data);
       const resumeTemplateHtml = nunjucks.render(`${resumeTemplate}.njk`, data);
 
       // console.log(resumeTemplateHtml);
@@ -298,8 +306,14 @@ const exportResume = async (resumeId: string, userId: string) => {
       const bucket = storage().bucket();
       const htmlFile = bucket.file(htmlPath);
       await htmlFile.save(resumeTemplateHtml);
-
-      await generatePdfnScreenShot(resumeTemplateHtml, userId, resumeId);
+      console.log("html saved")
+      console.log("Generating pdfs")
+      await generatePdfnScreenShot(
+        resumeTemplateHtml,
+        userId,
+        resumeId,
+        userData.isHowellUser || false
+      );
 
       // Update the resume export date in firestore
 
@@ -309,7 +323,13 @@ const exportResume = async (resumeId: string, userId: string) => {
       });
     }
   } catch (error) {
-    console.log(error);
+    captureException(error as Error, {
+      message: "Error exporting resume",
+      context: {
+        resumeId,
+        userId,
+      },
+    });
   }
 };
 

@@ -5,57 +5,104 @@ import { Router, Request, Response } from "express";
 import { Validator } from "express-json-validator-middleware";
 import { db } from "../../utils/firebase";
 import stripe_ from "stripe";
-import { STRIPE_BACKEND_KEY } from "../../utils/vars";
+import { HOST_URL, STRIPE_BACKEND_KEY } from "../../utils/vars";
 import bodyParser from "body-parser";
+import { CustomRequest } from "../../types/requests";
 const { validate } = new Validator({});
 const router = Router();
 
 const DOMAIN = "http://localhost:3000";
 // Create checkout session
-router.post("/create-checkout-session", async (req: Request, res: Response) => {
-  const stripe = new stripe_(
-    STRIPE_BACKEND_KEY.value(),
-    {
+router.post(
+  "/create-checkout-session",
+  async (req: CustomRequest, res: Response) => {
+    let user = req.user!;
+    let firebaseUser = await db.collection("users").doc(user.uid).get();
+    const stripe = new stripe_(STRIPE_BACKEND_KEY.value(), {
       apiVersion: "2023-08-16",
+    });
+
+    // Get Price ID from body
+    const { priceId,  planId, isSubscription } = req.body;
+
+    if (!priceId || !planId) {
+      res.status(400).json({ error: "Price ID is required" });
+      return;
     }
-  );
-  
-  // Get Price ID from body
-  const { priceId, quantity } = req.body;
+
+    
+
+    try {
+      const session = await stripe.checkout.sessions.create({
+        payment_method_types: ["card"],
+        line_items: [
+          {
+            price: priceId,
+            quantity:  1,
+          },
+        ],
+        metadata: {
+          userId: user.uid,
+          planId: planId,
+        },
+        customer: firebaseUser.data()?.stripeCustomerId,
+        customer_email: firebaseUser.data()?.stripeCustomerId ? undefined : firebaseUser.data()?.email,
+        customer_creation: firebaseUser.data()?.stripeCustomerId ? undefined : "always",
+        mode: isSubscription ? "subscription" : "payment",
+        success_url: `${HOST_URL.value()}/upgrade/success`,
+        cancel_url: `${HOST_URL.value()}/upgrade/cancel`,
+      });
+      //   res.json({ id: session.id });
+      res.json({
+        sessionId: session.id,
+        sessionUrl: session.url,
+      });
+    } catch (err) {
+      console.log("Error", err);
+      res.status(500).json({ error: err });
+    }
+    return;
+  }
+);
+
+router.get("/invoices", async (req: CustomRequest, res: Response) => {
+  let user = req.user!;
+  let firebaseRef = await db.collection("users").doc(user.uid).get();
+  let firebaseUser = firebaseRef.data();
+  if (!firebaseUser) {
+    res.status(400).send("User not found");
+    return;
+  }
+
+  if (!firebaseUser.stripeCustomerId) {
+    res.status(200).send({
+      invoices: [],
+    });
+    return;
+  }
+  const stripe = new stripe_(STRIPE_BACKEND_KEY.value(), {
+    apiVersion: "2023-08-16",
+  });
 
   try {
-    const session = await stripe.checkout.sessions.create({
-      payment_method_types: ["card"],
-      line_items: [
-        {
-          price: priceId,
-          quantity: quantity || 1,
-        },
-      ],
-      mode: "subscription",
-      success_url: `${DOMAIN}/upgrade/success`,
-      cancel_url: `${DOMAIN}/upgrade/cancel`,
+    const invoices = await stripe.invoices.list({
+      customer: firebaseUser.stripeCustomerId,
     });
-    //   res.json({ id: session.id });
-    res.json({
-      sessionId: session.id,
-      sessionUrl: session.url,
-    });
+
+    res.json({ invoices: invoices.data });
   } catch (err) {
     console.log("Error", err);
     res.status(500).json({ error: err });
   }
-  return;
-});
+}
+);
+
 
 const fulfillOrder = async (session: stripe_.Checkout.Session) => {
-  const stripe = new stripe_(
-    STRIPE_BACKEND_KEY.value(),
-    {
-      apiVersion: "2023-08-16",
-    }
-  );
-  
+  const stripe = new stripe_(STRIPE_BACKEND_KEY.value(), {
+    apiVersion: "2023-08-16",
+  });
+
   // Update user document
   let email = session.customer_details?.email;
 
@@ -98,6 +145,5 @@ const fulfillOrder = async (session: stripe_.Checkout.Session) => {
   // get subscription
   // const subscription = stripe.subscriptions.retrieve(subscriptionId);
 };
-
 
 export default router;

@@ -36,44 +36,6 @@ const Upgrade = () => {
     }
   };
 
-  // let pricingTable = [
-  //   {
-  //     period: "Monthly",
-  //     price: "$12.99",
-  //     priceId: "price_1NzO72SHT210NSXLxJwdsRDY",
-  //     features: [
-  //       "Unlimited Resumes",
-  //       "AI Powered Suggestions",
-  //       "Unlimited Templates",
-  //       "Unlimited Exports",
-  //       "Unlimited Storage",
-  //     ],
-  //   },
-  //   {
-  //     period: "12 Months",
-  //     price: "$99.99",
-  //     priceId: "price_1NzO72SHT210NSXLxJwdsRDY",
-  //     features: [
-  //       "Unlimited Resumes",
-  //       "AI Powered Suggestions",
-  //       "Unlimited Templates",
-  //       "Unlimited Exports",
-  //       "Unlimited Storage",
-  //     ],
-  //   },
-  //   {
-  //     period: "6 Months",
-  //     price: "$59.99",
-  //     priceId: "price_1NzO72SHT210NSXLxJwdsRDY",
-  //     features: [
-  //       "Unlimited Resumes",
-  //       "AI Powered Suggestions",
-  //       "Unlimited Templates",
-  //       "Unlimited Exports",
-  //       "Unlimited Storage",
-  //     ],
-  //   },
-  // ];
 
   let pricingTable = [
     {

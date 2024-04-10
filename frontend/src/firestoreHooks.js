@@ -19,7 +19,6 @@ const useDoc = (collectionName, docId, subscribe) => {
   const [state, setState] = useState({
     error: "",
     loading: true,
-    data: null,
   });
   useEffect(() => {
     // const unsubscribe = db
@@ -63,7 +62,7 @@ const useDoc = (collectionName, docId, subscribe) => {
       }));
     });
     return () => unsubscribe();
-  }, []);
+  }, [docId]);
 
   return { loading: state.loading, error: state.error, data: state.data };
 };

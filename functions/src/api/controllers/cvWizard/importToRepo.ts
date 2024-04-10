@@ -1,12 +1,13 @@
 import PDFParser, { Output } from "pdf2json";
 import { File } from "../../../types/requests";
-import { openai, DEFAULT_MODEL , OPENAI_MODELS} from "../../../utils/openai";
+import { openai, DEFAULT_MODEL, OPENAI_MODELS } from "../../../utils/openai";
 import { Router, Request, Response } from "express";
 import moment from "moment";
 import mammoth from "mammoth";
 import MarkdownIt from "markdown-it";
 import { bucket, db } from "../../../utils/firebase";
 import fs from "fs";
+import { captureException } from "../../../utils/sentry";
 
 const ov = `You are a helpful AI assistant expert at extracting details from resume, Extract the following details from the resume and return it in JSON format. Use british english for spellings.
 *************
@@ -89,10 +90,7 @@ const parseDate = (date: string | null) => {
   return convertedDate;
 };
 
-const parseResume = async (
-  resumeText: string,
-  userId: string,
-) => {
+const parseResume = async (resumeText: string, userId: string) => {
   let md = new MarkdownIt();
   // Configure prompt
   const prompt = ov.replace("{{resumeText}}", resumeText);
@@ -118,19 +116,21 @@ const parseResume = async (
     !response.choices[0].message.content ||
     response.choices[0].message.content.includes("Error")
   ) {
-    return {"error": "Error in parsing resume"}
+    throw new Error("Invalid response from OpenAI API");
   }
   try {
     let result = null;
     try {
-      result = JSON.parse(response.choices[0].message.content);
-    } catch (e) {
       let res = response.choices[0].message.content
         .replace("```", "")
         .replace("```", "")
         .replace("json", "");
-      console.log(res);
       result = JSON.parse(res);
+    } catch (e) {
+      throw new Error(
+        "Invalid JSON from openai: Response: \n " +
+          response.choices[0].message.content
+      );
     }
     let personalInfo = result.personalInfo;
     let education = result.education;
@@ -252,25 +252,20 @@ const parseResume = async (
         { merge: true }
       );
 
-    return  {
-        personalInfo: profilePersonalInfo,
-        education: profileEducation,
-        experience: profileExperience,
-        skills: profileSkills,
-        professionalSummary: result.professionalSummary,
-        openaiResponse: response.choices[0].message.content,
-      }
+    return {
+      personalInfo: profilePersonalInfo,
+      education: profileEducation,
+      experience: profileExperience,
+      skills: profileSkills,
+      professionalSummary: result.professionalSummary,
+      openaiResponse: response.choices[0].message.content,
+    };
   } catch (e) {
-    console.log(e);
-    return { message: "Error in parsing resume" , 
-  }
+    throw e;
   }
 };
 
-const saveCVToStorage = async (
-  userId: string,
-  file: File
-) => {
+const saveCVToStorage = async (userId: string, file: File) => {
   console.log("Saving file to storage...");
   // File is a in memory file
   const dateStr = new Date().toISOString().replace(/:/g, "-");
@@ -349,54 +344,56 @@ const saveOuputToStorage = async (outputFileKey: string, output: any) => {
   });
 };
 
-
 const importResumeToRepo = async (file: File, userId: string) => {
-  let outputFileKey = await saveCVToStorage( userId, file);
+  let outputFileKey = "";
+  try {
+    outputFileKey = await saveCVToStorage(userId, file);
 
-  // Check if file is pdf
-  if (file?.filename?.endsWith(".pdf")) {
-    let pdfParser = new PDFParser();
-    await pdfParser.loadPDF(file.path);
+    // Check if file is pdf
+    if (file?.filename?.endsWith(".pdf")) {
+      let pdfParser = new PDFParser();
+      await pdfParser.loadPDF(file.path);
 
+      // Convert to promise
+      let resumeText = await new Promise<string>((resolve, reject) => {
+        pdfParser.on("pdfParser_dataReady", (pdfData: Output) => {
+          // resolve(pdfData);
 
-    // Convert to promise 
-    let resumeText = await new Promise<string>((resolve, reject) => {
-      pdfParser.on("pdfParser_dataReady", (pdfData: Output) => {
-        // resolve(pdfData);
+          let text = pdfData.Pages.map((page) =>
+            page.Texts.map((text) =>
+              text.R.map((r) => decodeURIComponent(r.T)).join("")
+            ).join("")
+          ).join("\n");
 
-        let text = pdfData.Pages.map((page) =>
-          page.Texts.map((text) =>
-            text.R.map((r) => decodeURIComponent(r.T)).join("")
-          ).join("")
-        ).join("\n");
-
-        resolve(text);
+          resolve(text);
+        });
       });
 
+      let result = await parseResume(resumeText, userId);
 
+      // Save the output to storage
+      await saveOuputToStorage(outputFileKey, result);
+      return result;
+    } else if (
+      file?.filename?.endsWith(".docx") ||
+      file?.filename?.endsWith(".doc")
+    ) {
+      const result = await mammoth.convertToHtml({ path: file.path });
+      const text = result.value; // The raw text
+      const messages = result.messages;
+      let parsedResult = await parseResume(text, userId);
+      // Save the output to storage
+      await saveOuputToStorage(outputFileKey, parsedResult);
+      return parsedResult;
+    }
+  } catch (e) {
+    captureException(e as Error, {
+      context: {
+        userId: userId,
+        outputFileKey: outputFileKey,
+      },
     });
-
-    let result = await parseResume(resumeText, userId);
-
-    // Save the output to storage
-    await saveOuputToStorage(outputFileKey, result);
-    return result;
-  } else if (
-    file?.filename?.endsWith(".docx") ||
-    file?.filename?.endsWith(".doc")
-  ) {
-    const result = await mammoth.convertToHtml({ path: file.path });
-    const text = result.value; // The raw text
-    const messages = result.messages;
-    let parsedResult = await parseResume(text, userId);
-    // Save the output to storage
-    await saveOuputToStorage(outputFileKey, parsedResult);
-    return parsedResult;
-
-
   }
 };
-
-
 
 export default importResumeToRepo;

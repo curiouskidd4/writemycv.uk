@@ -110,6 +110,7 @@ const Adjustment = () => {
     if (currentOrder) {
       saveResumeOrder(currentOrder.map((item) => item.key));
       updatePreview();
+      console.log("Current Order", currentOrder);
     }
   }, [currentOrder]);
 

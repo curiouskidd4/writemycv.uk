@@ -1,14 +1,15 @@
 {
   "name": "functions",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && npm run sentry:sourcemaps",
     "build:watch": "tsc --watch",
     "serve": "npm run build && firebase emulators:start --only functions",
     "shell": "npm run build && firebase functions:shell",
     "start": "npm run shell",
     "deploy": "firebase deploy --only functions",
     "logs": "firebase functions:log",
-    "gcp-build": "node node_modules/puppeteer/install.js"
+    "gcp-build": "node node_modules/puppeteer/install.js",
+    "sentry:sourcemaps": "sentry-cli sourcemaps inject --org writemycv --project node ./lib && sentry-cli sourcemaps upload --org writemycv --project node ./lib"
   },
   "engines": {
     "node": "18"
@@ -16,6 +17,9 @@
   "main": "lib/index.js",
   "dependencies": {
     "@adobe/pdfservices-node-sdk": "^3.4.2",
+    "@sentry/cli": "^2.31.0",
+    "@sentry/profiling-node": "^1",
+    "@sentry/serverless": "^7.109.0",
     "bson-objectid": "^2.0.4",
     "busboy": "^1.6.0",
     "cors": "^2.8.5",
@@ -42,6 +46,7 @@
     "@types/nunjucks": "^3.2.3",
     "@types/object-hash": "^3.0.4",
     "@types/puppeteer": "^7.0.4",
+    "@types/uuid": "^9.0.8",
     "firebase-functions-test": "^3.1.0",
     "typescript": "^4.9.0"
   },

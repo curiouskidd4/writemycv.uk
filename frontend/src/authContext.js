@@ -59,7 +59,6 @@ const useProvideAuth = () => {
       
       //
       if (user) {
-        console.log(user.refreshToken)
         saveUserToFirebase(user);
       } else {
         setState({
@@ -151,7 +150,7 @@ const useProvideAuth = () => {
       setState({
         loading: false,
         error: null,
-        data: null,
+        data: userData,
         user: user,
         isAuthenticated: true,
         isProfileComplete: userData.profileComplete,
@@ -162,7 +161,7 @@ const useProvideAuth = () => {
       return;
     }
 
-    await setDoc(userRef, {
+    let userData = {
       firstName: firstName || null,
       lastName: lastName || null,
       username: user.email,
@@ -171,12 +170,13 @@ const useProvideAuth = () => {
       profileComplete: false,
       isRepoCompleted: false,
       photoURL: user.photoURL,
-    });
+    }
+    await setDoc(userRef, userData);
 
     setState({
       loading: false,
       error: null,
-      data: null,
+      data: userData,
       user: user,
       isAuthenticated: true,
       isProfileComplete: false,
@@ -301,6 +301,26 @@ const useProvideAuth = () => {
     });
   };
 
+  const updateProfilePic = async (photoURL) => {
+    let docRef = doc(db, "users", auth.currentUser.uid);
+    await setDoc(
+      docRef,
+      {
+        photoURL: photoURL,
+      },
+      { merge: true }
+    );
+
+
+    setState((prev) => ({
+      ...prev,
+      data: {
+        ...prev.data,
+        photoURL: photoURL,
+      },
+    }));
+  };
+
   const reautheticate = async (password) => {
     let user = auth.currentUser;
     let credential = EmailAuthProvider.credential(user.email, password);
@@ -373,6 +393,7 @@ const useProvideAuth = () => {
     signInWithGoogle,
     overrideCVImport,
     sendVerificationEmailCustom,
+    updateProfilePic
   };
 };
 

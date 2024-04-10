@@ -28,14 +28,41 @@
 
                 sectionOrderList.forEach(function (section)  {
                   const sectionElement = document.querySelector(`.section.${section}`);
-                  sectionContainer.appendChild(sectionElement);
+                  if (sectionElement) {
+                    sectionContainer.appendChild(sectionElement);
+                  }
                 });
       }
      
 
+      function removeEmptyNodes() {
+              const pNodes = document.querySelectorAll('p');
+              const spanNodes = document.querySelectorAll('span');
+              const divNodes = document.querySelectorAll('div');
+              
+              for (let i = 0; i < pNodes.length; i++) {
+                  if (pNodes[i].innerHTML === '') {
+                      pNodes[i].remove();
+                  }
+              }
+
+              for (let i = 0; i < spanNodes.length; i++) {
+                  if (spanNodes[i].innerHTML === '') {
+                      spanNodes[i].remove();
+                  }
+              }
+
+              for (let i = 0; i < divNodes.length; i++) {
+                  if (divNodes[i].innerHTML === '') {
+                      divNodes[i].remove();
+                  }
+              }
+          }
+
         // Run reorder function after the page is loaded
         window.addEventListener("load", function () {
           reorder();
+          removeEmptyNodes()
         });
 
 
@@ -270,6 +297,14 @@
         <p class="section-content">{{ professionalSummary  | safe }}</p>
     </section>
 
+    {% for otherSection in otherInformationList %}
+        <section class="section {{ otherSection.sectionTitle }}">
+            <h2 class="section-title">{{ otherSection.title }}</h2>
+            <p class="section-content">{{ otherSection.description  | safe }}</p>
+        </section>
+    {% endfor %}
+
+
     <section class="section education">
         <h2 class="section-title">Education</h2>
         {% for school in educationList %}
@@ -278,8 +313,14 @@
                 <p class="education-degree subdetails">{{ school.degree }} </p>
                  <div class="education-date subdetails">
                   <div>
-                    <i class="fa-solid fa-calendar"></i>
-                    <span>{{ school.startDate }} - {{ school.endDate }}</span>
+                   {% if school.startDate or school.endDate %}
+                      <i class="fa-solid fa-calendar"></i>
+                    {% endif %}
+                    {% if school.startDate and school.endDate %}
+                    {{ school.startDate }} to {{ job.endDate }}
+                    {% elif school.startDate or school.endDate %}
+                    {{ school.startDate }}{{ school.endDate  }}
+                    {% endif %}
                     </div>
                     <div>
                     {% if school.grade %}
@@ -336,7 +377,7 @@
     </section>
 
     <section class="section awards">
-        {% if awardList %}
+        {% if awardList|length %}
          <h2 class="section-title">Awards</h2>
            {% for award in awardList %}
             <div class="section-item">
@@ -364,7 +405,7 @@
 
 
     <section class="section publications">
-        {% if publicationList %}
+        {% if publicationList|length %}
          <h2 class="section-title">Publications</h2>
            {% for publication in publicationList %}
             <div class="section-item">
@@ -389,7 +430,7 @@
     </section>
 
     <section class="section volunteering">
-        {% if volunteeringList %}
+        {% if volunteeringList|length %}
          <h2 class="section-title">Volunteer Work</h2>
            {% for volunteer in volunteeringList %}
             <div class="section-item">
@@ -434,7 +475,7 @@
     </section> #}
 
     <section class="section languages">
-      {% if languageList %}
+      {% if languageList|length %}
         <h2 class="section-title">Languages</h2>
         <div class="languages-row">
         {% for language in languageList %}
@@ -451,7 +492,10 @@
     </section>
 
     <section class="section skills">
+        {% if skillList|length %}
         <h2 class="section-title">Skills</h2>
+        {% endif %}
+
         {# <ul class="skills-list">
         {% for skill in skillList %}
             <li class="skill-item">{{ skill.name }} ( {{ skill.level }} )</li>

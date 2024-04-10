@@ -1,3 +1,4 @@
+import {Sentry} from "./utils/sentry";
 
 import {api} from "./api"
 import * as db from "./db"

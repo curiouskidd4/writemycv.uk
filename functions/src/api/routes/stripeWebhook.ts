@@ -6,12 +6,13 @@ import stripe_ from "stripe";
 import { STRIPE_BACKEND_KEY } from "../../utils/vars";
 import bodyParser from "body-parser";
 import express from "express";
+import { firestore } from "firebase-admin";
+import { addCredits } from "../controllers/billing/credits";
+import { Timestamp } from "firebase-admin/firestore";
 
 const { validate } = new Validator({});
 
 const router = Router();
-
-
 
 const fulfillOrder = async (session: stripe_.Checkout.Session) => {
   // Update user document
@@ -31,35 +32,63 @@ const fulfillOrder = async (session: stripe_.Checkout.Session) => {
 
   let subscription;
   let subscriptionId;
-  if (!session.subscription) {
-    console.log("No subscription found");
-    return;
-    type i = typeof session.subscription;
-  }
+  let creditPack;
+  let priceId;
+  // if (!session.subscription) {
+  //   console.log("No subscription found");
+  //   return;
+  //   type i = typeof session.subscription;
+  // }
   // Check if it's a string or not
   if (typeof session.subscription === "string") {
     subscriptionId = session.subscription;
     subscription = await stripe.subscriptions.retrieve(subscriptionId);
-  } else {
+  } else if (session.subscription) {
     subscriptionId = session.subscription.id;
     subscription = session.subscription;
   }
 
-  let expiry = subscription.current_period_end;
-  console.log("Expiry: ", expiry);
-
+  let metadata = session.metadata;
+  let planId = metadata!.planId;
+  console.log("Metadata ", metadata);
+  // No subscription found, must be a credit pack
+  let lineItems = await stripe.checkout.sessions.listLineItems(session.id);
+  priceId = lineItems.data[0].price?.id;
   // Update user document
   let userId = user.docs[0].id;
-  console.log("User ID: ", userId);
+  console.log("Plan ID: ", planId, userId);
 
-  await db
-    .collection("users")
-    .doc(userId)
-    .update({
-      expiry: new Date(expiry * 1000),
-      subscriptionId: subscriptionId,
+  if (!userId) {
+    console.log("No user found");
+    return;
+  }
+
+  if (subscription) {
+    let expiry = subscription.current_period_end;
+    console.log("Expiry: ", expiry);
+
+    console.log("User ID: ", userId);
+
+    await db
+      .collection("users")
+      .doc(userId)
+      .update({
+        expiry: new Date(expiry * 1000),
+        subscriptionId: subscriptionId,
+        planId: planId,
+        subscriptionDate: Timestamp.now(),
+        stripeCustomerId: session.customer,
+        
+      });
+    await addCredits(planId! as any, userId! as any);
+  } else {
+    await db.collection("users").doc(userId).update({
+      // subscriptionDate: Timestamp.now(),
+      stripeCustomerId: session.customer,
     });
 
+    await addCredits( planId! as any, userId! as any);
+  }
   // get subscription
   // const subscription = stripe.subscriptions.retrieve(subscriptionId);
 };
@@ -102,7 +131,7 @@ router.post("/webhook", async (req: any, res: Response) => {
       }
     );
 
-    fulfillOrder(sessionWithLineItems);
+    await fulfillOrder(sessionWithLineItems);
   }
 
   res.status(200).json({ received: true });

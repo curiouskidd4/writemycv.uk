@@ -40,7 +40,9 @@ const LoginSignupPage = ({ isSignup }) => {
 
   return (
     <React.Fragment>
+      
       <div className="login-signup-page">
+        
         <Row
           // justify="center"
           // align="middle"
@@ -56,19 +58,37 @@ const LoginSignupPage = ({ isSignup }) => {
             span={12}
             style={{
               height: "100%",
-              background: "#3e4040",
+              background: "#000000",
               display: "flex",
               flexDirection: "column",
               justifyContent: "center",
+              overflow: "hidden",
             }}
           >
+                          <div
+                style={{
+                  position: "absolute",
+                  top: "0",
+                  left: "-100"
+                }}
+              >
+                <img
+                  src="/Linev2.png"
+                  style={{
+                    width: "100%",
+                    // maxWidth: "300px",
+                  }}
+                />
+
+
+              </div>
             <div
               style={{
-                maxWidth: "600px",
+                width: "600px",
                 margin: "0px auto",
               }}
             >
-              <div
+              {/* <div
                 style={{
                   width: "100%",
                   display: "flex",
@@ -78,19 +98,43 @@ const LoginSignupPage = ({ isSignup }) => {
                 <img
                   src="/undraw_online_cv_re_gn0a.svg"
                   style={{
-                    width: "80%",
+                    // width: "60%",
+                    maxWidth: "300px",
                   }}
                 />
-              </div>
+              </div> */}
+
+
               <div
                 style={{
-                  margin: "1rem 1rem",
+                  position: "absolute",
+                  bottom: "-10%",
+                  left: "50%",
+                  transform: "translateX(-50%)",
                   width: "100%",
+                  margin: "1rem 1rem",
+
+                  display: "flex",
+                  justifyContent: "center",
                 }}
               >
-                <div className="large-logo">WriteMyCV</div>
+                <div>
+                  <div
+                    style={{
+                      width: "100%",
+                      paddingBottom: "1rem",
+                    }}
+                  >
+                    <img
+                      src="/Logo/WriteMyCV- dark background.png"
+                      style={{ width: "100%", maxWidth: "280px" }}
+                    />
 
-                <div className="logo-subtitle">Craft The Perfect CV</div>
+                    <div className="logo-subtitle">Craft The Perfect CV</div>
+                  </div>
+
+                  <img src="/Dots.png" style={{ width: "450px" }} />
+                </div>
               </div>
             </div>
           </Col>
