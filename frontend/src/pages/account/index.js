@@ -13,7 +13,7 @@ import {
   message,
 } from "antd";
 import { PhoneInput } from "../../components/phoneInput";
-import { useAuth } from "../../authContext";
+import { useAuth } from "../../contexts/authContext";
 import { useDoc, useMutateDoc } from "../../firestoreHooks";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";

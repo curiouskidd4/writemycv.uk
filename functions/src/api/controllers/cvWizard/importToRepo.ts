@@ -393,6 +393,7 @@ const importResumeToRepo = async (file: File, userId: string) => {
         outputFileKey: outputFileKey,
       },
     });
+    throw e;
   }
 };
 

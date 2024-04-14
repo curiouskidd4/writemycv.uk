@@ -11,7 +11,7 @@ import {
   Modal,
 } from "antd";
 import EditorJsInput from "../../../components/editor";
-import { useAuth } from "../../../authContext";
+import { useAuth } from "../../../contexts/authContext";
 import { useDoc, useMutateDoc } from "../../../firestoreHooks";
 import FormLabel from "../../../components/labelWithActions";
 import { useOpenAI } from "../../../utils";

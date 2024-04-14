@@ -4,7 +4,7 @@ import { MoreOutlined, SendOutlined, LoadingOutlined } from "@ant-design/icons";
 import ReactMarkdown from "react-markdown";
 
 import moment from "moment";
-import { useAuth } from "../../authContext";
+import { useAuth } from "../../contexts/authContext";
 import "./index.css";
 import axios from "axios";
 

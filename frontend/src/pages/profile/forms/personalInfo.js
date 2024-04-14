@@ -10,7 +10,7 @@ import {
   message,
 } from "antd";
 import { useDoc, useMutateDoc } from "../../../firestoreHooks";
-import { useAuth } from "../../../authContext";
+import { useAuth } from "../../../contexts/authContext";
 import { PhoneInput } from "../../coolForm/inputs/phoneInput";
 
 const PersonalInfoForm = ({ onFinish, initialValues, isLoading }) => {

@@ -2,7 +2,7 @@ import React from "react";
 import "./index.css";
 import { Button, Typography } from "antd";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useAuth } from "../../authContext";
+import { useAuth } from "../../contexts/authContext";
 
 const Sider = () => {
   // Check if resumes page or  repository page

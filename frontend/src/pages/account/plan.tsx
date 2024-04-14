@@ -12,11 +12,12 @@ import {
 } from "antd";
 import "./index.css";
 import { DownloadIcon } from "../../components/faIcons";
-import { useAuth } from "../../authContext";
+import { useAuth } from "../../contexts/authContext";
 import { useDoc } from "../../firestoreHooks";
 import { useNavigate } from "react-router-dom";
 import useStripe from "../../utils/stripe";
 import moment from "moment";
+import { PRICING_TABLE } from "../../constants";
 let stripeDashboardURL =
   "https://billing.stripe.com/p/login/test_28o3fYaln3oTenC7ss";
 
@@ -27,52 +28,7 @@ const BILLING_PRODUCTS = {
   PRO_YEARLY: "pro_yearly",
 };
 
-let pricingTable = [
-  {
-    planName: "Quick Work",
-    period: "14 Days",
-    price: "£6.99",
-    priceId: "price_1P3k8zSHT210NSXLloFRLMHs",
-    planId: "pro_bi_weekly",
-    features: [
-      "Unlimited Resumes",
-      "AI Powered Suggestions",
-      "Unlimited Templates",
-      "Unlimited Exports",
-      "Unlimited Storage",
-    ],
-  },
-  {
-    planName: "Job Hunter",
-    period: "3 Months",
-    price: "£35.99",
-    priceId: "price_1P3kA0SHT210NSXL4qNPrVkf",
-    planId: "pro_quaterly",
 
-    features: [
-      "Unlimited Resumes",
-      "AI Powered Suggestions",
-      "Unlimited Templates",
-      "Unlimited Exports",
-      "Unlimited Storage",
-    ],
-  },
-  {
-    planName: "Career Mate",
-    period: "12 Months",
-    price: "£74.99",
-    planId: "pro_yearly",
-
-    priceId: "price_1P3kAPSHT210NSXLXCnQuFVV",
-    features: [
-      "Unlimited Resumes",
-      "AI Powered Suggestions",
-      "Unlimited Templates",
-      "Unlimited Exports",
-      "Unlimited Storage",
-    ],
-  },
-];
 
 let creditTable = [
   {
@@ -141,7 +97,7 @@ const SubscriptionModal = ({
         <Typography.Title level={4}>Buy Subscription</Typography.Title>
 
         <Row gutter={24}>
-          {pricingTable.map((plan) => (
+          {PRICING_TABLE.map((plan) => (
             <Col span={8} key={plan.planId}>
               <Card>
                 <Typography.Title level={4}>{plan.planName}</Typography.Title>
@@ -246,7 +202,7 @@ const Invoices = () => {
 
   const getPlanName = (invoice: any) => {
     let planId = invoice.lines.data[0].plan.id;
-    let planName = pricingTable.find((plan) => plan.priceId === planId);
+    let planName = PRICING_TABLE.find((plan) => plan.priceId === planId);
 
     if (planName) return planName.planName;
 

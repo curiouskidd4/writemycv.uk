@@ -3,7 +3,7 @@ import { ref } from "firebase/storage";
 import { createContext, useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { db, storage } from "../services/firebase";
-import { useAuth } from "../authContext";
+import { useAuth } from "./authContext";
 import { downloadStorageContent } from "../helpers";
 import { useDoc } from "../firestoreHooks";
 import {

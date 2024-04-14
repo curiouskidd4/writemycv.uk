@@ -83,7 +83,7 @@ const deductCredits = async (deductRef: DEDUCT_TYPES, userId: string) => {
   let amount = 1;
   if (deductRef === DEDUCT_TYPES.RESUME_DOWNLOAD) {
     amount = 10;
-  } else if (deductRef === DEDUCT_TYPES.RESUME_UPLOAD) {
+  } else if (deductRef === DEDUCT_TYPES.RESUME_PARSING) {
     amount = 50;
   } else {
     return;
@@ -106,8 +106,8 @@ const deductCredits = async (deductRef: DEDUCT_TYPES, userId: string) => {
   await ref.set(credit);
 
   // Update user credits
-  let userRef = db.collection("users").doc(userId);
-  await userRef.update({
+  let creditDocRef = db.collection("credits").doc(userId);
+  await creditDocRef.update({
     credits: FieldValue.increment(-amount),
     updatedAt: Timestamp.now(),
   });

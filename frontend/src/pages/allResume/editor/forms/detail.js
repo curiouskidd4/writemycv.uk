@@ -18,7 +18,7 @@ import { EducationForm } from "../../../profile/forms/education";
 import { PersonalInfoForm } from "../../../profile/forms/personalInfo";
 import { SkillForm } from "../../../profile/forms/skills";
 import { ProfessionalSummaryForm } from "../../../profile/forms/summary";
-import { useAuth } from "../../../../authContext";
+import { useAuth } from "../../../../contexts/authContext";
 import { useDoc, useMutateDoc } from "../../../../firestoreHooks";
 import { ExperienceForm } from "../../../profile/forms/experience";
 import dayjs from "dayjs";

@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useState } from "react";
-import { useAuth } from "../authContext";
+import { useAuth } from "../contexts/authContext";
 import { useOpenAIContext } from "../customContext";
 
 const BASE_URL =

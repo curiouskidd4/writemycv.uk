@@ -14,7 +14,7 @@ enum CREDIT_PACKAGES {
 
 enum DEDUCT_TYPES {
   RESUME_DOWNLOAD = "resume_download",
-  RESUME_UPLOAD = "resume_upload"
+  RESUME_PARSING = "resume_parsing"
 }
 
 

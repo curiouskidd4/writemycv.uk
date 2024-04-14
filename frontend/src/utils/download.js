@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useState } from "react";
-import { useAuth } from "../authContext";
+import { useAuth } from "../contexts/authContext";
 
 const BASE_URL =
   process.env.REACT_APP_BASE_URL ||
@@ -23,7 +23,7 @@ const useUtils = () => {
     try {
       const token = await auth.user.getIdToken();
       const response = await axios.post(
-        `${BASE_URL}/download/export-word`,
+        `${BASE_URL}/resume/${data.resumeId}/export-word`,
         data,
         {
           headers: {
@@ -46,7 +46,39 @@ const useUtils = () => {
     }
   };
 
-  return { ...state, exportResumeToDoc };
+  const exportResumeToPDF = async (data) => {
+    setState((prevState) => ({
+      ...prevState,
+      loading: true,
+    }));
+    try {
+      const token = await auth.user.getIdToken();
+      const response = await axios.post(
+        `${BASE_URL}/resume/${data.resumeId}/export-pdf`,
+        data,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setState((prevState) => ({
+        ...prevState,
+        data: response.data,
+        loading: false,
+      }));
+      return response.data;
+    } catch (err) {
+      setState((prevState) => ({
+        ...prevState,
+        error: err,
+        loading: false,
+      }));
+    }
+  }
+
+
+  return { ...state, exportResumeToDoc, exportResumeToPDF };
 };
 
 export default useUtils;

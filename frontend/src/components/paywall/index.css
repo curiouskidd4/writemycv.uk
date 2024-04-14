@@ -1,0 +1,53 @@
+.pricing-card.selected {
+    border: 2px solid var(--accent-1);
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    outline:  none;
+}
+
+.pricing-card {
+    cursor: pointer;
+    
+
+}
+
+.pricing-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1rem;
+
+    .plan-name {
+        font: normal normal bold 24px/20px DM Sans;
+        /* color: var(--accent-1); */
+        /* color: var(--primary); */
+
+    }
+
+    .plan-price {
+        font: normal normal bold 24px/20px DM Sans;
+        margin-top: 1rem !important;
+        margin-bottom: 0.5rem !important;
+
+        
+        padding: 0rem 0rem !important;
+        /* color: var(--primary); */
+        color: var(--accent-1);
+    }
+
+    .plan-period {
+        border: 1px solid var(--accent-1);
+        border-radius: 5px;
+        padding: 0.25rem 0.5rem;
+        font: normal normal bold 12px/12px DM Sans;
+        color: var(--accent-1);
+        
+
+
+    }
+
+    .plan-price-per-month {
+        
+        margin-bottom: 1rem;
+    }
+}

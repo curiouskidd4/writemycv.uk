@@ -27,7 +27,7 @@ import {
   useNavigate,
 } from "react-router-dom";
 import { MenuOutlined, UserOutlined } from "@ant-design/icons";
-import { useAuth } from "../authContext";
+import { useAuth } from "../contexts/authContext";
 import { ProfileIcon } from "./faIcons";
 
 const { Header, Content, Footer, Sider } = Layout;

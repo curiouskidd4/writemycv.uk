@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useOpenAI } from "../utils";
-import { useAuth } from "../authContext";
+import { useAuth } from "../contexts/authContext";
 import { Modal, Typography, Upload, Row, Button } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { MagicWandLoading, UploadIcon } from "../components/faIcons";

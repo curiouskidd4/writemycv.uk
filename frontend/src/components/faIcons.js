@@ -31,6 +31,7 @@ import {
   faNewspaper,
   faLanguage,
   faAward,
+  faCircleCheck,
 } from "@fortawesome/free-solid-svg-icons";
 
 export const MagicWandIcon = ({ color = "#E9AFA3", marginRight = "6px" }) => (
@@ -157,6 +158,18 @@ export const UploadIcon = (
 ) => (
   <FontAwesomeIcon
     icon={faUpload}
+    style={{
+      color: color,
+      marginRight: marginRight,
+    }}
+  />
+);
+
+export const CircleCheckIcon = (
+  { color = "#E9AFA3", marginRight = "6px" },
+) => (
+  <FontAwesomeIcon
+    icon={faCircleCheck}
     style={{
       color: color,
       marginRight: marginRight,

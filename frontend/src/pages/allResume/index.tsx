@@ -24,7 +24,7 @@ import {
   BulbOutlined,
   ExpandOutlined,
 } from "@ant-design/icons";
-import { useAuth } from "../../authContext";
+import { useAuth } from "../../contexts/authContext";
 import {
   addDoc,
   and,
@@ -55,6 +55,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { Resume } from "../../types/resume";
 import { useMutateDoc } from "../../firestoreHooks";
+import { OutOfCreditsComponent } from "../../components/paywall";
 
 // const ResumeItemV2 = ({ resume }: { resume: Resume }) => {
 //   const { user } = useAuth();
@@ -240,16 +241,20 @@ import { useMutateDoc } from "../../firestoreHooks";
 
 const ResumeItemV3 = ({ resume }: { resume: Resume }) => {
   const resumeId = resume.id;
-  const { user } = useAuth();
+  const { user, checkCredits } = useAuth();
   const utils = useUtils();
+  const pdfExportUtil = useUtils();
   const navigate = useNavigate();
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
+  const [showPaywall, setShowPaywall] = useState(false);
+
   const [state, setState] = useState({
     error: "",
     loading: true,
     imgURL: "",
     showPreviewModal: false,
   });
+
   useEffect(() => {
     getScreenshot();
   }, []);
@@ -340,6 +345,14 @@ const ResumeItemV3 = ({ resume }: { resume: Resume }) => {
   };
 
   const downloadResume = async (e: any) => {
+    let credits = await checkCredits();
+    // Check if enough credits
+    if (!credits || credits < 1) {
+      setShowPaywall(true);
+      return;
+    }
+
+    await pdfExportUtil.exportResumeToPDF({ resumeId: resume.id });
     e.preventDefault();
     const gsRef = ref(
       storage,
@@ -355,7 +368,14 @@ const ResumeItemV3 = ({ resume }: { resume: Resume }) => {
   };
 
   const downloadResumeDocx = async (e: any) => {
-    // e.preventDefault();
+    // Check if enough credits
+    let credits = await checkCredits();
+    // Check if enough credits
+    if (!credits || credits < 1) {
+      setShowPaywall(true);
+      return;
+    }
+    // Check if enough credits
     let res = await utils.exportResumeToDoc({ resumeId: resume.id });
     window.open(res.data.url, "_blank");
   };
@@ -408,6 +428,8 @@ const ResumeItemV3 = ({ resume }: { resume: Resume }) => {
           </Button>
         </Space>
       </Modal>
+
+      <OutOfCreditsComponent enabled={showPaywall} />
 
       <Modal
         visible={state.showPreviewModal}
@@ -487,31 +509,26 @@ const ResumeItemV3 = ({ resume }: { resume: Resume }) => {
                 // gutter={[12, 12]}
               >
                 <Space direction="vertical" size="small">
-                  <Button
+                  {/* <Button
                     size="small"
                     type="link"
                     // onClick={downloadResume}
-                    onClick={
-                      (e) => {
-                        downloadResume(e);
-                        e.stopPropagation();
-                      }
-                    }
+                    onClick={(e) => {
+                      downloadResume(e);
+                      e.stopPropagation();
+                    }}
                     className="resume-action"
                   >
                     <i className="fa-regular fa-copy"></i> Duplicate
-                  </Button>
+                  </Button> */}
                   <Button
                     size="small"
                     type="link"
                     // onClick={downloadResume}
-                    onClick={
-                      (e) => {
-                        downloadResume(e);
-                        e.stopPropagation();
-
-                      }
-                    }
+                    onClick={(e) => {
+                      downloadResume(e);
+                      e.stopPropagation();
+                    }}
                     className="resume-action"
                   >
                     <i className="fa-solid fa-download"></i> Download
@@ -522,7 +539,6 @@ const ResumeItemV3 = ({ resume }: { resume: Resume }) => {
                     onClick={(e) => {
                       getPublicLink();
                       e.stopPropagation();
-
                     }}
                     className="resume-action"
                   >
@@ -534,7 +550,6 @@ const ResumeItemV3 = ({ resume }: { resume: Resume }) => {
                     onClick={(e) => {
                       setDeleteModalVisible(true);
                       e.stopPropagation();
-
                     }}
                     className="resume-action"
                   >

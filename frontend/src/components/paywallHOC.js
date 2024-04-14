@@ -3,7 +3,7 @@
 // If user does not have subscription, then render the paywall component
 
 import React, { useEffect } from "react";
-import { useAuth } from "../authContext";
+import { useAuth } from "../contexts/authContext";
 import { Button, Row, Space } from "antd";
 import { Link } from "react-router-dom";
 

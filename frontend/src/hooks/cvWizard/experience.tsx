@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useContext, useState } from "react";
 import { createContext } from "vm";
-import { useAuth } from "../../authContext";
+import { useAuth } from "../../contexts/authContext";
 import { useResume } from "../../contexts/resume";
 import { useProfile } from "../../contexts/profile";
 

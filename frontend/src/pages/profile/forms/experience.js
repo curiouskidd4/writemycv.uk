@@ -16,7 +16,7 @@ import {
   Modal,
 } from "antd";
 import EditorJsInput from "../../../components/editor";
-import { useAuth } from "../../../authContext";
+import { useAuth } from "../../../contexts/authContext";
 import {
   MinusCircleOutlined,
   PlusOutlined,

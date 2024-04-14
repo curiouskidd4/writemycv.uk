@@ -1,5 +1,5 @@
 import { Button, Input, Row, Space, Typography, message } from "antd";
-import { useAuth } from "../../authContext";
+import { useAuth } from "../../contexts/authContext";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 

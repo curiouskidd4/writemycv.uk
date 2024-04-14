@@ -3,7 +3,7 @@ import axios from "axios";
 import { Avatar, Modal, Upload } from "antd";
 import { UserOutlined, FileImageOutlined } from "@ant-design/icons";
 import "./index.css";
-import { useAuth } from "../../authContext";
+import { useAuth } from "../../contexts/authContext";
 import { storage } from "../../services/firebase";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 

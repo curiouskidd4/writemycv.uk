@@ -11,7 +11,7 @@ import {
   message
 } from "antd";
 import { Link } from "react-router-dom";
-import { useAuth } from "../../authContext";
+import { useAuth } from "../../contexts/authContext";
 import { GoogleOutlined, LockOutlined } from "@ant-design/icons";
 
 const layout = {

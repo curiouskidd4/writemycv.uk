@@ -77,6 +77,9 @@ router.post("/export-word", async (req: CustomRequest, res: Response) => {
     let docxPath = `userData/${userId}/resumes/${resumeId}/resume.docx`;
     let outputFile = bucket.file(docxPath);
     result.writeToStream(outputFile.createWriteStream());
+
+    // Deduct credits here 
+    
     res.status(200).send({
       message: "Success",
       url: outputFile.publicUrl(),

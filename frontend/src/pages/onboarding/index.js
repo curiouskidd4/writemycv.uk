@@ -1,6 +1,6 @@
 import { Button, Progress, Spin, Typography } from "antd";
 import CoolForm from "../coolForm/form";
-import { useAuth } from "../../authContext";
+import { useAuth } from "../../contexts/authContext";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useMutateDoc } from "../../firestoreHooks";

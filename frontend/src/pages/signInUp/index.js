@@ -4,7 +4,7 @@ import LoginForm from "./signIn";
 import SignUpForm from "./signUp";
 import { Tabs, Row, Col, Button, Typography } from "antd";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../authContext";
+import { useAuth } from "../../contexts/authContext";
 import "./index.css";
 
 const LoginSignupPage = ({ isSignup }) => {

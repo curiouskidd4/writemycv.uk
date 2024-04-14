@@ -1,6 +1,6 @@
 import React from "react";
 import axios from "axios";
-import { useAuth } from "../authContext";
+import { useAuth } from "../contexts/authContext";
 
 const BASE_URL =
   process.env.REACT_APP_BASE_URL ||

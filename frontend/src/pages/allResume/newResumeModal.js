@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { doc, setDoc } from "firebase/firestore";
 import { db } from "../../services/firebase";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../authContext";
+import { useAuth } from "../../contexts/authContext";
 import useResumeAPI from "../../api/resume";
 import { AIWizardIcon, MagicWandIcon } from "../../components/faIcons";
 

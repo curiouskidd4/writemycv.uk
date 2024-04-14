@@ -12,10 +12,11 @@ import React, { useState } from "react";
 import { doc, setDoc } from "firebase/firestore";
 import { db } from "../../services/firebase";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../authContext";
+import { useAuth } from "../../contexts/authContext";
 import useResumeAPI from "../../api/resume";
 import { AIWizardIcon, MagicWandIcon } from "../../components/faIcons";
 import { InboxOutlined } from "@ant-design/icons";
+import { isHowellUser } from "../../config";
 
 const ObjectId = require("bson-objectid");
 export const NewResumeModal = ({
@@ -30,6 +31,7 @@ export const NewResumeModal = ({
   const [loading, setLoading] = useState(false);
   const [state, setState] = useState({
     loading: false,
+    uploading: false,
     isSuccess: false,
     isError: false,
   });
@@ -45,9 +47,8 @@ export const NewResumeModal = ({
     setState((prev) => ({
       ...prev,
       loading: true,
+      uploading: isHowellUser ? true : false,
     }));
-    let file = values.file.file.originFileObj;
-    delete values.file;
     // uuid for resume
     let data = {
       ...values,
@@ -55,7 +56,7 @@ export const NewResumeModal = ({
       userId,
       isDeleted: false,
       createdAt: new Date(),
-      copyFromProfile: false,
+      copyFromProfile: isHowellUser? false : true,
       isComplete: false,
     };
     // Drop empty fields
@@ -63,8 +64,17 @@ export const NewResumeModal = ({
     try {
       await setDoc(doc(db, "resumes", data.id), data);
       // await copyProfileToResume(data.id);
-      await importResume(data.id, file);
-      await exportResume(data.id);
+      if (isHowellUser) {
+        let file = values.file.file.originFileObj;
+        delete values.file;
+    
+        await importResume(data.id, file);
+        await exportResume(data.id);
+      } else {
+        await copyProfileToResume(data.id);
+
+      }
+
       setState((prev) => ({
         ...prev,
         loading: false,
@@ -146,19 +156,22 @@ export const NewResumeModal = ({
               />
             </Form.Item>
 
-            <Form.Item name="file" label="Upload your resume">
-              <Upload.Dragger>
-                <p className="ant-upload-drag-icon">
-                  <InboxOutlined
-                    style={{
-                      fontSize: "16px",
-                    }}
-                  />
-                </p>
-                <p className="ant-upload-text">Choose a file or drag it here</p>
-               
-              </Upload.Dragger>
-            </Form.Item>
+            {isHowellUser ? (
+              <Form.Item name="file" label="Upload your resume">
+                <Upload.Dragger>
+                  <p className="ant-upload-drag-icon">
+                    <InboxOutlined
+                      style={{
+                        fontSize: "16px",
+                      }}
+                    />
+                  </p>
+                  <p className="ant-upload-text">
+                    Choose a file or drag it here
+                  </p>
+                </Upload.Dragger>
+              </Form.Item>
+            ) : null}
             <div className="submit-btn">
               <Form.Item>
                 <Button
@@ -174,7 +187,7 @@ export const NewResumeModal = ({
           </Form>
         </>
       )}
-      {state.loading && (
+      {state.loading && isHowellUser && (
         <div
           style={{
             display: "flex",
@@ -233,6 +246,65 @@ export const NewResumeModal = ({
             Estimated time: 120 seconds
           </Typography.Text>
         </div>
+      )}
+      {state.loading && !isHowellUser && (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              flexDirection: "column",
+              alignContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <div
+              style={{
+                margin: "96px auto",
+                display: "flex",
+                justifyContent: "center",
+              }}
+            >
+              <i
+                style={{ fontSize: "128px", color: "var(--primary)" }}
+                className="fa-solid fa-circle fa-beat fa-2xl"
+              ></i>
+            </div>
+            <div className="uploading-message">
+              <Typography.Text
+                type="secondary"
+                style={{
+                  color: "var(--black)",
+                  font: "normal normal bold 30px/12px DM Sans",
+                  textAlign: "center",
+                }}
+              >
+                Creating your CV
+              </Typography.Text>
+              <br />
+              <Typography.Text
+                type="secondary"
+                style={{
+                  color: "var(--black)",
+                  font: "normal normal normal 16px/24px DM Sans",
+                  textAlign: "center",
+                }}
+              >
+                Please hold on a moment while we’re creating your CV from repository
+              </Typography.Text>
+            </div>
+
+            <Typography.Text
+              type="secondary"
+              style={{
+                color: "var(--black)",
+                font: "normal normal normal 16px/24px DM Sans",
+                textAlign: "center",
+                marginTop: "32px",
+                fontWeight: 600,
+              }}
+            >
+            </Typography.Text>
+          </div>
       )}
     </Modal>
   );

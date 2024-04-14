@@ -24,6 +24,8 @@ import {
 import { CustomRequest } from "../../types/requests";
 import resumeExtractionForCV from "../controllers/cvWizard/importToCV";
 import importResumeToRepo from "../controllers/cvWizard/importToRepo";
+import { deductCredits } from "../controllers/billing/credits";
+import { DEDUCT_TYPES } from "../../utils/billing";
 
 const router = Router();
 
@@ -269,8 +271,14 @@ router.post("/parseResume", async (req: CustomRequest, res: Response) => {
     return;
   }
 
-  await importResumeToRepo(req.files["file"][0], userId);
-  res.status(200).json({ message: "success" });
+  try {
+    await importResumeToRepo(req.files["file"][0], userId);
+    await deductCredits(DEDUCT_TYPES.RESUME_PARSING, userId! as any);
+
+    res.status(200).json({ message: "success" });
+  } catch (error: any) {
+    res.status(400).json({ message: error.message });
+  }
 });
 
 router.post("/importToCV", async (req: CustomRequest, res: Response) => {
@@ -286,8 +294,18 @@ router.post("/importToCV", async (req: CustomRequest, res: Response) => {
   }
   // await importToCV(resumeId, userId, res);
   // Response is sent from the function
-  let result = await resumeExtractionForCV(req.files["file"][0], userId, resumeId);
-  res.status(200).json({ message: "success" });
+  try {
+    let result = await resumeExtractionForCV(
+      req.files["file"][0],
+      userId,
+      resumeId
+    );
+    await deductCredits(DEDUCT_TYPES.RESUME_PARSING, userId! as any);
+
+    res.status(200).json({ message: "success" });
+  } catch (error: any) {
+    res.status(400).json({ message: error.message });
+  }
 });
 
 export default router;

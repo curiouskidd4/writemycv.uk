@@ -21,13 +21,13 @@ import PrivacyPolicy from "./legal/PrivacyPolicy.jsx";
 import TermsService from "./legal/TermsService.jsx";
 // import Payment from "./pages/subscription";
 import PublicHeader from "./components/publicHeader.js";
-import { useAuth, ProviderAuth } from "./authContext.js";
+import { useAuth, ProviderAuth } from "./contexts/authContext.js";
 
 import moment from "moment";
 import Resume from "./pages/allResume/index";
 import Profile from "./pages/profile/index.js";
 import EditResume from "./pages/allResume/editor/index.js";
-import ResumePreview from "./pages/publicResume/index.js";
+import ResumePreview from "./pages/old/publicResume/index.js";
 import LandingPage from "./pages/landing/index.js";
 // import CoolForm from "./pages/coolForm/index.js";
 import AccountSettings from "./pages/account/index.js";
@@ -45,6 +45,7 @@ import Sider from "./components/sider";
 import ImportCVToProfile from "./importCV";
 import FirebaseUserMangement from "./userManagement";
 import "./design.css";
+import { PremiumUpgradeComponent } from "./components/paywall";
 
 const GenLayout = ({}) => {
   const { user } = useAuth();
@@ -164,7 +165,6 @@ const protectedRouter = createBrowserRouter([
       },
     ],
   },
-
 ]);
 
 const verificationRouter = createBrowserRouter([
@@ -202,7 +202,6 @@ const verificationRouter = createBrowserRouter([
       },
     ],
   },
-
 ]);
 
 const baseRouter = createBrowserRouter([
@@ -251,7 +250,7 @@ const baseRouter = createBrowserRouter([
           </div>
         ),
       },
-  
+
       { path: "terms-service", element: <TermsService /> },
       { path: "privacy-policy", element: <PrivacyPolicy /> },
       { path: "public-resume/:publicResumeId", element: <ResumePreview /> },
@@ -313,7 +312,7 @@ const BaseApp = () => {
         <>
           {auth.isAuthenticated &&
             auth.user &&
-            (auth.isEmailVerified && auth.isRepoCompleted ? (
+            (auth.isEmailVerified && auth.isRepoCompleted && auth.subscriptionId ? (
               // (auth.isProfileComplete && auth.isEmailVerified  ? (
 
               <>
@@ -326,7 +325,9 @@ const BaseApp = () => {
             ) : // : !auth.isProfileComplete ? (
             //   <CustomerOnboarding />
             // )
-            !auth.isRepoCompleted ? (
+            !auth.subscriptionId ? (
+              <PremiumUpgradeComponent enabled={true} />
+            ) : !auth.isRepoCompleted ? (
               <RouterProvider router={importRouter} />
             ) : null)}
           {!auth.isAuthenticated && <RouterProvider router={baseRouter} />}

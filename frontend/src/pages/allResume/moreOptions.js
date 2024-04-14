@@ -26,7 +26,7 @@ import {
   DeleteOutlined,
   EditOutlined,
 } from "@ant-design/icons";
-import { useAuth } from "../../authContext";
+import { useAuth } from "../../contexts/authContext";
 import {
   addDoc,
   collection,

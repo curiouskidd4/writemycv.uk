@@ -15,7 +15,7 @@ import {
   Space,
   Divider,
 } from "antd";
-import { useAuth } from "../authContext";
+import { useAuth } from "../contexts/authContext";
 import { useNavigate } from "react-router-dom";
 import {  UserOutlined } from "@ant-design/icons";
 

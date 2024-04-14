@@ -17,10 +17,16 @@ router.post(
   "/create-checkout-session",
   async (req: CustomRequest, res: Response) => {
     let user = req.user!;
-    let firebaseUser = await db.collection("users").doc(user.uid).get();
+    let firebaseUserRef = await db.collection("users").doc(user.uid).get();
+    let userData = firebaseUserRef.data();
     const stripe = new stripe_(STRIPE_BACKEND_KEY.value(), {
       apiVersion: "2023-08-16",
     });
+
+    if (!userData) {
+      res.status(400).send("User not found");
+      return;
+    }
 
     // Get Price ID from body
     const { priceId,  planId, isSubscription } = req.body;
@@ -31,6 +37,23 @@ router.post(
     }
 
     
+    // Create customer in stripe
+    if (!userData?.stripeCustomerId) {
+      try {
+        const customer = await stripe.customers.create({
+          email: userData?.email,
+          name: userData?.name,
+        });
+        await db.collection("users").doc(user.uid).update({
+          stripeCustomerId: customer.id,
+        });
+        userData!.stripeCustomerId = customer.id;
+      } catch (err) {
+        console.log("Error", err);
+        res.status(500).json({ error: err });
+        return;
+      }
+    }
 
     try {
       const session = await stripe.checkout.sessions.create({
@@ -45,9 +68,9 @@ router.post(
           userId: user.uid,
           planId: planId,
         },
-        customer: firebaseUser.data()?.stripeCustomerId,
-        customer_email: firebaseUser.data()?.stripeCustomerId ? undefined : firebaseUser.data()?.email,
-        customer_creation: firebaseUser.data()?.stripeCustomerId ? undefined : "always",
+        customer: userData?.stripeCustomerId,
+        customer_email: userData?.stripeCustomerId ? undefined :userData?.email,
+        customer_creation: userData?.stripeCustomerId ? undefined : "always",
         mode: isSubscription ? "subscription" : "payment",
         success_url: `${HOST_URL.value()}/upgrade/success`,
         cancel_url: `${HOST_URL.value()}/upgrade/cancel`,

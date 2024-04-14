@@ -38,7 +38,7 @@ import {
 import "./index.css";
 import { NewResumeModal } from "../pages/allResume/newResumeModal";
 import { ImportResumeModal } from "./import";
-import { useAuth } from "../authContext";
+import { useAuth } from "../contexts/authContext";
 import LanguageFlow from "../resume/components/languages";
 import AwardForm from "../resume/components/awards/awardsEditForm";
 import VolunteerForm from "../resume/components/volunteering/volunteerEditForm";

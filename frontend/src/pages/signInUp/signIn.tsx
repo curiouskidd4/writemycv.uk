@@ -13,7 +13,7 @@ import {
 import { Link } from "react-router-dom";
 import { GoogleOutlined, LockOutlined } from "@ant-design/icons";
 import { auth } from "../../services/firebase";
-import { useAuth } from "../../authContext";
+import { useAuth } from "../../contexts/authContext";
 import { NotificationConfig } from "antd/es/notification/interface";
 import { ArgsProps } from "antd/es/message";
 const layout = {

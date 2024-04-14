@@ -12,7 +12,7 @@ import {
 } from "antd";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { useAuth } from "../authContext";
+import { useAuth } from "../contexts/authContext";
 import { InboxOutlined } from "@ant-design/icons";
 import { useProfile } from "../contexts/profile";
 import { useOpenAI } from "../utils";

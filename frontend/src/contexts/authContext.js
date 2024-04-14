@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { db, auth } from "./services/firebase";
+import { db, auth } from "../services/firebase";
 import { EmailAuthProvider, User } from "firebase/auth";
 import {
   createUserWithEmailAndPassword,
@@ -17,6 +17,7 @@ import {
 import mixpanel from "mixpanel-browser";
 
 import { addDoc, collection, doc, getDoc, setDoc } from "firebase/firestore";
+import ga from "../services/analytics";
 const gauthProvider = new GoogleAuthProvider();
 const baseUrl =
   process.env.REACT_APP_BASE_URL ||
@@ -69,6 +70,8 @@ const useProvideAuth = () => {
           isAuthenticated: false,
           isProfileComplete: false,
           isEmailVerified: false,
+          subscriptionId: null ,
+          credits: null,
           authToken: null,
         });
       }
@@ -76,13 +79,14 @@ const useProvideAuth = () => {
     return () => unsubscribe();
   }, []);
 
-  const checkIfProfileCreated = async (user) => {};
 
   const saveUserToFirebase = async (user) => {
     const userRef = doc(db, "users", user.uid);
     let firstName = user.displayName?.split(" ")[0];
     let lastName = user.displayName?.split(" ")[1];
     
+    ga.setUserId(user.firebaseId);
+
     const userDoc = await getDoc(userRef);
     if (userDoc.exists()) {
       let userData = userDoc.data();
@@ -147,6 +151,11 @@ const useProvideAuth = () => {
         full_name: userData.firstName + " " + userData.lastName,
       });
 
+
+      // Load credits from firebase 
+      let creditsRef = doc(db, "credits", user.uid);
+      let creditsDoc = await getDoc(creditsRef);
+      let creditsData = creditsDoc.data();
       setState({
         loading: false,
         error: null,
@@ -156,10 +165,16 @@ const useProvideAuth = () => {
         isProfileComplete: userData.profileComplete,
         isRepoCompleted: userData.isRepoCompleted,
         isEmailVerified: user.emailVerified,
+        subscriptionId: userData.subscriptionId,
+        credits: creditsData?.credits || 0 , 
         authToken: null,
       });
       return;
     }
+
+    let creditsRef = doc(db, "credits", user.uid);
+    let creditsDoc = await getDoc(creditsRef);
+    let creditsData = creditsDoc.data();
 
     let userData = {
       firstName: firstName || null,
@@ -172,7 +187,7 @@ const useProvideAuth = () => {
       photoURL: user.photoURL,
     }
     await setDoc(userRef, userData);
-
+    ga.setUserProperties(userData);
     setState({
       loading: false,
       error: null,
@@ -181,6 +196,8 @@ const useProvideAuth = () => {
       isAuthenticated: true,
       isProfileComplete: false,
       isEmailVerified: user.emailVerified,
+      subscriptionId: null,
+      credits: creditsData?.credits || 0,
       authToken: null,
     });
   };
@@ -341,6 +358,14 @@ const useProvideAuth = () => {
     }
   };
 
+  const checkCredits = async () => {
+    let user = auth.currentUser;
+    let creditsRef = doc(db, "credits", user.uid);
+    let creditsDoc = await getDoc(creditsRef);
+    let creditsData = creditsDoc.data();
+    return creditsData?.credits || 0;
+  }
+
   const overrideCVImport = async (data) => {
     let user = auth.currentUser;
     let userRef = doc(db, "users", user.uid);
@@ -393,7 +418,8 @@ const useProvideAuth = () => {
     signInWithGoogle,
     overrideCVImport,
     sendVerificationEmailCustom,
-    updateProfilePic
+    updateProfilePic, 
+    checkCredits
   };
 };
 

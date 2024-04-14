@@ -31,7 +31,7 @@ import PublicationForm from "./components/publication/publicationEditForm";
 import VolunteerForm from "./components/volunteering/volunteerEditForm";
 import CandidateDetails from "./components/candidateSummary";
 import OtherInformation from "./components/otherDetails";
-import { useAuth } from "../authContext";
+import { useAuth } from "../contexts/authContext";
 import { isHowellUser } from "../config";
 
 type NavigationProps = {
