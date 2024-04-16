@@ -32,3 +32,11 @@
   font: normal normal bold 12px/12px DM Sans !important;
   opacity: 0.8;
 }
+
+.ant-btn-default.white-btn {
+  height: 30px;
+  color: #000000 !important;
+  background-color: #ffffff;
+  padding: 8px 36px;
+  font: normal normal bold 12px/12px DM Sans !important;
+}

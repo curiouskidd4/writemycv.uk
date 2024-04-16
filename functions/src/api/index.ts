@@ -1,7 +1,7 @@
 // app.ts
 
 import express from "express";
-import { generalRoutes, cvWizardRoutes, resumeDownloadRoutes, resumeRoutes, stripeRoutes, stripeWebhookRoutes, unAuth } from "./routes";
+import { generalRoutes, cvWizardRoutes, resumeDownloadRoutes, resumeRoutes, stripeRoutes, stripeWebhookRoutes, unAuth, publicRoutes } from "./routes";
 import { db, bucket, functions } from "../utils/firebase";
 import {
   extractFiles,
@@ -18,7 +18,7 @@ app.use(cors({}));
 
 // app.use(Sentry.Handlers.requestHandler() as express.RequestHandler);
 
-
+app.use("/public" , publicRoutes);
 // Middleware for all routes
 app.use("/stripe", bodyParser.raw({ type: '*/*' }),  stripeWebhookRoutes);
 app.use("/unauth", unAuth);

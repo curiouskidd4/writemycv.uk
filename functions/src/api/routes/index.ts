@@ -5,6 +5,7 @@ import resumeDownloadRoutes from "./download";
 import generalRoutes from "./general";
 import resumeRoutes from "./resume";
 import unAuth from "./unAuth";
+import publicRoutes from "./public";
 export {
   cvWizardRoutes,
   stripeRoutes,
@@ -12,5 +13,6 @@ export {
   resumeDownloadRoutes,
   generalRoutes,
   resumeRoutes,
-  unAuth
+  unAuth, 
+  publicRoutes
 };

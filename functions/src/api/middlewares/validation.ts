@@ -85,7 +85,7 @@ const validateFirebaseIdToken = async (
   res: Response,
   next: NextFunction
 ) => {
-  const excludedRoutes: string[] = ["/stripe/webhook"];
+  const excludedRoutes: string[] = ["/stripe/webhook", "/public/enterprise-contact-us"];
 
   if (excludedRoutes.includes(req.path)) {
     // Exclude the route from authentication
