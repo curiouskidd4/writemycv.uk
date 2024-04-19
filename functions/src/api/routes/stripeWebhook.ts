@@ -3,7 +3,7 @@ import { Router, Request, Response } from "express";
 import { Validator } from "express-json-validator-middleware";
 import { db } from "../../utils/firebase";
 import stripe_ from "stripe";
-import { STRIPE_BACKEND_KEY } from "../../utils/vars";
+import { STRIPE_BACKEND_KEY, STRIPE_WEBHOOK_KEY } from "../../utils/vars";
 import bodyParser from "body-parser";
 import express from "express";
 import { firestore } from "firebase-admin";
@@ -106,8 +106,7 @@ router.post("/webhook", async (req: any, res: Response) => {
     event = stripe.webhooks.constructEvent(
       payload,
       sig,
-      // STRIPE_BACKEND_KEY.value()
-      "whsec_b0d7d3d0951e677f2d280b7361a34d32b68944aa2196d9fe2765a3e90778d14f"
+      STRIPE_WEBHOOK_KEY.value() || "whsec_b0d7d3d0951e677f2d280b7361a34d32b68944aa2196d9fe2765a3e90778d14f"
     );
   } catch (err) {
     // On error, log and return the error message
