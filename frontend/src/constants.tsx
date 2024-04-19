@@ -32,7 +32,7 @@ export const PRICING_TABLE = [
     period: "14 Days",
     price: "£6.99",
     perMonth: "£13.98",
-    priceId: "price_1P3k8zSHT210NSXLloFRLMHs",
+    priceId: "price_1P6vLQRwhIDHSWqApKNiAUBN",
     planId: "pro_bi_weekly",
     credits: "100",
     features: [
@@ -49,7 +49,7 @@ export const PRICING_TABLE = [
     period: "3 Months",
     price: "£35.99",
     perMonth: "£11.99",
-    priceId: "price_1P3kA0SHT210NSXL4qNPrVkf",
+    priceId: "price_1P6vLiRwhIDHSWqA2VBui9rx",
     planId: "pro_quaterly",
     credits: "720",
 
@@ -68,7 +68,7 @@ export const PRICING_TABLE = [
     credits: "3600",
     planId: "pro_yearly",
 
-    priceId: "price_1P3kAPSHT210NSXLXCnQuFVV",
+    priceId: "price_1P6vObRwhIDHSWqA5BBcNigv",
     features: [
       "All the benefits of the Quick Job plan",
       "50% more credits than the Quick Job Plan",
