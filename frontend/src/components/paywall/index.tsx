@@ -178,7 +178,10 @@ const PremiumUpgradeComponent = ({ enabled }: { enabled: boolean }) => {
         isSubscription: true,
       });
 
-      window.open(sessionUrl);
+      // window.open(sessionUrl);
+      // Open in same tab
+      window.location.href = sessionUrl;
+
     } catch (error) {
       setSelectedPlan(null);
       message.error("Error upgrading");
@@ -301,7 +304,9 @@ const PremiumUpgradeComponent = ({ enabled }: { enabled: boolean }) => {
   );
 };
 
-const OutOfCreditsComponent = ({ enabled }: { enabled: boolean }) => {
+const OutOfCreditsComponent = ({ enabled, onCancel }: { enabled: boolean, 
+  onCancel: () => void
+ }) => {
   const defaultPlan = CREDITS_TABLE[0].priceId;
   const [selectedPlan, setSelectedPlan] = React.useState<string | null>(
     defaultPlan
@@ -318,7 +323,9 @@ const OutOfCreditsComponent = ({ enabled }: { enabled: boolean }) => {
         isSubscription: false,
       });
 
-      window.open(sessionUrl);
+      // window.open(sessionUrl);
+      window.location.href = sessionUrl;
+
     } catch (error) {
       setSelectedPlan(null);
       message.error("Error upgrading");
@@ -328,6 +335,7 @@ const OutOfCreditsComponent = ({ enabled }: { enabled: boolean }) => {
   return (
     <Modal
       closable={true}
+      onCancel={onCancel}
       closeIcon={true}
       width={1000}
       open={enabled}

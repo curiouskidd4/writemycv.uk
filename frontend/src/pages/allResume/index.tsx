@@ -429,7 +429,9 @@ const ResumeItemV3 = ({ resume }: { resume: Resume }) => {
         </Space>
       </Modal>
 
-      <OutOfCreditsComponent enabled={showPaywall} />
+      <OutOfCreditsComponent enabled={showPaywall}
+        onCancel={() => setShowPaywall(false)}
+       />
 
       <Modal
         visible={state.showPreviewModal}

@@ -6,7 +6,7 @@
   font: normal normal bold 12px/12px DM Sans !important;
 
 }
-.ant-btn-default.ant-btn-default:hover {
+.ant-btn-default.small-dark-btn:hover {
   height: 30px;
 
   background-color: #000000 !important;

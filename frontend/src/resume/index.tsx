@@ -232,7 +232,12 @@ const ResumeEditV2Loader = () => {
   return (
     <div className="resume">
       <>
-      <OutOfCreditsComponent enabled={showPaywall} />
+      <OutOfCreditsComponent enabled={showPaywall} 
+        onCancel={() => {
+          setShowPaywall(false);
+        }}
+       
+      />
         <Modal
           title="Preview"
           open={previewUrl ? true : false}

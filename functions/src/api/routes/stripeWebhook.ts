@@ -107,7 +107,7 @@ router.post("/webhook", async (req: any, res: Response) => {
       payload,
       sig,
       // STRIPE_BACKEND_KEY.value()
-      "whsec_78ec3fd92d3e299cf17051466a84ec5228c950c567fcdd656bead45aeb3c34d6"
+      "whsec_b0d7d3d0951e677f2d280b7361a34d32b68944aa2196d9fe2765a3e90778d14f"
     );
   } catch (err) {
     // On error, log and return the error message

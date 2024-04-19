@@ -185,6 +185,7 @@ const SignInForm = ({
             borderRadius: "12px",
             marginTop: "12px",
           }}
+          className="google-btn"
           onClick={() => {
             auth.signInWithGoogle();
           }}

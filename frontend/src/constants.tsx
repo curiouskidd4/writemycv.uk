@@ -82,25 +82,25 @@ export const CREDITS_TABLE = [
   {
     credit: "100",
     price: "£3.99",
-    priceId: "price_1P3kEkSHT210NSXLSpijxXw0",
+    priceId: "price_1P7C20RwhIDHSWqA0NTE8q2v",
     planId: "credit_pack_100",
   },
   {
     credit: "300",
     price: "£6.99",
-    priceId: "price_1P3kFLSHT210NSXLm00HoXoH",
+    priceId: "price_1P7C2KRwhIDHSWqALLyUHPmt",
     planId: "credit_pack_300",
   },
   {
     credit: "500",
     price: "£9.99",
-    priceId: "price_1P3kFxSHT210NSXL3ER8qjRA",
+    priceId: "price_1P7C2gRwhIDHSWqAHWHeYjrS",
     planId: "credit_pack_500",
   },
   {
     credit: "1000",
     price: "£17.99",
-    priceId: "price_1P3kGSSHT210NSXL9yMwSdGH",
+    priceId: "price_1P7C32RwhIDHSWqANTxarYyY",
     planId: "credit_pack_1000",
   },
 ];
