@@ -140,7 +140,7 @@ router.post("/:resumeId/export-word", async (req: CustomRequest, res: Response) 
     result.writeToStream(outputFile.createWriteStream());
 
     // Deduct credits here 
-    await deductCredits(DEDUCT_TYPES.RESUME_DOWNLOAD, userId);
+    // await deductCredits(DEDUCT_TYPES.RESUME_DOWNLOAD, userId);
     res.status(200).send({
       message: "Success",
       url: outputFile.publicUrl(),
@@ -179,7 +179,7 @@ router.post("/:resumeId/export-pdf", async (req: CustomRequest, res: Response) =
     let outputFile = bucket.file(pdfPath_);
 
     // Deduct credits here 
-    await deductCredits(DEDUCT_TYPES.RESUME_DOWNLOAD, userId);
+    // await deductCredits(DEDUCT_TYPES.RESUME_DOWNLOAD, userId);
     res.status(200).send({
       message: "Success",
       url: outputFile.publicUrl(),

@@ -80,14 +80,14 @@ const fulfillOrder = async (session: stripe_.Checkout.Session) => {
         stripeCustomerId: session.customer,
         
       });
-    await addCredits(planId! as any, userId! as any);
+    // await addCredits(planId! as any, userId! as any);
   } else {
     await db.collection("users").doc(userId).update({
       // subscriptionDate: Timestamp.now(),
       stripeCustomerId: session.customer,
     });
 
-    await addCredits( planId! as any, userId! as any);
+    // await addCredits( planId! as any, userId! as any);
   }
   // get subscription
   // const subscription = stripe.subscriptions.retrieve(subscriptionId);
