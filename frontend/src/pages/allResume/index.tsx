@@ -348,12 +348,13 @@ const ResumeItemV3 = ({ resume }: { resume: Resume }) => {
   const downloadResume = async (e: any) => {
     // Only check if not howellUser
     if (!isHowellEnv) {
-      let credits = await checkCredits();
-      // Check if enough credits
-      if (!credits || credits < 1) {
-        setShowPaywall(true);
-        return;
-      }
+      // Disabling this as of now - because we don't use credit system
+      // let credits = await checkCredits();
+      // // Check if enough credits
+      // if (!credits || credits < 1) {
+      //   setShowPaywall(true);
+      //   return;
+      // }
     }
 
     await pdfExportUtil.exportResumeToPDF({ resumeId: resume.id });
@@ -373,13 +374,12 @@ const ResumeItemV3 = ({ resume }: { resume: Resume }) => {
 
   const downloadResumeDocx = async (e: any) => {
     // Check if enough credits
-    let credits = await checkCredits();
-    // Check if enough credits
-    if (!credits || credits < 1) {
-      setShowPaywall(true);
-      return;
-    }
-    // Check if enough credits
+    // let credits = await checkCredits();
+    // // Check if enough credits
+    // if (!credits || credits < 1) {
+    //   setShowPaywall(true);
+    //   return;
+    // }
     let res = await utils.exportResumeToDoc({ resumeId: resume.id });
     window.open(res.data.url, "_blank");
   };
@@ -433,10 +433,10 @@ const ResumeItemV3 = ({ resume }: { resume: Resume }) => {
         </Space>
       </Modal>
 
-      <OutOfCreditsComponent
+      {/* <OutOfCreditsComponent
         enabled={showPaywall}
         onCancel={() => setShowPaywall(false)}
-      />
+      /> */}
 
       <Modal
         visible={state.showPreviewModal}

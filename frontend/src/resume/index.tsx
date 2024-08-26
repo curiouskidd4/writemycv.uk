@@ -22,7 +22,7 @@ import PDFViewer from "../components/pdfViewer";
 import { isHowellEnv } from "../config";
 import useUtils from "../utils/download";
 import { useAuth } from "../contexts/authContext";
-import { OutOfCreditsComponent } from "../components/paywall";
+// import { OutOfCreditsComponent } from "../components/paywall";
 
 type ResumeEditStepsProps = {
   current?: number;
@@ -205,14 +205,14 @@ const ResumeEditV2Loader = () => {
   const auth = useAuth();
 
   const downloadResume = async () => {
-    if (!isHowellEnv) {
-      let credits = await auth.checkCredits();
-      // Check if enough credits
-      if (!credits || credits < 1) {
-        setShowPaywall(true);
-        return;
-      }
-    }
+    // if (!isHowellEnv) {
+    //   let credits = await auth.checkCredits();
+    //   // Check if enough credits
+    //   if (!credits || credits < 1) {
+    //     setShowPaywall(true);
+    //     return;
+    //   }
+    // }
 
     await pdfExportUtil.exportResumeToPDF({ resumeId: resumeData.resume?.id });
 
@@ -242,12 +242,12 @@ const ResumeEditV2Loader = () => {
   return (
     <div className="resume">
       <>
-        <OutOfCreditsComponent
+        {/* <OutOfCreditsComponent
           enabled={showPaywall}
           onCancel={() => {
             setShowPaywall(false);
           }}
-        />
+        /> */}
         <Modal
           title="Preview"
           open={previewUrl ? true : false}

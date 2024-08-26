@@ -123,69 +123,69 @@ const SubscriptionModal = ({
   );
 };
 
-const CreditModal = ({
-  open,
-  onClose,
-}: {
-  open: boolean;
-  onClose: () => void;
-}) => {
-  const [selectedPlan, setSelectedPlan] = React.useState<null | string>(null);
+// const CreditModal = ({
+//   open,
+//   onClose,
+// }: {
+//   open: boolean;
+//   onClose: () => void;
+// }) => {
+//   const [selectedPlan, setSelectedPlan] = React.useState<null | string>(null);
 
-  let stripe = useStripe();
+//   let stripe = useStripe();
 
-  const onUpgrade = async (priceId: string, planId: string) => {
-    try {
-      setSelectedPlan(priceId);
-      let { sessionId, sessionUrl } = await stripe.getStripeSessionUrl({
-        priceId,
-        planId,
-        isSubscription: false,
-      });
+//   const onUpgrade = async (priceId: string, planId: string) => {
+//     try {
+//       setSelectedPlan(priceId);
+//       let { sessionId, sessionUrl } = await stripe.getStripeSessionUrl({
+//         priceId,
+//         planId,
+//         isSubscription: false,
+//       });
 
-      window.open(sessionUrl, "_blank");
-    } catch (error) {
-      setSelectedPlan(null);
-      message.error("Error upgrading");
-    }
-  };
+//       window.open(sessionUrl, "_blank");
+//     } catch (error) {
+//       setSelectedPlan(null);
+//       message.error("Error upgrading");
+//     }
+//   };
 
-  return (
-    <Modal
-      width={800}
-      closeIcon={true}
-      open={open}
-      footer={null}
-      onCancel={onClose}
-      zIndex={1050}
-      className="default-modal"
-    >
-      <div className="header">
-        <Typography.Title level={4}>Purchase Credits</Typography.Title>
+//   return (
+//     <Modal
+//       width={800}
+//       closeIcon={true}
+//       open={open}
+//       footer={null}
+//       onCancel={onClose}
+//       zIndex={1050}
+//       className="default-modal"
+//     >
+//       <div className="header">
+//         <Typography.Title level={4}>Purchase Credits</Typography.Title>
 
-        <Row gutter={[12, 12]} wrap>
-          {creditTable.map((plan) => (
-            <Col span={8} key={plan.planId}>
-              <Card>
-                <Typography.Title level={4}>
-                  {plan.credit} Credits
-                </Typography.Title>
-                <Typography.Title level={3}>{plan.price}</Typography.Title>
-                <Button
-                  type="primary"
-                  loading={selectedPlan === plan.priceId && stripe.loading}
-                  onClick={() => onUpgrade(plan.priceId, plan.planId)}
-                >
-                  Buy Credits
-                </Button>
-              </Card>
-            </Col>
-          ))}
-        </Row>
-      </div>
-    </Modal>
-  );
-};
+//         <Row gutter={[12, 12]} wrap>
+//           {creditTable.map((plan) => (
+//             <Col span={8} key={plan.planId}>
+//               <Card>
+//                 <Typography.Title level={4}>
+//                   {plan.credit} Credits
+//                 </Typography.Title>
+//                 <Typography.Title level={3}>{plan.price}</Typography.Title>
+//                 <Button
+//                   type="primary"
+//                   loading={selectedPlan === plan.priceId && stripe.loading}
+//                   onClick={() => onUpgrade(plan.priceId, plan.planId)}
+//                 >
+//                   Buy Credits
+//                 </Button>
+//               </Card>
+//             </Col>
+//           ))}
+//         </Row>
+//       </div>
+//     </Modal>
+//   );
+// };
 
 const Invoices = () => {
   const stripe = useStripe();
@@ -268,9 +268,9 @@ const Invoices = () => {
 const YourPlan = () => {
   const { user } = useAuth();
   const userDoc = useDoc(`users`, user.uid);
-  const creditDoc = useDoc(`credits`, user.uid);
+  // const creditDoc = useDoc(`credits`, user.uid);
   const [subscriptionModal, setSubscriptionModal] = React.useState(false);
-  const [creditModal, setCreditModal] = React.useState(false);
+  // const [creditModal, setCreditModal] = React.useState(false);
 
   const navigate = useNavigate();
   return (
@@ -279,7 +279,7 @@ const YourPlan = () => {
         open={subscriptionModal}
         onClose={() => setSubscriptionModal(false)}
       />
-      <CreditModal open={creditModal} onClose={() => setCreditModal(false)} />
+      {/* <CreditModal open={creditModal} onClose={() => setCreditModal(false)} /> */}
 
       {isHowellEnv && (
         <div
@@ -317,12 +317,12 @@ const YourPlan = () => {
               </div>
 
               <Row gutter={24}>
-                <Col>
+                {/* <Col>
                   <div className="data-item">
                     <div className="data-item-heading">Monthly Credits</div>
                     <div className="data-item-value">50 Credits</div>
                   </div>
-                </Col>
+                </Col> */}
                 <Col>
                   <div className="data-item">
                     <div className="data-item-heading"> Cost</div>
@@ -340,7 +340,7 @@ const YourPlan = () => {
                     </div>
                   </div>
                 </Col>
-                <Col>
+                {/* <Col>
                   <Button
                     size="small"
                     className="small-dark-btn"
@@ -348,10 +348,13 @@ const YourPlan = () => {
                   >
                     Buy Credits
                   </Button>
-                </Col>
+                </Col> */}
               </Row>
-
-              <Row gutter={24}>
+              
+              {/**
+               * Disabled for now
+               */}
+              {/* <Row gutter={24}>
                 <Col flex="auto">
                   <Progress
                     percent={
@@ -370,7 +373,7 @@ const YourPlan = () => {
                     {creditDoc?.data?.totalCredits}
                   </span>
                 </Col>
-              </Row>
+              </Row> */}
 
               <Row
                 style={{
