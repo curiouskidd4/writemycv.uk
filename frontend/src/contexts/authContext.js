@@ -18,6 +18,7 @@ import mixpanel from "mixpanel-browser";
 
 import { addDoc, collection, doc, getDoc, setDoc } from "firebase/firestore";
 import ga from "../services/analytics";
+import { isHowellEnv } from "../config";
 const gauthProvider = new GoogleAuthProvider();
 const baseUrl =
   process.env.REACT_APP_BASE_URL ||
@@ -57,7 +58,6 @@ const useProvideAuth = () => {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      
       //
       if (user) {
         saveUserToFirebase(user);
@@ -70,8 +70,9 @@ const useProvideAuth = () => {
           isAuthenticated: false,
           isProfileComplete: false,
           isEmailVerified: false,
-          subscriptionId: null ,
+          subscriptionId: null,
           credits: null,
+          isHowellUser: false,
           authToken: null,
         });
       }
@@ -79,20 +80,23 @@ const useProvideAuth = () => {
     return () => unsubscribe();
   }, []);
 
-
   const saveUserToFirebase = async (user) => {
     const userRef = doc(db, "users", user.uid);
     let firstName = user.displayName?.split(" ")[0];
     let lastName = user.displayName?.split(" ")[1];
-    
+
     ga.setUserId(user.firebaseId);
 
     const userDoc = await getDoc(userRef);
     if (userDoc.exists()) {
       let userData = userDoc.data();
+      // Check if the user is not howellUser and this is howellEnv
+      if (isHowellEnv && !userData.isHowellUser) {
+        // Router to non howell site https://"writemycv.uk
+        window.location.href = "https://writemycv.uk";
+        return;
+      }
 
-
-      console.log("USER DATA", userData)
       if (userData.isRepoCompleted == undefined) {
         // Check if all the repos exist
         let educationRef = doc(db, "education", user.uid);
@@ -151,8 +155,7 @@ const useProvideAuth = () => {
         full_name: userData.firstName + " " + userData.lastName,
       });
 
-
-      // Load credits from firebase 
+      // Load credits from firebase
       let creditsRef = doc(db, "credits", user.uid);
       let creditsDoc = await getDoc(creditsRef);
       let creditsData = creditsDoc.data();
@@ -166,7 +169,8 @@ const useProvideAuth = () => {
         isRepoCompleted: userData.isRepoCompleted,
         isEmailVerified: user.emailVerified,
         subscriptionId: userData.subscriptionId,
-        credits: creditsData?.credits || 0 , 
+        isHowellUser: userData.isHowellUser,
+        credits: creditsData?.credits || 0,
         authToken: null,
       });
       return;
@@ -185,7 +189,7 @@ const useProvideAuth = () => {
       profileComplete: false,
       isRepoCompleted: false,
       photoURL: user.photoURL,
-    }
+    };
     await setDoc(userRef, userData);
     ga.setUserProperties(userData);
     setState({
@@ -284,7 +288,7 @@ const useProvideAuth = () => {
         },
       }
     );
-    return res 
+    return res;
   };
 
   const markProfileCompleted = async () => {
@@ -328,7 +332,6 @@ const useProvideAuth = () => {
       { merge: true }
     );
 
-
     setState((prev) => ({
       ...prev,
       data: {
@@ -364,7 +367,7 @@ const useProvideAuth = () => {
     let creditsDoc = await getDoc(creditsRef);
     let creditsData = creditsDoc.data();
     return creditsData?.credits || 0;
-  }
+  };
 
   const overrideCVImport = async (data) => {
     let user = auth.currentUser;
@@ -418,8 +421,8 @@ const useProvideAuth = () => {
     signInWithGoogle,
     overrideCVImport,
     sendVerificationEmailCustom,
-    updateProfilePic, 
-    checkCredits
+    updateProfilePic,
+    checkCredits,
   };
 };
 

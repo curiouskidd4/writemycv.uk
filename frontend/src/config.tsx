@@ -1,4 +1,3 @@
 
-let isHowellUser = false;
-
-export { isHowellUser };
+let isHowellEnv = process.env.REACT_APP_B2B_MODE === "true";
+export { isHowellEnv };

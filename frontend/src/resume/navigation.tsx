@@ -32,7 +32,7 @@ import VolunteerForm from "./components/volunteering/volunteerEditForm";
 import CandidateDetails from "./components/candidateSummary";
 import OtherInformation from "./components/otherDetails";
 import { useAuth } from "../contexts/authContext";
-import { isHowellUser } from "../config";
+import { isHowellEnv } from "../config";
 
 type NavigationProps = {
   current: number | null;
@@ -147,7 +147,7 @@ const Navigation = ({
     );
   } else if (current === 1) {
     return (
-      isHowellUser ? (
+      isHowellEnv ? (
         <CandidateDetails
         initialValues={resume.candidateDetails}
         syncPersonalInfo={syncCandidateDetails}

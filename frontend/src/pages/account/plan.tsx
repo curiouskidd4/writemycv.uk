@@ -18,6 +18,7 @@ import { useNavigate } from "react-router-dom";
 import useStripe from "../../utils/stripe";
 import moment from "moment";
 import { PRICING_TABLE } from "../../constants";
+import { isHowellEnv } from "../../config";
 let stripeDashboardURL =
   "https://billing.stripe.com/p/login/test_28o3fYaln3oTenC7ss";
 
@@ -27,8 +28,6 @@ const BILLING_PRODUCTS = {
   PRO_QUATERLY: "pro_quaterly",
   PRO_YEARLY: "pro_yearly",
 };
-
-
 
 let creditTable = [
   {
@@ -212,13 +211,25 @@ const Invoices = () => {
   return (
     <div>
       <Row gutter={24}>
-        <Col  span={4} className="invoice-header-cell">Name</Col>
-        <Col  span={4} className="invoice-header-cell">Date</Col>
-        <Col  span={4} className="invoice-header-cell">Amount</Col>
-        <Col  span={4} className="invoice-header-cell">Paid</Col>
+        <Col span={4} className="invoice-header-cell">
+          Name
+        </Col>
+        <Col span={4} className="invoice-header-cell">
+          Date
+        </Col>
+        <Col span={4} className="invoice-header-cell">
+          Amount
+        </Col>
+        <Col span={4} className="invoice-header-cell">
+          Paid
+        </Col>
 
-        <Col  span={4} className="invoice-header-cell">Plan</Col>
-        <Col  span={4} className="invoice-header-cell">Download</Col>
+        <Col span={4} className="invoice-header-cell">
+          Plan
+        </Col>
+        <Col span={4} className="invoice-header-cell">
+          Download
+        </Col>
       </Row>
       <Divider />
       {stripe.data?.invoices &&
@@ -238,10 +249,10 @@ const Invoices = () => {
 
                 <Col span={4}>{getPlanName(invoice)}</Col>
                 <Col span={4}>
-                  <Button size="small" className="small-light-btn"
-                  onClick={
-                    () => window.open(invoice.invoice_pdf, "_blank")
-                  }
+                  <Button
+                    size="small"
+                    className="small-light-btn"
+                    onClick={() => window.open(invoice.invoice_pdf, "_blank")}
                   >
                     <DownloadIcon color="black" /> Download
                   </Button>
@@ -270,126 +281,145 @@ const YourPlan = () => {
       />
       <CreditModal open={creditModal} onClose={() => setCreditModal(false)} />
 
-      <div
-        style={{
-          margin: "1.5rem 0rem",
-        }}
-      >
-        <Typography.Text type="secondary" className="section-header">
-          Current Plan
-        </Typography.Text>
-      </div>
-      {userDoc?.data?.subscriptionId && (
-        <div className="plan-card">
-          <div className="plan-card__header">
-            <span className="heading">Silver Plan</span>
-            <Button  type="default" size="small" className="small-light-btn">
-              <DownloadIcon color="#000000" />
-              Download Contract
-            </Button>
-          </div>
-
-          <Row gutter={24}>
-            <Col>
-              <div className="data-item">
-                <div className="data-item-heading">Monthly Credits</div>
-                <div className="data-item-value">50 Credits</div>
-              </div>
-            </Col>
-            <Col>
-              <div className="data-item">
-                <div className="data-item-heading"> Cost</div>
-                <div className="data-item-value">$50.00</div>
-              </div>
-            </Col>
-          </Row>
-
-          <Row align="middle" gutter={24}>
-            <Col>
-              <div className="data-item">
-                <div className="data-item-heading">Credits Usage</div>
-                <div className="data-item-value">
-                  Renews on {userDoc.data?.expiry.toDate().toDateString()}
-                </div>
-              </div>
-            </Col>
-            <Col>
-              <Button
-                size="small"
-                className="small-dark-btn"
-                onClick={() => setCreditModal(true)}
-              >
-                Buy Credits
-              </Button>
-            </Col>
-          </Row>
-
-          <Row gutter={24}>
-            <Col flex="auto">
-              <Progress
-                percent={
-                  (creditDoc?.data?.credits / creditDoc?.data?.totalCredits) *
-                  100
-                }
-                showInfo={false}
-                strokeColor="var(--primary)"
-                strokeWidth={24}
-              />
-            </Col>
-            <Col>
-              <span>
-                <strong>{creditDoc?.data?.credits}</strong>/
-                {creditDoc?.data?.totalCredits}
-              </span>
-            </Col>
-          </Row>
-
-          <Row
-            style={{
-              marginTop: "16px",
-            }}
-            justify="end"
-          >
-            <Button
-              size="small"
-              className="small-dark-btn"
-              onClick={() => window.open(stripeDashboardURL, "_blank")}
-            >
-              Manage Subscription
-            </Button>
+      {isHowellEnv && (
+        <div
+          style={{
+            margin: "1.5rem 0rem",
+          }}
+        >
+          <Row justify="center">
+            <Typography.Text type="secondary">
+              You are on B2B Plan
+            </Typography.Text>
           </Row>
         </div>
       )}
-      {!userDoc?.data?.subscriptionId && (
-        <Card>
-          <Typography.Text>
-            You are not subscribed to any plan. Please subscribe to a plan to
-            access all features.
-          </Typography.Text>
-          <Row>
-            <Button
-              size="small"
-              className="small-dark-btn"
-              onClick={() => setSubscriptionModal(true)}
-            >
-              Buy Subscription
-            </Button>
-          </Row>
-        </Card>
-      )}
 
-      <div
-        style={{
-          margin: "1.5rem 0rem",
-        }}
-      >
-        <Typography.Text type="secondary" className="section-header">
-          Invoices
-        </Typography.Text>
-      </div>
-      <div>
-        <Invoices />
-      </div>
+      {!isHowellEnv && (
+        <>
+          <div
+            style={{
+              margin: "1.5rem 0rem",
+            }}
+          >
+            <Typography.Text type="secondary" className="section-header">
+              Current Plan
+            </Typography.Text>
+          </div>
+          {userDoc?.data?.subscriptionId && (
+            <div className="plan-card">
+              <div className="plan-card__header">
+                <span className="heading">Silver Plan</span>
+                <Button type="default" size="small" className="small-light-btn">
+                  <DownloadIcon color="#000000" />
+                  Download Contract
+                </Button>
+              </div>
+
+              <Row gutter={24}>
+                <Col>
+                  <div className="data-item">
+                    <div className="data-item-heading">Monthly Credits</div>
+                    <div className="data-item-value">50 Credits</div>
+                  </div>
+                </Col>
+                <Col>
+                  <div className="data-item">
+                    <div className="data-item-heading"> Cost</div>
+                    <div className="data-item-value">$50.00</div>
+                  </div>
+                </Col>
+              </Row>
+
+              <Row align="middle" gutter={24}>
+                <Col>
+                  <div className="data-item">
+                    <div className="data-item-heading">Credits Usage</div>
+                    <div className="data-item-value">
+                      Renews on {userDoc.data?.expiry.toDate().toDateString()}
+                    </div>
+                  </div>
+                </Col>
+                <Col>
+                  <Button
+                    size="small"
+                    className="small-dark-btn"
+                    onClick={() => setCreditModal(true)}
+                  >
+                    Buy Credits
+                  </Button>
+                </Col>
+              </Row>
+
+              <Row gutter={24}>
+                <Col flex="auto">
+                  <Progress
+                    percent={
+                      (creditDoc?.data?.credits /
+                        creditDoc?.data?.totalCredits) *
+                      100
+                    }
+                    showInfo={false}
+                    strokeColor="var(--primary)"
+                    strokeWidth={24}
+                  />
+                </Col>
+                <Col>
+                  <span>
+                    <strong>{creditDoc?.data?.credits}</strong>/
+                    {creditDoc?.data?.totalCredits}
+                  </span>
+                </Col>
+              </Row>
+
+              <Row
+                style={{
+                  marginTop: "16px",
+                }}
+                justify="end"
+              >
+                <Button
+                  size="small"
+                  className="small-dark-btn"
+                  onClick={() => window.open(stripeDashboardURL, "_blank")}
+                >
+                  Manage Subscription
+                </Button>
+              </Row>
+            </div>
+          )}
+          {!userDoc?.data?.subscriptionId && (
+            <Card>
+              <Typography.Text>
+                You are not subscribed to any plan. Please subscribe to a plan
+                to access all features.
+              </Typography.Text>
+              <Row>
+                <Button
+                  size="small"
+                  className="small-dark-btn"
+                  onClick={() => setSubscriptionModal(true)}
+                >
+                  Buy Subscription
+                </Button>
+              </Row>
+            </Card>
+          )}
+
+          <div
+            style={{
+              margin: "1.5rem 0rem",
+            }}
+          >
+            <Typography.Text type="secondary" className="section-header">
+              Invoices
+            </Typography.Text>
+          </div>
+          <div>
+            <Invoices />
+          </div>
+        </>
+      )}
     </>
   );
 };

@@ -80,6 +80,14 @@ const addCredits = async (
 };
 
 const deductCredits = async (deductRef: DEDUCT_TYPES, userId: string) => {
+  // Whitelist howellUsers for now 
+  let user = await db.collection("users").doc(userId).get();
+  if (!user.exists) {
+    return;
+  }
+  if (user.data()?.isHowellUser) {
+    return;
+  }
   let amount = 1;
   if (deductRef === DEDUCT_TYPES.RESUME_DOWNLOAD) {
     amount = 10;

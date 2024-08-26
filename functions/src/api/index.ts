@@ -57,8 +57,10 @@ app.use(validationErrorMiddleware);
 // }).https.onRequest(app);
 
 let options = {
-  timeoutSeconds: 400,
+  timeoutSeconds: 540,
   memory: "2GiB",
+  concurrency: 100,
+  minInstances: 1,
 } as HttpsOptions;
 
 let api =  onRequest(options, app)

@@ -56,6 +56,7 @@ import { useNavigate } from "react-router-dom";
 import { Resume } from "../../types/resume";
 import { useMutateDoc } from "../../firestoreHooks";
 import { OutOfCreditsComponent } from "../../components/paywall";
+import { isHowellEnv } from "../../config";
 
 // const ResumeItemV2 = ({ resume }: { resume: Resume }) => {
 //   const { user } = useAuth();
@@ -345,11 +346,14 @@ const ResumeItemV3 = ({ resume }: { resume: Resume }) => {
   };
 
   const downloadResume = async (e: any) => {
-    let credits = await checkCredits();
-    // Check if enough credits
-    if (!credits || credits < 1) {
-      setShowPaywall(true);
-      return;
+    // Only check if not howellUser
+    if (!isHowellEnv) {
+      let credits = await checkCredits();
+      // Check if enough credits
+      if (!credits || credits < 1) {
+        setShowPaywall(true);
+        return;
+      }
     }
 
     await pdfExportUtil.exportResumeToPDF({ resumeId: resume.id });
@@ -429,9 +433,10 @@ const ResumeItemV3 = ({ resume }: { resume: Resume }) => {
         </Space>
       </Modal>
 
-      <OutOfCreditsComponent enabled={showPaywall}
+      <OutOfCreditsComponent
+        enabled={showPaywall}
         onCancel={() => setShowPaywall(false)}
-       />
+      />
 
       <Modal
         visible={state.showPreviewModal}

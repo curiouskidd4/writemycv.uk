@@ -16,6 +16,7 @@ import { auth } from "../../services/firebase";
 import { useAuth } from "../../contexts/authContext";
 import { NotificationConfig } from "antd/es/notification/interface";
 import { ArgsProps } from "antd/es/message";
+import { isHowellEnv } from "../../config";
 const layout = {
   labelCol: { span: 8 },
   wrapperCol: { span: 16 },
@@ -205,13 +206,14 @@ const SignInForm = ({
             textAlign: "center",
           }}
         >
+          {!isHowellEnv ?
           <Typography.Text type="secondary">
             No Account?
             <Link to="/signup">
               {" "}
               <a style={{ color: "var(--primary)" }}>Join Now</a>
             </Link>
-          </Typography.Text>
+          </Typography.Text> : null}
         </div>
       </div>
     </>

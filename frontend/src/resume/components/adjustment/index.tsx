@@ -7,7 +7,7 @@ import { useResume } from "../../../contexts/resume";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../../../services/firebase";
 import Template from "../../../types/template";
-import { isHowellUser } from "../../../config";
+import { isHowellEnv } from "../../../config";
 
 let templates = [
   {
@@ -118,7 +118,7 @@ const Adjustment = () => {
     // Howell Specific changes
     const queryRef = query(
       collection(db, "templates"),
-      where("isPublic", "==", isHowellUser ? false : true)
+      where("isPublic", "==", isHowellEnv ? false : true)
     );
 
     const querySnapshot = await getDocs(queryRef);

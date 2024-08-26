@@ -16,7 +16,7 @@ import { useAuth } from "../../contexts/authContext";
 import useResumeAPI from "../../api/resume";
 import { AIWizardIcon, MagicWandIcon } from "../../components/faIcons";
 import { InboxOutlined } from "@ant-design/icons";
-import { isHowellUser } from "../../config";
+import { isHowellEnv } from "../../config";
 
 const ObjectId = require("bson-objectid");
 export const NewResumeModal = ({
@@ -47,7 +47,7 @@ export const NewResumeModal = ({
     setState((prev) => ({
       ...prev,
       loading: true,
-      uploading: isHowellUser ? true : false,
+      uploading: isHowellEnv ? true : false,
     }));
     // uuid for resume
     let data = {
@@ -56,15 +56,19 @@ export const NewResumeModal = ({
       userId,
       isDeleted: false,
       createdAt: new Date(),
-      copyFromProfile: isHowellUser? false : true,
+      copyFromProfile: isHowellEnv? false : true,
       isComplete: false,
     };
+    // Delete file 
+    if (isHowellEnv) {
+      delete data.file;
+    }
     // Drop empty fields
     Object.keys(data).forEach((key) => data[key] == null && delete data[key]);
     try {
       await setDoc(doc(db, "resumes", data.id), data);
       // await copyProfileToResume(data.id);
-      if (isHowellUser) {
+      if (isHowellEnv) {
         let file = values.file.file.originFileObj;
         delete values.file;
     
@@ -156,7 +160,7 @@ export const NewResumeModal = ({
               />
             </Form.Item>
 
-            {isHowellUser ? (
+            {isHowellEnv ? (
               <Form.Item name="file" label="Upload your resume">
                 <Upload.Dragger>
                   <p className="ant-upload-drag-icon">
@@ -187,7 +191,7 @@ export const NewResumeModal = ({
           </Form>
         </>
       )}
-      {state.loading && isHowellUser && (
+      {state.loading && isHowellEnv && (
         <div
           style={{
             display: "flex",
@@ -247,7 +251,7 @@ export const NewResumeModal = ({
           </Typography.Text>
         </div>
       )}
-      {state.loading && !isHowellUser && (
+      {state.loading && !isHowellEnv && (
           <div
             style={{
               display: "flex",

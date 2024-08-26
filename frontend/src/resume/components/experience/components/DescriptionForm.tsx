@@ -264,7 +264,7 @@ export const DescriptionForm = ({
           <CVWizardBox
             title="Description Tip"
             // subtitle="Highlighting your key achievements here, like awards, dissertations or projects"
-            subtitle="Use this section to add details of scholarships / awards, dissertations / projects and any other relevant information."
+            subtitle="Use this section to briefly describe key responsibilities and the scope of your role, including team size or budget."
             actions={[
               <Button
                 className="black-button-small"

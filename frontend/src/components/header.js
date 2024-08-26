@@ -29,6 +29,7 @@ import {
 import { MenuOutlined, UserOutlined } from "@ant-design/icons";
 import { useAuth } from "../contexts/authContext";
 import { ProfileIcon } from "./faIcons";
+import { isHowellEnv } from "../config";
 
 const { Header, Content, Footer, Sider } = Layout;
 const { useBreakpoint } = Grid;
@@ -44,6 +45,8 @@ const CustomHeader = () => {
     auth.logout();
     navigate("");
   };
+
+  
   return (
     <Header className="header auth-header" style={{ background: "#ffffff00" }}>
       <div
@@ -79,7 +82,7 @@ const CustomHeader = () => {
               >
                 My CVs
               </Button>
-              <Button
+              {!isHowellEnv && <Button
                 onClick={() => navigate("/repository")}
                 type="text"
                 // type={location.pathname.match(/\/profile/) ? "link" : "text"}
@@ -88,7 +91,7 @@ const CustomHeader = () => {
                 }
               >
                 Repository
-              </Button>
+              </Button>}
 
               <Popover
                 content={

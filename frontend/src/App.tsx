@@ -46,6 +46,7 @@ import ImportCVToProfile from "./importCV";
 import FirebaseUserMangement from "./userManagement";
 import "./design.css";
 import { PremiumUpgradeComponent } from "./components/paywall";
+import { isHowellEnv } from "./config";
 
 const GenLayout = ({}) => {
   const { user } = useAuth();
@@ -226,14 +227,23 @@ const baseRouter = createBrowserRouter([
           </div>
         ),
       },
-      {
-        path: "signup",
-        element: (
-          <div>
-            <LoginSignupPage isSignup={true} />
-          </div>
-        ),
-      },
+      isHowellEnv
+        ? {
+            path: "signup",
+            element: (
+              <div>
+                <Navigate to="/signin" />
+              </div>
+            ),
+          }
+        : {
+            path: "signup",
+            element: (
+              <div>
+                <LoginSignupPage isSignup={true} />
+              </div>
+            ),
+          },
       {
         path: "forgot-password",
         element: (
@@ -282,7 +292,7 @@ const importRouter = createBrowserRouter([
 
     children: [
       {
-        path: "*",
+        path: "",
         element: <ImportCVToProfile />,
       },
     ],
@@ -293,7 +303,9 @@ const queryClient = new QueryClient();
 
 const BaseApp = () => {
   const auth = useAuth();
-
+  console.log("isHowellUser", isHowellEnv);
+  console.log("isEmailVerified", auth.isEmailVerified);
+  console.log("isRepoCompleted", auth.isRepoCompleted);
   console.log("USER", auth.user);
   return (
     <React.StrictMode>
@@ -312,7 +324,10 @@ const BaseApp = () => {
         <>
           {auth.isAuthenticated &&
             auth.user &&
-            (auth.isEmailVerified && auth.isRepoCompleted && auth.subscriptionId ? (
+            (auth.isEmailVerified &&
+            auth.isRepoCompleted &&
+            (auth.subscriptionId || isHowellEnv) ? (
+              // Subscription not needed by howell user
               // (auth.isProfileComplete && auth.isEmailVerified  ? (
 
               <>
@@ -325,7 +340,7 @@ const BaseApp = () => {
             ) : // : !auth.isProfileComplete ? (
             //   <CustomerOnboarding />
             // )
-            !auth.subscriptionId ? (
+            !auth.subscriptionId && !isHowellEnv ? (
               <PremiumUpgradeComponent enabled={true} />
             ) : !auth.isRepoCompleted ? (
               <RouterProvider router={importRouter} />

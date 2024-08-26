@@ -1,6 +1,15 @@
 import React, { useEffect } from "react";
 import { ResumeProvider, useResume } from "../contexts/resume";
-import { Typography, Steps, Row, Col, Button, Space, Modal, message } from "antd";
+import {
+  Typography,
+  Steps,
+  Row,
+  Col,
+  Button,
+  Space,
+  Modal,
+  message,
+} from "antd";
 import "./index.css";
 import Navigation from "./navigation";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -10,7 +19,7 @@ import {
   DownloadIcon,
 } from "../components/faIcons";
 import PDFViewer from "../components/pdfViewer";
-import { isHowellUser } from "../config";
+import { isHowellEnv } from "../config";
 import useUtils from "../utils/download";
 import { useAuth } from "../contexts/authContext";
 import { OutOfCreditsComponent } from "../components/paywall";
@@ -32,7 +41,7 @@ const ResumeEditSteps = ({
     },
     {
       // title: "Personal Details",
-      title: isHowellUser? "Candidate Details" : "Personal Details",
+      title: isHowellEnv ? "Candidate Details" : "Personal Details",
     },
     {
       title: "Education",
@@ -196,16 +205,17 @@ const ResumeEditV2Loader = () => {
   const auth = useAuth();
 
   const downloadResume = async () => {
+    if (!isHowellEnv) {
       let credits = await auth.checkCredits();
       // Check if enough credits
       if (!credits || credits < 1) {
         setShowPaywall(true);
         return;
       }
-  
-      await pdfExportUtil.exportResumeToPDF({ resumeId: resumeData.resume?.id });
-      
-  
+    }
+
+    await pdfExportUtil.exportResumeToPDF({ resumeId: resumeData.resume?.id });
+
     await resumeData.downloadResume();
   };
 
@@ -219,7 +229,7 @@ const ResumeEditV2Loader = () => {
     navigator.clipboard.writeText(url);
     message.success("Link copied to clipboard");
     return url;
-  }
+  };
 
   if (resumeData.loading) {
     return <div>Loading...</div>;
@@ -232,12 +242,12 @@ const ResumeEditV2Loader = () => {
   return (
     <div className="resume">
       <>
-      <OutOfCreditsComponent enabled={showPaywall} 
-        onCancel={() => {
-          setShowPaywall(false);
-        }}
-       
-      />
+        <OutOfCreditsComponent
+          enabled={showPaywall}
+          onCancel={() => {
+            setShowPaywall(false);
+          }}
+        />
         <Modal
           title="Preview"
           open={previewUrl ? true : false}
@@ -249,8 +259,7 @@ const ResumeEditV2Loader = () => {
         >
           <Row
             justify="center"
-            style={{ marginBottom: "16px", height: "80vh", 
-            overflowY: "auto"}}
+            style={{ marginBottom: "16px", height: "80vh", overflowY: "auto" }}
           >
             <PDFViewer documentURL={previewUrl} />
           </Row>
@@ -291,7 +300,7 @@ const ResumeEditV2Loader = () => {
 
           <Button
             onClick={() => {
-              getPublicUrl()
+              getPublicUrl();
             }}
           >
             <i className="fa-solid fa-share-nodes"></i>
