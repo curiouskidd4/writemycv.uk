@@ -20,7 +20,7 @@ import moment from "moment";
 import { PRICING_TABLE } from "../../constants";
 import { isHowellEnv } from "../../config";
 let stripeDashboardURL =
-  "https://billing.stripe.com/p/login/test_28o3fYaln3oTenC7ss";
+  "https://billing.stripe.com/p/login/test_14k28ucyj71c5aw9AA";
 
 const BILLING_PRODUCTS = {
   // FREE_TRIAL : "free_trial",
@@ -273,6 +273,8 @@ const YourPlan = () => {
   // const [creditModal, setCreditModal] = React.useState(false);
 
   const navigate = useNavigate();
+
+  const isExpired = userDoc?.data?.expiry.toDate().getTime() < new Date();
   return (
     <>
       <SubscriptionModal
@@ -307,7 +309,9 @@ const YourPlan = () => {
             </Typography.Text>
           </div>
           {userDoc?.data?.subscriptionId && (
-            <div className="plan-card">
+            <div className="plan-card" style={{
+              backgroundColor: isExpired ? "var(--error-100)" : "var(--unnamed-color-d9d9d9)"
+            }}>
               <div className="plan-card__header">
                 <span className="heading">Silver Plan</span>
                 <Button type="default" size="small" className="small-light-btn">
@@ -334,9 +338,20 @@ const YourPlan = () => {
               <Row align="middle" gutter={24}>
                 <Col>
                   <div className="data-item">
-                    <div className="data-item-heading">Credits Usage</div>
+
+                    <div className="data-item-heading">
+                      Subscription Details
+                    </div>
                     <div className="data-item-value">
-                      Renews on {userDoc.data?.expiry.toDate().toDateString()}
+                      {
+                        // Check if expired 
+                        isExpired ? (
+                          <span>Expired on {userDoc.data?.expiry.toDate().toDateString()}</span>
+                        ) : (
+                          <span >Renews on {userDoc.data?.expiry.toDate().toDateString()}</span>
+                        )
+                      }
+                      
                     </div>
                   </div>
                 </Col>
@@ -350,7 +365,7 @@ const YourPlan = () => {
                   </Button>
                 </Col> */}
               </Row>
-              
+
               {/**
                * Disabled for now
                */}
@@ -381,13 +396,27 @@ const YourPlan = () => {
                 }}
                 justify="end"
               >
-                <Button
-                  size="small"
-                  className="small-dark-btn"
-                  onClick={() => window.open(stripeDashboardURL, "_blank")}
-                >
-                  Manage Subscription
-                </Button>
+                {
+                  isExpired && (
+                    <Button
+                      size="small"
+                      className="small-dark-btn"
+                      onClick={() => setSubscriptionModal(true)}
+                    >
+                      Renew Subscription
+                    </Button>
+                  )
+                }
+                { !isExpired && (
+                  <Button
+                    size="small"
+                    className="small-dark-btn"
+                    onClick={() => window.open(stripeDashboardURL, "_blank")}
+                  >
+                    Manage Subscription
+                  </Button>
+                )}
+              
               </Row>
             </div>
           )}

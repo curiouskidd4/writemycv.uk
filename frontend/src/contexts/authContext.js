@@ -54,6 +54,7 @@ const useProvideAuth = () => {
     isRepoCompleted: false,
     isEmailVerified: false,
     authToken: null,
+    isExpired: false,
   });
 
   useEffect(() => {
@@ -169,6 +170,7 @@ const useProvideAuth = () => {
         isRepoCompleted: userData.isRepoCompleted,
         isEmailVerified: user.emailVerified,
         subscriptionId: userData.subscriptionId,
+        isExpired: userData.expiry ? userData.expiry.toDate().getTime() < new  Date() : false,
         isHowellUser: userData.isHowellUser,
         credits: creditsData?.credits || 0,
         authToken: null,

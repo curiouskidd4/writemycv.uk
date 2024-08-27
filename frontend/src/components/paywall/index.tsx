@@ -39,13 +39,15 @@ const PlanCard = ({
           {plan.planName}
         </Typography.Title>
         <Typography.Text className="plan-period">
-          {plan.period} | {plan.credits} Credits
+          {plan.period} 
+          {/* | {plan.credits} Credits */}
         </Typography.Text>
         <Typography.Title level={3} className="plan-price">
-          {plan.price}
+        {plan.perWeek}/Week
         </Typography.Title>
         <Typography.Text type="secondary" className="plan-price-per-month">
-          ({plan.perMonth}/Month)
+          {/* ({plan.perWeek}/Week) */}
+          {plan.price} Total
         </Typography.Text>
       </div>
       <div>

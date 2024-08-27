@@ -326,7 +326,7 @@ const BaseApp = () => {
             auth.user &&
             (auth.isEmailVerified &&
             auth.isRepoCompleted &&
-            (auth.subscriptionId || isHowellEnv) ? (
+            ((auth.subscriptionId && !auth.isExpired) || isHowellEnv) ? (
               // Subscription not needed by howell user
               // (auth.isProfileComplete && auth.isEmailVerified  ? (
 
@@ -340,7 +340,7 @@ const BaseApp = () => {
             ) : // : !auth.isProfileComplete ? (
             //   <CustomerOnboarding />
             // )
-            !auth.subscriptionId && !isHowellEnv ? (
+            (!auth.subscriptionId || auth.isExpired) && !isHowellEnv ? (
               <PremiumUpgradeComponent enabled={true} />
             ) : !auth.isRepoCompleted ? (
               <RouterProvider router={importRouter} />
