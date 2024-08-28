@@ -32,7 +32,7 @@ export const PRICING_TABLE = [
     period: "14 Days",
     price: "£18.98",
     perWeek: "£9.99",
-    priceId: "price_1P6vLQRwhIDHSWqApKNiAUBN",
+    priceId: "price_1Pr9uqRwhIDHSWqAzTrmmMvZ",
     planId: "pro_bi_weekly",
     credits: "100",
     features: [
@@ -49,7 +49,7 @@ export const PRICING_TABLE = [
     period: "1 Months",
     price: "£34.66",
     perWeek: "£8.66",
-    priceId: "price_1P6vLiRwhIDHSWqA2VBui9rx",
+    priceId: "price_1PsnNdRwhIDHSWqAVedGVTvE",
     planId: "pro_quaterly",
     credits: "720",
 
@@ -68,7 +68,7 @@ export const PRICING_TABLE = [
     credits: "3600",
     planId: "pro_yearly",
 
-    priceId: "price_1P6vObRwhIDHSWqA5BBcNigv",
+    priceId: "price_1PsnSDRwhIDHSWqAoo1XvFIh",
     features: [
       "All the benefits of the CV Pro plan",
       // "50% more credits than the Quick Job Plan",

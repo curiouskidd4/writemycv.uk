@@ -276,7 +276,7 @@ const YourPlan = () => {
 
   const isExpired = userDoc?.data?.expiry.toDate().getTime() < new Date();
   const plan = PRICING_TABLE.find(
-    (plan) => plan.priceId === userDoc?.data?.planId
+    (plan) => plan.planId === userDoc?.data?.planId
   );
 
   return (
