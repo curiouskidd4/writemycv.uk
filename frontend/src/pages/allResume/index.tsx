@@ -55,7 +55,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { Resume } from "../../types/resume";
 import { useMutateDoc } from "../../firestoreHooks";
-import { OutOfCreditsComponent } from "../../components/paywall";
+// import { OutOfCreditsComponent } from "../../components/paywall";
 import { isHowellEnv } from "../../config";
 
 // const ResumeItemV2 = ({ resume }: { resume: Resume }) => {

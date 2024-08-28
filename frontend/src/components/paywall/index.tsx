@@ -11,7 +11,7 @@ import {
   Typography,
 } from "antd";
 import {
-  CREDITS_TABLE,
+  // CREDITS_TABLE,
   ENTERPRISE_FEATURES,
   FREE_TRIAL_FEATURES,
   PRICING_TABLE,
@@ -306,113 +306,113 @@ const PremiumUpgradeComponent = ({ enabled }: { enabled: boolean }) => {
   );
 };
 
-const OutOfCreditsComponent = ({ enabled, onCancel }: { enabled: boolean, 
-  onCancel: () => void
- }) => {
-  const defaultPlan = CREDITS_TABLE[0].priceId;
-  const [selectedPlan, setSelectedPlan] = React.useState<string | null>(
-    defaultPlan
-  );
-  const stripe = useStripe();
+// const OutOfCreditsComponent = ({ enabled, onCancel }: { enabled: boolean, 
+//   onCancel: () => void
+//  }) => {
+//   const defaultPlan = CREDITS_TABLE[0].priceId;
+//   const [selectedPlan, setSelectedPlan] = React.useState<string | null>(
+//     defaultPlan
+//   );
+//   const stripe = useStripe();
 
-  const onUpgrade = async () => {
-    try {
-      let plan = CREDITS_TABLE.find((plan) => plan.priceId === selectedPlan);
+//   const onUpgrade = async () => {
+//     try {
+//       let plan = CREDITS_TABLE.find((plan) => plan.priceId === selectedPlan);
 
-      let { sessionId, sessionUrl } = await stripe.getStripeSessionUrl({
-        priceId: selectedPlan,
-        planId: plan?.planId,
-        isSubscription: false,
-      });
+//       let { sessionId, sessionUrl } = await stripe.getStripeSessionUrl({
+//         priceId: selectedPlan,
+//         planId: plan?.planId,
+//         isSubscription: false,
+//       });
 
-      // window.open(sessionUrl);
-      window.location.href = sessionUrl;
+//       // window.open(sessionUrl);
+//       window.location.href = sessionUrl;
 
-    } catch (error) {
-      setSelectedPlan(null);
-      message.error("Error upgrading");
-    }
-  };
+//     } catch (error) {
+//       setSelectedPlan(null);
+//       message.error("Error upgrading");
+//     }
+//   };
 
-  return (
-    <Modal
-      closable={true}
-      onCancel={onCancel}
-      closeIcon={true}
-      width={1000}
-      open={enabled}
-      footer={null}
-      className="default-modal"
-    >
-      <div className="header">
-        <Typography.Title level={3}>Out of credits</Typography.Title>
-      </div>
-      <div>
-        <div
-          style={{
-            margin: "1rem 0rem",
-          }}
-        >
-          <div
-            style={{
-              padding: "0.5rem 0rem",
-            }}
-          >
-            <Typography.Text type="secondary">
-              You have run out of credits. Please purchase more credits to
-              continue using the service.
-            </Typography.Text>
-          </div>
-        </div>
-        <Row justify="center">
-          <Typography.Title level={4}>Choose a credit pack</Typography.Title>
-        </Row>
-        <Row
-          gutter={[24, 24]}
-          style={{
-            margin: "0.5rem 0rem",
-          }}
-        >
-          {CREDITS_TABLE.map((creditPack) => (
-            <Col span={8} key={creditPack.priceId}>
-              <Card
-                className={
-                  selectedPlan === creditPack.priceId
-                    ? "pricing-card selected"
-                    : ""
-                }
-                hoverable
-                onClick={() => setSelectedPlan(creditPack.priceId)}
-              >
-                <div className="pricing-info">
-                  <Typography.Title level={4} className="plan-name">
-                    {creditPack.credit} Credits
-                  </Typography.Title>
-                  <Typography.Title level={3} className="plan-price">
-                    {creditPack.price}
-                  </Typography.Title>
-                </div>
-              </Card>
-            </Col>
-          ))}
-        </Row>
-        <Row
-          justify="center"
-          style={{
-            margin: "1rem 0rem",
-          }}
-        >
-          <Button
-            type="primary"
-            loading={selectedPlan && stripe.loading ? true : false}
-            onClick={onUpgrade}
-          >
-            Purchase
-          </Button>
-        </Row>
-      </div>
-    </Modal>
-  );
-};
-export { OutOfCreditsComponent };
+//   return (
+//     <Modal
+//       closable={true}
+//       onCancel={onCancel}
+//       closeIcon={true}
+//       width={1000}
+//       open={enabled}
+//       footer={null}
+//       className="default-modal"
+//     >
+//       <div className="header">
+//         <Typography.Title level={3}>Out of credits</Typography.Title>
+//       </div>
+//       <div>
+//         <div
+//           style={{
+//             margin: "1rem 0rem",
+//           }}
+//         >
+//           <div
+//             style={{
+//               padding: "0.5rem 0rem",
+//             }}
+//           >
+//             <Typography.Text type="secondary">
+//               You have run out of credits. Please purchase more credits to
+//               continue using the service.
+//             </Typography.Text>
+//           </div>
+//         </div>
+//         <Row justify="center">
+//           <Typography.Title level={4}>Choose a credit pack</Typography.Title>
+//         </Row>
+//         <Row
+//           gutter={[24, 24]}
+//           style={{
+//             margin: "0.5rem 0rem",
+//           }}
+//         >
+//           {CREDITS_TABLE.map((creditPack) => (
+//             <Col span={8} key={creditPack.priceId}>
+//               <Card
+//                 className={
+//                   selectedPlan === creditPack.priceId
+//                     ? "pricing-card selected"
+//                     : ""
+//                 }
+//                 hoverable
+//                 onClick={() => setSelectedPlan(creditPack.priceId)}
+//               >
+//                 <div className="pricing-info">
+//                   <Typography.Title level={4} className="plan-name">
+//                     {creditPack.credit} Credits
+//                   </Typography.Title>
+//                   <Typography.Title level={3} className="plan-price">
+//                     {creditPack.price}
+//                   </Typography.Title>
+//                 </div>
+//               </Card>
+//             </Col>
+//           ))}
+//         </Row>
+//         <Row
+//           justify="center"
+//           style={{
+//             margin: "1rem 0rem",
+//           }}
+//         >
+//           <Button
+//             type="primary"
+//             loading={selectedPlan && stripe.loading ? true : false}
+//             onClick={onUpgrade}
+//           >
+//             Purchase
+//           </Button>
+//         </Row>
+//       </div>
+//     </Modal>
+//   );
+// };
+// export { OutOfCreditsComponent };
 export { PremiumUpgradeComponent };

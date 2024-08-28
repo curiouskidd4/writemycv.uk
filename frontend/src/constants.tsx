@@ -28,7 +28,7 @@ export const ENTERPRISE_FEATURES = [
 
 export const PRICING_TABLE = [
   {
-    planName: "Quick Work",
+    planName: "Speedy Rewrite",
     period: "14 Days",
     price: "£18.98",
     perWeek: "£9.99",
@@ -45,7 +45,7 @@ export const PRICING_TABLE = [
     ],
   },
   {
-    planName: "Job Hunter",
+    planName: "CV Pro",
     period: "1 Months",
     price: "£34.66",
     perWeek: "£8.66",
@@ -54,14 +54,14 @@ export const PRICING_TABLE = [
     credits: "720",
 
     features: [
-      "All the benefits of the Quick Job plan",
+      "All the benefits of the Speedy Rewrite plan",
       // "20% more credits than the Quick Job Plan*",
       "Non-recurring payment",
       "Cancel anytime",
     ],
   },
   {
-    planName: "Career Mate",
+    planName: "CV Crafter",
     period: "3 Months",
     price: "£66.60",
     perWeek: "£5.55",
@@ -70,7 +70,7 @@ export const PRICING_TABLE = [
 
     priceId: "price_1P6vObRwhIDHSWqA5BBcNigv",
     features: [
-      "All the benefits of the Quick Job plan",
+      "All the benefits of the CV Pro plan",
       // "50% more credits than the Quick Job Plan",
       "Non-recurring payment",
       "Cancel anytime",
@@ -78,29 +78,29 @@ export const PRICING_TABLE = [
   },
 ];
 
-export const CREDITS_TABLE = [
-  {
-    credit: "100",
-    price: "£3.99",
-    priceId: "price_1P7C20RwhIDHSWqA0NTE8q2v",
-    planId: "credit_pack_100",
-  },
-  {
-    credit: "300",
-    price: "£6.99",
-    priceId: "price_1P7C2KRwhIDHSWqALLyUHPmt",
-    planId: "credit_pack_300",
-  },
-  {
-    credit: "500",
-    price: "£9.99",
-    priceId: "price_1P7C2gRwhIDHSWqAHWHeYjrS",
-    planId: "credit_pack_500",
-  },
-  {
-    credit: "1000",
-    price: "£17.99",
-    priceId: "price_1P7C32RwhIDHSWqANTxarYyY",
-    planId: "credit_pack_1000",
-  },
-];
+// export const CREDITS_TABLE = [
+//   {
+//     credit: "100",
+//     price: "£3.99",
+//     priceId: "price_1P7C20RwhIDHSWqA0NTE8q2v",
+//     planId: "credit_pack_100",
+//   },
+//   {
+//     credit: "300",
+//     price: "£6.99",
+//     priceId: "price_1P7C2KRwhIDHSWqALLyUHPmt",
+//     planId: "credit_pack_300",
+//   },
+//   {
+//     credit: "500",
+//     price: "£9.99",
+//     priceId: "price_1P7C2gRwhIDHSWqAHWHeYjrS",
+//     planId: "credit_pack_500",
+//   },
+//   {
+//     credit: "1000",
+//     price: "£17.99",
+//     priceId: "price_1P7C32RwhIDHSWqANTxarYyY",
+//     planId: "credit_pack_1000",
+//   },
+// ];
