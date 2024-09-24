@@ -3,11 +3,17 @@ import React, { useState } from "react";
 import LoginForm from "./signIn";
 import SignUpForm from "./signUp";
 import { Tabs, Row, Col, Button, Typography } from "antd";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/authContext";
 import "./index.css";
 
 const LoginSignupPage = ({ isSignup }) => {
+  // Check if get started is in the url 
+  const location = useLocation();
+  const isGetStarted = location.pathname.includes("get-started");
+  //Get query params
+  const queryParams = new URLSearchParams(location.search);
+
   const [flags, updateFlags] = useState({ activeTab: "1" });
   // const auth = new Auth();
   const auth = useAuth();
@@ -37,6 +43,8 @@ const LoginSignupPage = ({ isSignup }) => {
       role
     );
   };
+
+  const isPlanIdSelected = queryParams.get("planId");
 
   return (
     <React.Fragment>
@@ -158,7 +166,7 @@ const LoginSignupPage = ({ isSignup }) => {
               }}
             >
               <Typography.Title level={3} className="form-title">
-                {isSignup ? "Create new account" : "Welcome Back"}
+                {isPlanIdSelected ? "Let's create your account first" : (isSignup ? "Create new account" : "Welcome Back")}
               </Typography.Title>
 
               <div
@@ -170,8 +178,12 @@ const LoginSignupPage = ({ isSignup }) => {
                   marginTop: "2rem",
                 }}
               >
-                {isSignup ? (
-                  <SignUpForm onSubmit={signUp} />
+                {isSignup || (isPlanIdSelected && isGetStarted) ? (
+                  <SignUpForm onSubmit={signUp}
+                  selectedPlanId={
+                    queryParams.get("planId")
+                  }
+                   />
                 ) : (
                   <LoginForm onSubmit={login} />
                 )}

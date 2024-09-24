@@ -47,9 +47,9 @@ export const PRICING_TABLE = [
   {
     planName: "CV Pro",
     period: "1 Months",
-    price: "£34.66",
+    price: "£34.64",
     perWeek: "£8.66",
-    priceId: "price_1PsnNdRwhIDHSWqAVedGVTvE",
+    priceId: "price_1Q2DtNRwhIDHSWqAhyYrQp66",
     planId: "pro_quaterly",
     credits: "720",
 
@@ -67,7 +67,6 @@ export const PRICING_TABLE = [
     perWeek: "£5.55",
     credits: "3600",
     planId: "pro_yearly",
-
     priceId: "price_1PsnSDRwhIDHSWqAoo1XvFIh",
     features: [
       "All the benefits of the CV Pro plan",

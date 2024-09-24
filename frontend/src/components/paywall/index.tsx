@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Button,
   Card,
@@ -8,6 +8,7 @@ import {
   message,
   Modal,
   Row,
+  Spin,
   Typography,
 } from "antd";
 import {
@@ -20,10 +21,11 @@ import { CircleCheckIcon } from "../faIcons";
 import useStripe from "../../utils/stripe";
 import "./index.css";
 import axios from "axios";
+import { useAuth } from "../../contexts/authContext";
 const PlanCard = ({
   plan,
   onUpgrade,
-  isLoading
+  isLoading,
 }: {
   plan: any;
   onUpgrade: (planId: string) => void;
@@ -39,11 +41,11 @@ const PlanCard = ({
           {plan.planName}
         </Typography.Title>
         <Typography.Text className="plan-period">
-          {plan.period} 
+          {plan.period}
           {/* | {plan.credits} Credits */}
         </Typography.Text>
         <Typography.Title level={3} className="plan-price">
-        {plan.perWeek}/Week
+          {plan.perWeek}/Week
         </Typography.Title>
         <Typography.Text type="secondary" className="plan-price-per-month">
           {/* ({plan.perWeek}/Week) */}
@@ -79,44 +81,44 @@ const PlanCard = ({
 const EnterpriseContact = () => {
   const [loading, setLoading] = React.useState<boolean>(false);
   const BASE_URL =
-  process.env.REACT_APP_BASE_URL ||
-  "http://127.0.0.1:5001/resu-me-a5cff/us-central1/api";
+    process.env.REACT_APP_BASE_URL ||
+    "http://127.0.0.1:5001/resu-me-a5cff/us-central1/api";
 
-  const sendMessage = async (values: any ) => {
+  const sendMessage = async (values: any) => {
     setLoading(true);
-    await axios.post(
-      `${BASE_URL}/public/enterprise-contact-us`, values);
+    await axios.post(`${BASE_URL}/public/enterprise-contact-us`, values);
     message.success("Message sent");
     setLoading(false);
-  }
+  };
   const [form] = Form.useForm();
   return (
     <Row className="enterprise-plan-form" gutter={24}>
       <Col span={12}>
         <div className="info">
-          <Typography.Title level={4}>Enterprise <br/>
-          & Affiliates</Typography.Title>
-          <div style={{
-            marginTop: "2rem"
-          }}>
-          {ENTERPRISE_FEATURES.map((feature, index) => (
-            <div className="feature-container">
-              <CircleCheckIcon color="black" />
-              <div key={index} className="features">
-                {" "}
-                {feature}
+          <Typography.Title level={4}>
+            Enterprise <br />& Affiliates
+          </Typography.Title>
+          <div
+            style={{
+              marginTop: "2rem",
+            }}
+          >
+            {ENTERPRISE_FEATURES.map((feature, index) => (
+              <div className="feature-container">
+                <CircleCheckIcon color="black" />
+                <div key={index} className="features">
+                  {" "}
+                  {feature}
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
           </div>
         </div>
       </Col>
       <Col span={12}>
         <Typography.Title level={4}>Contact Us</Typography.Title>
 
-        <Form form={form} layout="vertical" 
-        onFinish={sendMessage}
-        >
+        <Form form={form} layout="vertical" onFinish={sendMessage}>
           <Form.Item
             label="Name"
             name="name"
@@ -148,11 +150,9 @@ const EnterpriseContact = () => {
             <Input.TextArea />
           </Form.Item>
           <Form.Item>
-            <Button 
-            loading={
-              loading
-            } 
-            htmlType="submit"  type="primary">Send Message</Button>
+            <Button loading={loading} htmlType="submit" type="primary">
+              Send Message
+            </Button>
           </Form.Item>
         </Form>
       </Col>
@@ -161,6 +161,15 @@ const EnterpriseContact = () => {
 };
 
 const PremiumUpgradeComponent = ({ enabled }: { enabled: boolean }) => {
+  const auth = useAuth();
+
+  console.log("auth.preSelectedPlanId", auth.preSelectedPlanId);
+  useEffect(() => {
+    if (auth.preSelectedPlanId) {
+      onUpgrade(auth.preSelectedPlanId);
+    }
+  }, [auth.preSelectedPlanId]);
+
   const defaultPlan = PRICING_TABLE[0].priceId;
   const [selectedPlan, setSelectedPlan] = React.useState<string | null>(
     defaultPlan
@@ -183,12 +192,27 @@ const PremiumUpgradeComponent = ({ enabled }: { enabled: boolean }) => {
       // window.open(sessionUrl);
       // Open in same tab
       window.location.href = sessionUrl;
-
     } catch (error) {
       setSelectedPlan(null);
       message.error("Error upgrading");
     }
   };
+
+  if (auth.preSelectedPlanId) {
+    // return <>Taking you to the payment page...</>;
+    return <div
+    style={{
+      position: "absolute",
+      top: "50%",
+      left: "50%",
+      transform: "translate(-50%, -50%)",
+    }}
+  >
+    <Spin size="large" />
+    <Typography.Title level={3}>Taking you to the payment page...</Typography.Title>
+  </div>
+  }
+
   return (
     <Modal
       closable={true}
@@ -243,23 +267,37 @@ const PremiumUpgradeComponent = ({ enabled }: { enabled: boolean }) => {
               }}
             >
               <Col span={8}>
-                <PlanCard plan={PRICING_TABLE[0]} onUpgrade={onUpgrade}
-                isLoading={selectedPlan === PRICING_TABLE[0].priceId && stripe.loading}
-                 />
+                <PlanCard
+                  plan={PRICING_TABLE[0]}
+                  onUpgrade={onUpgrade}
+                  isLoading={
+                    selectedPlan === PRICING_TABLE[0].priceId && stripe.loading
+                  }
+                />
               </Col>
 
               <Col span={16}>
                 <div className="second-pricing-card-container">
                   <Row gutter={24}>
                     <Col span={12}>
-                      <PlanCard plan={PRICING_TABLE[1]} onUpgrade={onUpgrade}
-                      isLoading={selectedPlan === PRICING_TABLE[1].priceId && stripe.loading}
-                       />
+                      <PlanCard
+                        plan={PRICING_TABLE[1]}
+                        onUpgrade={onUpgrade}
+                        isLoading={
+                          selectedPlan === PRICING_TABLE[1].priceId &&
+                          stripe.loading
+                        }
+                      />
                     </Col>
                     <Col span={12}>
-                      <PlanCard plan={PRICING_TABLE[2]} onUpgrade={onUpgrade}
-                      isLoading={selectedPlan === PRICING_TABLE[2].priceId && stripe.loading}
-                       />
+                      <PlanCard
+                        plan={PRICING_TABLE[2]}
+                        onUpgrade={onUpgrade}
+                        isLoading={
+                          selectedPlan === PRICING_TABLE[2].priceId &&
+                          stripe.loading
+                        }
+                      />
                     </Col>
                   </Row>
                   <div className="enterprise-plan-card">
@@ -306,7 +344,7 @@ const PremiumUpgradeComponent = ({ enabled }: { enabled: boolean }) => {
   );
 };
 
-// const OutOfCreditsComponent = ({ enabled, onCancel }: { enabled: boolean, 
+// const OutOfCreditsComponent = ({ enabled, onCancel }: { enabled: boolean,
 //   onCancel: () => void
 //  }) => {
 //   const defaultPlan = CREDITS_TABLE[0].priceId;

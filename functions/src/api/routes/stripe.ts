@@ -72,8 +72,8 @@ router.post(
         customer_email: userData?.stripeCustomerId ? undefined :userData?.email,
         customer_creation: userData?.stripeCustomerId ? undefined : "always",
         mode: isSubscription ? "subscription" : "payment",
-        success_url: `${HOST_URL.value()}/upgrade/success`,
-        cancel_url: `${HOST_URL.value()}/upgrade/cancel`,
+        success_url: `${HOST_URL.value()}/`,
+        cancel_url: `${HOST_URL.value()}/upgrade`,
       });
       //   res.json({ id: session.id });
       res.json({

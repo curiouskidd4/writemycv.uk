@@ -55,6 +55,7 @@ const useProvideAuth = () => {
     isEmailVerified: false,
     authToken: null,
     isExpired: false,
+    preSelectedPlanId: null,
   });
 
   useEffect(() => {
@@ -75,6 +76,7 @@ const useProvideAuth = () => {
           credits: null,
           isHowellUser: false,
           authToken: null,
+          preSelectedPlanId: null,
         });
       }
     });
@@ -174,6 +176,7 @@ const useProvideAuth = () => {
         isHowellUser: userData.isHowellUser,
         credits: creditsData?.credits || 0,
         authToken: null,
+        preSelectedPlanId: userData.preSelectedPlanId,
       });
       return;
     }
@@ -213,8 +216,10 @@ const useProvideAuth = () => {
     last_name,
     username,
     password,
-    email
+    email, 
+    selectedPlanId
   ) => {
+    debugger;
     // Sign up user in firebase auth
     try {
       let userCred = await createUserWithEmailAndPassword(
@@ -226,7 +231,6 @@ const useProvideAuth = () => {
       await updateProfile(user, { displayName: `${first_name} ${last_name}` });
       // Create a user in the backend
       const userRef = doc(db, "users", user.uid);
-      await sendVerificationEmailCustom(user, first_name);
       // Check if user exists in backend
       await setDoc(userRef, {
         first_name: first_name,
@@ -235,7 +239,10 @@ const useProvideAuth = () => {
         email: email,
         firebase_id: user.uid,
         profileComplete: false,
+        preSelectedPlanId: selectedPlanId || null,
       });
+      // await sendVerificationEmailCustom(user, first_name);
+
       return {
         error: false,
         message: "User created successfully",
@@ -275,8 +282,8 @@ const useProvideAuth = () => {
     await sendEmailVerification(auth.currentUser);
   };
 
-  const sendVerificationEmailCustom = async (first_name) => {
-    let user = auth.currentUser;
+  const sendVerificationEmailCustom = async (user, first_name) => {
+    // let user = auth.currentUser;
     let token = await user.getIdToken();
     let res = await axios.post(
       `${baseUrl}/send-verification-email`,

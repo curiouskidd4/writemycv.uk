@@ -79,11 +79,11 @@ const GenPublicLayout = ({ showSigninButtons = true }) => {
 
   let hideNavBar =
     match.pathname.search(/\/public-resume\/[a-zA-Z0-9]+/) == 0 ||
-    match.pathname.search(/\/(signin|signup|forgot-password)/) == 0;
+    match.pathname.search(/\/(signin|signup|forgot-password|get-started)/) == 0;
 
   let hideFooter =
     match.pathname.search(/\/public-resume\/[a-zA-Z0-9]+/) == 0 ||
-    match.pathname.search(/\/(signin|signup|forgot-password)/) == 0;
+    match.pathname.search(/\/(signin|signup|forgot-password|get-started)/) == 0;
 
   return (
     <>
@@ -227,6 +227,14 @@ const baseRouter = createBrowserRouter([
           </div>
         ),
       },
+      {
+        path: "get-started",
+        element: (
+          <div>
+            <LoginSignupPage isSignup={false} />
+          </div>
+        ),
+      },
       isHowellEnv
         ? {
             path: "signup",
@@ -333,17 +341,17 @@ const BaseApp = () => {
               <>
                 <RouterProvider router={protectedRouter} />
               </>
-            ) : !auth.isEmailVerified ? (
-              <>
-                <RouterProvider router={verificationRouter} />
-              </>
-            ) : // : !auth.isProfileComplete ? (
+            )  : // : !auth.isProfileComplete ? (
             //   <CustomerOnboarding />
             // )
             (!auth.subscriptionId || auth.isExpired) && !isHowellEnv ? (
               <PremiumUpgradeComponent enabled={true} />
             ) : !auth.isRepoCompleted ? (
               <RouterProvider router={importRouter} />
+            ) : !auth.isEmailVerified ? (
+              <>
+                <RouterProvider router={verificationRouter} />
+              </>
             ) : null)}
           {!auth.isAuthenticated && <RouterProvider router={baseRouter} />}
         </>

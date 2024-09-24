@@ -23,6 +23,7 @@ const tailLayout = {
 };
 
 const SignUpForm = (props) => {
+  const {selectedPlanId} = props;
   const auth = useAuth();
   const [form] = Form.useForm();
   const [loading, updateLoading] = useState(false);
@@ -47,7 +48,8 @@ const SignUpForm = (props) => {
         last_name,
         values.email,
         values.password,
-        values.email
+        values.email, 
+        selectedPlanId
       );
       if (res.error) {
         // openNotification("error", "Signup Failed", JSON.stringify(res.message));
@@ -69,6 +71,7 @@ const SignUpForm = (props) => {
       // openNotification("error", "Signup Failed", JSON.stringify(err.message)); 
       message.error("Signup Failed: " + err.message)
     }
+    updateLoading(false);
   };
 
   const onReset = () => {

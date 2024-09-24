@@ -50,10 +50,10 @@ const storage = getStorage(app);
 // });
 const appCheck = null
 
-if (window.location.hostname === "localhost") {
-  // Point to the RTDB emulator running on localhost.
-  connectStorageEmulator(storage, "127.0.0.1", 9199);
-  connectFirestoreEmulator(db, "localhost", 8080);
-}
+// if (window.location.hostname === "localhost") {
+//   // Point to the RTDB emulator running on localhost.
+//   connectStorageEmulator(storage, "127.0.0.1", 9199);
+//   connectFirestoreEmulator(db, "localhost", 8080);
+// }
 
 export { auth, db, analytics, storage, appCheck };
