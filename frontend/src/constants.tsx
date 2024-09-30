@@ -36,12 +36,12 @@ export const PRICING_TABLE = [
     planId: "pro_bi_weekly",
     credits: "100",
     features: [
-      "Hold your career history in one place with our Career Repository",
-      "Craft tailored CVs, targeting Job Title and/ or Job Descriptions",
-      "Unlimited optimization from our Al-powered CV Wizard",
+      "14 days to reboot your CV",
+      "First draft in as little as 30 mins",
+      "Perfectly structured for UK roles",
       // "100 accumulative credits to be used on uploads of existing CVs and downloads of your new tailored CVs*",
-      "Auto-renewed subscription",
-      "Cancel anytime",
+      "Using top CV writers know-how",
+      "All powered by the latest AI tech",
     ],
   },
   {
@@ -54,10 +54,11 @@ export const PRICING_TABLE = [
     credits: "720",
 
     features: [
-      "All the benefits of the Speedy Rewrite plan",
-      // "20% more credits than the Quick Job Plan*",
-      "Non-recurring payment",
-      "Cancel anytime",
+      "Flexi monthly plan to suit you",
+      "First draft in as little as 30 mins",
+      "Perfectly structured for UK roles",
+      "Using top CV writers know-how",
+      "All powered by the latest AI tech",
     ],
   },
   {
@@ -69,10 +70,12 @@ export const PRICING_TABLE = [
     planId: "pro_yearly",
     priceId: "price_1PsnSDRwhIDHSWqAoo1XvFIh",
     features: [
-      "All the benefits of the CV Pro plan",
+      "3 months to perfect your CV",
       // "50% more credits than the Quick Job Plan",
-      "Non-recurring payment",
-      "Cancel anytime",
+      "First draft in as little as 30 mins",
+      "Perfectly structured for UK roles",
+      "Using top CV writers know-how",
+      "All powered by the latest AI tech",
     ],
   },
 ];

@@ -300,7 +300,7 @@ const PremiumUpgradeComponent = ({ enabled }: { enabled: boolean }) => {
                       />
                     </Col>
                   </Row>
-                  <div className="enterprise-plan-card">
+                  {/* <div className="enterprise-plan-card">
                     <Row
                       justify="space-between"
                       align="middle"
@@ -319,7 +319,7 @@ const PremiumUpgradeComponent = ({ enabled }: { enabled: boolean }) => {
                         Contact Us
                       </Button>
                     </Row>
-                  </div>
+                  </div> */}
                 </div>
               </Col>
             </Row>
