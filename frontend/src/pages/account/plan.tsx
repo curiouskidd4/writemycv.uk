@@ -20,7 +20,7 @@ import moment from "moment";
 import { PRICING_TABLE } from "../../constants";
 import { isHowellEnv } from "../../config";
 let stripeDashboardURL =
-  "https://billing.stripe.com/p/login/test_14k28ucyj71c5aw9AA";
+  "https://billing.stripe.com/p/login/9AQ6q41Urdoy74I4gg";
 
 const BILLING_PRODUCTS = {
   // FREE_TRIAL : "free_trial",
@@ -29,32 +29,7 @@ const BILLING_PRODUCTS = {
   PRO_YEARLY: "pro_yearly",
 };
 
-let creditTable = [
-  {
-    credit: "100",
-    price: "£3.99",
-    priceId: "price_1P3kEkSHT210NSXLSpijxXw0",
-    planId: "credit_pack_100",
-  },
-  {
-    credit: "300",
-    price: "£6.99",
-    priceId: "price_1P3kFLSHT210NSXLm00HoXoH",
-    planId: "credit_pack_300",
-  },
-  {
-    credit: "500",
-    price: "£9.99",
-    priceId: "price_1P3kFxSHT210NSXL3ER8qjRA",
-    planId: "credit_pack_500",
-  },
-  {
-    credit: "1000",
-    price: "£17.99",
-    priceId: "price_1P3kGSSHT210NSXL9yMwSdGH",
-    planId: "credit_pack_1000",
-  },
-];
+
 
 const SubscriptionModal = ({
   open,

@@ -32,7 +32,8 @@ export const PRICING_TABLE = [
     period: "14 Days",
     price: "£18.98",
     perWeek: "£9.99",
-    priceId: "price_1Pr9uqRwhIDHSWqAzTrmmMvZ",
+    devPriceId: "price_1Pr9uqRwhIDHSWqAzTrmmMvZ",
+    priceId: "price_1Q7HJ2RwhIDHSWqAw6dp8M3m",
     planId: "pro_bi_weekly",
     credits: "100",
     features: [
@@ -49,7 +50,8 @@ export const PRICING_TABLE = [
     period: "1 Months",
     price: "£34.64",
     perWeek: "£8.66",
-    priceId: "price_1Q2DtNRwhIDHSWqAhyYrQp66",
+    devPriceId: "price_1Q2DtNRwhIDHSWqAhyYrQp66",
+    priceId: "price_1Q7HK0RwhIDHSWqAVYVvPf6y",
     planId: "pro_quaterly",
     credits: "720",
 
@@ -68,7 +70,8 @@ export const PRICING_TABLE = [
     perWeek: "£5.55",
     credits: "3600",
     planId: "pro_yearly",
-    priceId: "price_1PsnSDRwhIDHSWqAoo1XvFIh",
+    devPriceId: "price_1PsnSDRwhIDHSWqAoo1XvFIh",
+    priceId: "price_1Q7HKoRwhIDHSWqAoWYiHhre",
     features: [
       "3 months to perfect your CV",
       // "50% more credits than the Quick Job Plan",

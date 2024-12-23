@@ -106,7 +106,7 @@ router.post("/webhook", async (req: any, res: Response) => {
     event = stripe.webhooks.constructEvent(
       payload,
       sig,
-      STRIPE_WEBHOOK_KEY.value() || "whsec_b0d7d3d0951e677f2d280b7361a34d32b68944aa2196d9fe2765a3e90778d14f"
+      STRIPE_WEBHOOK_KEY.value() || "whsec_lJYQwbsnH9UYwyc5HdhDDQoBtplWCvm5"
     );
   } catch (err) {
     // On error, log and return the error message

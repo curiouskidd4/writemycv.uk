@@ -14,7 +14,6 @@ import {
 import {
   // CREDITS_TABLE,
   ENTERPRISE_FEATURES,
-  FREE_TRIAL_FEATURES,
   PRICING_TABLE,
 } from "../../constants";
 import { CircleCheckIcon } from "../faIcons";
